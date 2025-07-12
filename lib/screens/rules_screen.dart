@@ -1,0 +1,273 @@
+import 'package:flutter/material.dart';
+import '../widgets/base_screen.dart';
+import '../models/rule.dart';
+import '../widgets/tile_group.dart';
+
+class RulesScreen extends StatefulWidget {
+  const RulesScreen({super.key});
+
+  @override
+  State<RulesScreen> createState() => _RulesScreenState();
+}
+
+class _RulesScreenState extends State<RulesScreen> {
+  String _selectedRuleSet = 'hk';
+  String _searchQuery = '';
+  List<Rule> _filteredRules = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredRules = rules;
+  }
+
+  void _filterRules() {
+    setState(() {
+      if (_searchQuery.isEmpty) {
+        _filteredRules = rules;
+      } else {
+        _filteredRules = rules
+            .where((rule) =>
+                rule.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                rule.description.toLowerCase().contains(_searchQuery.toLowerCase()))
+            .toList();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseScreen(
+      title: '規則',
+      currentIndex: 0, // 會被忽略，因為這是從首頁進入的
+      body: ListView(
+        padding: const EdgeInsets.all(12.0),
+        children: [
+          // 搜尋區域
+          Card(
+            elevation: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      DropdownButton<String>(
+                        value: _selectedRuleSet,
+                        items: const [
+                          DropdownMenuItem(value: 'hk', child: Text('香港規則')),
+                          DropdownMenuItem(value: 'mixed', child: Text('混雜規則')),
+                        ],
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              _selectedRuleSet = newValue;
+                              // 實際應用中，這裡可以切換不同的規則集
+                            });
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            labelText: '搜尋規則',
+                            prefixIcon: Icon(Icons.search),
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _searchQuery = value;
+                              _filterRules();
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 規則卡片列表
+          ..._filteredRules.map((rule) => RuleCard(rule: rule)).toList(),
+
+          // 底部空間，提供良好的滾動體驗
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+}
+
+// 顯示番數的紅色圓圈小部件
+class FanWidget extends StatelessWidget {
+  final String fan;
+
+  const FanWidget({super.key, required this.fan});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.red,
+      ),
+      padding: const EdgeInsets.all(8),
+      child: Text(
+        fan,
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+      ),
+    );
+  }
+}
+
+// 單個規則卡片小部件
+class RuleCard extends StatefulWidget {
+  final Rule rule;
+
+  const RuleCard({super.key, required this.rule});
+
+  @override
+  State<RuleCard> createState() => _RuleCardState();
+}
+
+class _RuleCardState extends State<RuleCard> {
+  bool _showExample = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 規則圖片或圖標
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: widget.rule.imagePath.isNotEmpty
+                          ? Image.asset(
+                              widget.rule.imagePath,
+                              errorBuilder: (context, error, stackTrace) => const Icon(
+                                Icons.casino,
+                                size: 40,
+                                color: Colors.green,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.casino,
+                              size: 40,
+                              color: Colors.green,
+                            ),
+                    ),
+                    
+                    const SizedBox(width: 12),
+                    
+                    // 規則信息
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.rule.name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            widget.rule.description,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              FanWidget(fan: widget.rule.fan),
+                              const Spacer(),
+                              TextButton.icon(
+                                icon: Icon(
+                                  _showExample ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                  color: Colors.green,
+                                ),
+                                label: Text(
+                                  _showExample ? '隱藏實例' : '查看實例',
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _showExample = !_showExample;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // 展開的實例部分
+          if (_showExample)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.green.shade50,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '實例說明:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // 麻將牌實例
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: widget.rule.exampleTiles.map((group) => 
+                      TileGroup(tiles: group)
+                    ).toList(),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    widget.rule.explanation,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}

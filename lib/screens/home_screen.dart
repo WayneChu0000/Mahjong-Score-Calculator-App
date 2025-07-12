@@ -6,6 +6,7 @@ import 'player_setup.dart';
 import 'history.dart';
 import 'achievements.dart';
 import 'profile.dart';
+import 'rules_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -134,6 +135,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                          );
+                        },
+                      ),
+                      GameButton(
+                        icon: Icons.menu_book,
+                        label: '規則',
+                        color: Colors.teal,
+                        backgroundColor: Colors.green.shade50,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const RulesScreen()),
                           );
                         },
                       ),
