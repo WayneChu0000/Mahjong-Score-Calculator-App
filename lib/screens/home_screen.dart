@@ -7,6 +7,7 @@ import 'history.dart';
 import 'achievements.dart';
 import 'profile.dart';
 import 'rules_screen.dart';
+import 'settings_screen.dart'; // <-- 引入 SettingsScreen
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -147,6 +148,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const RulesScreen()),
+                          );
+                        },
+                      ),
+                      GameButton(
+                        icon: Icons.settings,
+                        label: '設定',
+                        color: Colors.grey.shade700,
+                        backgroundColor: Colors.green.shade50,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SettingsScreen()),
                           );
                         },
                       ),

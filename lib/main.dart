@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'services/settings_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // 初始化設定服務
+  await SettingsService.instance.init();
+  
   runApp(const MyApp());
 }
 

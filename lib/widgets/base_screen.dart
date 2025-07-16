@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/history.dart';
-import '../screens/achievements.dart';
-import '../screens/profile.dart';
+import '../screens/rules_screen.dart'; // 添加規則頁面
+import '../screens/settings_screen.dart'; // 添加設定頁面
 
 class BaseScreen extends StatefulWidget {
   final Widget body;
@@ -34,10 +34,10 @@ class _BaseScreenState extends State<BaseScreen> {
         nextScreen = const HistoryScreen();
         break;
       case 2:
-        nextScreen = const AchievementsScreen();
+        nextScreen = const RulesScreen();
         break;
       case 3:
-        nextScreen = const ProfileScreen();
+        nextScreen = const SettingsScreen();
         break;
     }
 
@@ -69,12 +69,12 @@ class _BaseScreenState extends State<BaseScreen> {
             label: '歷史記錄',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events),
-            label: '成就',
+            icon: Icon(Icons.menu_book),
+            label: '規則',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '個人資料',
+            icon: Icon(Icons.settings),
+            label: '設定',
           ),
         ],
         currentIndex: widget.currentIndex,
