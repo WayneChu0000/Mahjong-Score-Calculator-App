@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/base_screen.dart';
 import '../models/rule.dart';
 import '../widgets/tile_group.dart';
+import 'tutorial_content.dart'; // 新增的教程內容頁面
 
 class RulesScreen extends StatefulWidget {
   const RulesScreen({super.key});
@@ -10,15 +11,23 @@ class RulesScreen extends StatefulWidget {
   State<RulesScreen> createState() => _RulesScreenState();
 }
 
-class _RulesScreenState extends State<RulesScreen> {
+class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStateMixin {
   String _selectedRuleSet = 'hk';
   String _searchQuery = '';
   List<Rule> _filteredRules = [];
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _filteredRules = rules;
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   void _filterRules() {
@@ -38,72 +47,114 @@ class _RulesScreenState extends State<RulesScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      title: '規則',
-      currentIndex: 0, // 會被忽略，因為這是從首頁進入的
-      body: ListView(
-        padding: const EdgeInsets.all(12.0),
+      title: '規則與教程',
+      currentIndex: 2,
+      body: Column(
         children: [
-          // 搜尋區域
-          Card(
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      DropdownButton<String>(
-                        value: _selectedRuleSet,
-                        items: const [
-                          DropdownMenuItem(value: 'hk', child: Text('香港規則')),
-                          DropdownMenuItem(value: 'mixed', child: Text('混雜規則')),
-                        ],
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              _selectedRuleSet = newValue;
-                              // 實際應用中，這裡可以切換不同的規則集
-                            });
-                          }
-                        },
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            labelText: '搜尋規則',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _searchQuery = value;
-                              _filterRules();
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+          // 頂部標籤
+          Material(
+            color: Colors.green.shade50,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: Colors.green.shade800,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: Colors.green,
+              tabs: const [
+                Tab(
+                  icon: Icon(Icons.menu_book),
+                  text: '規則參考',
+                ),
+                Tab(
+                  icon: Icon(Icons.school),
+                  text: '麻將教程',
+                ),
+              ],
             ),
           ),
-
-          const SizedBox(height: 16),
-
-          // 規則卡片列表
-          ..._filteredRules.map((rule) => RuleCard(rule: rule)).toList(),
-
-          // 底部空間，提供良好的滾動體驗
-          const SizedBox(height: 16),
+          
+          // 標籤內容
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // 規則參考頁面
+                _buildRulesReferenceTab(),
+                
+                // 麻將教程頁面
+                const TutorialContent(),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
+
+  // 規則參考標籤的內容
+  Widget _buildRulesReferenceTab() {
+    return ListView(
+      padding: const EdgeInsets.all(12.0),
+      children: [
+        // 搜尋區域
+        Card(
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    DropdownButton<String>(
+                      value: _selectedRuleSet,
+                      items: const [
+                        DropdownMenuItem(value: 'hk', child: Text('香港規則')),
+                        DropdownMenuItem(value: 'mixed', child: Text('混雜規則')),
+                      ],
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _selectedRuleSet = newValue;
+                            // 實際應用中，這裡可以切換不同的規則集
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          labelText: '搜尋規則',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                            _filterRules();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 規則卡片列表
+        ..._filteredRules.map((rule) => RuleCard(rule: rule)).toList(),
+
+        // 底部空間，提供良好的滾動體驗
+        const SizedBox(height: 16),
+      ],
+    );
+  }
 }
 
-// 顯示番數的紅色圓圈小部件
+// 顯示番數的紅色圓圈小部件 - 保留原有代碼
 class FanWidget extends StatelessWidget {
   final String fan;
 
@@ -125,7 +176,7 @@ class FanWidget extends StatelessWidget {
   }
 }
 
-// 單個規則卡片小部件
+// RuleCard 類 - 保留原有代碼
 class RuleCard extends StatefulWidget {
   final Rule rule;
 
@@ -140,6 +191,7 @@ class _RuleCardState extends State<RuleCard> {
 
   @override
   Widget build(BuildContext context) {
+    // 保留原有的規則卡片實現...
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Column(
@@ -249,8 +301,8 @@ class _RuleCardState extends State<RuleCard> {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  // 麻將牌實例
+                  const SizedBox(height: 8),
+                  // 使用 Wrap 顯示麻將牌
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -258,7 +310,7 @@ class _RuleCardState extends State<RuleCard> {
                       TileGroup(tiles: group)
                     ).toList(),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   Text(
                     widget.rule.explanation,
                     style: const TextStyle(fontSize: 14),
