@@ -1,12 +1,12 @@
 class Player {
   final int id;
-  String name;
-  int score;
+  final String name;
+  final int score;
 
-  Player({
+  const Player({
     required this.id,
     required this.name,
-    this.score = 0,
+    required this.score,
   });
 
   // 複製並修改玩家數據的方法
