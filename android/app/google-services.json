@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "722527839525",
+    "project_id": "mahjong-score-calculator-237e9",
+    "storage_bucket": "mahjong-score-calculator-237e9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722527839525:android:2a435742e0485bbcd3a6cc",
+        "android_client_info": {
+          "package_name": "com.example.mahjong_score_calculator_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIHe508r1mSxLD62XzLU0GsKJjqi9hd0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -8,6 +8,7 @@ import 'history.dart';
 import 'rules_screen.dart';
 import 'settings_screen.dart';
 import 'score_recording_screen.dart';
+import '../services/firebase_service.dart';
 
 class PlayerGroup {
   final String id;
@@ -181,6 +182,24 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
                 
                 const SizedBox(height: 24),
+
+                // Firebase 連線測試按鈕
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.cloud_done),
+                    label: const Text('測試 Firebase'),
+                    onPressed: () async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      try {
+                        final res = await FirebaseService.instance.ping();
+                        messenger.showSnackBar(SnackBar(content: Text('Firebase 正常: $res')));
+                      } catch (e) {
+                        messenger.showSnackBar(SnackBar(content: Text('Firebase 失敗: $e')));
+                      }
+                    },
+                  ),
+                ),
                 
                 // 已保存的玩家組合
                 _playerGroups.isNotEmpty 
