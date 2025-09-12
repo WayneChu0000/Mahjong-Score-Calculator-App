@@ -133,7 +133,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   void _recordGame() {
     // 這裡添加記錄遊戲的邏輯
-    final gameRecord = GameRecord(
+    // 創建遊戲記錄但不保存到本地變量
+    GameRecord(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       date: DateTime.now(),
       players: List.from(gamePlayers),

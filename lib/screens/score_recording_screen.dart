@@ -85,14 +85,6 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     }
   }
   
-  // 更新玩家列表，反映最新分數
-  void _updatePlayerList() {
-    _updatedPlayers = widget.players.map((player) {
-      int currentScore = _scoreService.getPlayerScore(player.id.toString());
-      return player.copyWith(score: currentScore);
-    }).toList();
-  }
-  
   @override
   void dispose() {
     // 安全取消訂閱
@@ -102,16 +94,6 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       print('取消分數訂閱時出錯: $e');
     }
     super.dispose();
-  }
-  
-  // 檢查遊戲是否結束
-  void _checkGameEnd() {
-    if (widget.currentRound > widget.totalRounds) {
-      // 延遲執行，避免在 initState 中直接導航
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showGameEndDialog();
-      });
-    }
   }
   
   // 顯示遊戲結束對話框

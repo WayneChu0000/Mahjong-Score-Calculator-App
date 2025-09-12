@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/score_display.dart';
-import '../widgets/game_button.dart';
 import '../widgets/base_screen.dart';
 import '../models/player.dart';
 import 'player_setup.dart';
 import 'history.dart';
-import 'rules_screen.dart';
-import 'settings_screen.dart';
 import 'score_recording_screen.dart';
 import '../services/firebase_service.dart';
 
@@ -70,30 +67,35 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 800), // 減少動畫時間
       vsync: this,
     );
     
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.6, curve: Curves.easeIn))
+      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.6, curve: Curves.easeOut))
     );
     
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
       CurvedAnimation(parent: _controller, curve: const Interval(0.2, 1.0, curve: Curves.easeOut))
     );
     
     _controller.forward();
     
-    // 這裡應該載入已保存的玩家組合數據
+    // 非阻塞地載入玩家組合數據
     _loadPlayerGroups();
   }
   
-  // 載入玩家組合數據
+  // 載入玩家組合數據（非阻塞）
   Future<void> _loadPlayerGroups() async {
-    // 實際應用中，這裡應該從 SharedPreferences 或其他存儲中讀取數據
-    // 示例中使用假數據
-    setState(() {
-      // _playerGroups 已經在上面初始化了
+    // 使用 Future.microtask 確保不阻塞 UI 初始化
+    Future.microtask(() async {
+      // 模擬快速載入，實際應用中從 SharedPreferences 讀取
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (mounted) {
+        setState(() {
+          // _playerGroups 已經在上面初始化了
+        });
+      }
     });
   }
 
@@ -369,28 +371,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-  
-  // 快速操作按鈕
-  Widget _buildQuickActionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: Colors.green),
-            const SizedBox(height: 4),
-            Text(label, style: TextStyle(color: Colors.grey.shade800)),
-          ],
         ),
       ),
     );

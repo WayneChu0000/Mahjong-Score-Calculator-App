@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/player.dart';
-import 'game_play.dart';
 import 'score_recording_screen.dart';
 
 class PlayerSetupScreen extends StatefulWidget {

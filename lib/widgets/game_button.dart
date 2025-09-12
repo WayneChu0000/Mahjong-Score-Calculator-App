@@ -20,7 +20,7 @@ class GameButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      color: backgroundColor ?? color.withOpacity(0.1),
+      color: backgroundColor ?? color.withValues(alpha: 0.1),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),

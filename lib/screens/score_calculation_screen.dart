@@ -42,7 +42,6 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   
   // 牌型預覽
   File? _capturedImage;
-  List<List<String>> _tileGroups = [];
   
   // 計算結果
   int _totalPoints = 0;
@@ -119,14 +118,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
       setState(() {
         _capturedImage = File(image.path);
         // 實際應用中，這裡應該有圖像識別邏輯來解析麻將牌
-        // 這裡使用示例數據
-        _tileGroups = [
-          ["1w", "2w", "3w"],
-          ["7t", "8t", "9t"],
-          ["1s", "1s", "1s"],
-          ["east", "east", "east"],
-          ["fa", "fa"]
-        ];
+        // 圖像處理和牌型識別將在未來版本中實現
       });
     }
   }
@@ -178,7 +170,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   @override
   Widget build(BuildContext context) {
     // 使用當前莊家和風向構建標題
-    String title = "第${widget.currentRound}局：莊家 - ${_selectedDealer.name} (${_selectedWind})";
+    String title = "第${widget.currentRound}局：莊家 - ${_selectedDealer.name} ($_selectedWind)";
     
     return Scaffold(
       appBar: AppBar(

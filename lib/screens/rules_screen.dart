@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/base_screen.dart';
 import '../models/rule.dart';
 import '../widgets/tile_group.dart';
-import 'tutorial_content.dart'; // 新增的教程內容頁面
+import 'tutorial_content.dart';
 
 class RulesScreen extends StatefulWidget {
   const RulesScreen({super.key});
@@ -16,17 +16,21 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   String _searchQuery = '';
   List<Rule> _filteredRules = [];
   late TabController _tabController;
+  late PageController _tutorialPageController;
+  int _currentTutorialPage = 0;
 
   @override
   void initState() {
     super.initState();
     _filteredRules = rules;
     _tabController = TabController(length: 2, vsync: this);
+    _tutorialPageController = PageController();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _tutorialPageController.dispose();
     super.dispose();
   }
 
@@ -81,7 +85,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                 _buildRulesReferenceTab(),
                 
                 // 麻將教程頁面
-                const TutorialContent(),
+                _buildTutorialTab(),
               ],
             ),
           ),
@@ -149,6 +153,158 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
         // 底部空間，提供良好的滾動體驗
         const SizedBox(height: 16),
+      ],
+    );
+  }
+  
+  // 教學標籤的內容
+  Widget _buildTutorialTab() {
+    const tutorialTitles = [
+      '歡迎使用',
+      '麻將牌型',
+      '基本規則',
+      '計分系統',
+    ];
+
+    return Column(
+      children: [
+        // 教學頁面導航
+        Container(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(
+              4,
+              (index) => Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _currentTutorialPage = index;
+                    });
+                    _tutorialPageController.animateToPage(
+                      index,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: _currentTutorialPage == index 
+                          ? Colors.green.shade600 
+                          : Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          [
+                            Icons.waving_hand,
+                            Icons.dashboard,
+                            Icons.rule,
+                            Icons.calculate,
+                          ][index],
+                          color: _currentTutorialPage == index 
+                              ? Colors.white 
+                              : Colors.grey.shade600,
+                          size: 20,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          tutorialTitles[index],
+                          style: TextStyle(
+                            color: _currentTutorialPage == index 
+                                ? Colors.white 
+                                : Colors.grey.shade600,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        
+        // 教學內容頁面
+        Expanded(
+          child: PageView(
+            controller: _tutorialPageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentTutorialPage = index;
+              });
+            },
+            children: const [
+              TutorialContent(pageIndex: 0),
+              TutorialContent(pageIndex: 1),
+              TutorialContent(pageIndex: 2),
+              TutorialContent(pageIndex: 3),
+            ],
+          ),
+        ),
+        
+        // 底部導航按鈕
+        Container(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton.icon(
+                onPressed: _currentTutorialPage > 0
+                    ? () {
+                        setState(() {
+                          _currentTutorialPage--;
+                        });
+                        _tutorialPageController.previousPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    : null,
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('上一頁'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey.shade600,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              
+              Text(
+                '${_currentTutorialPage + 1} / 4',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              
+              ElevatedButton.icon(
+                onPressed: _currentTutorialPage < 3
+                    ? () {
+                        setState(() {
+                          _currentTutorialPage++;
+                        });
+                        _tutorialPageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    : null,
+                icon: const Icon(Icons.arrow_forward),
+                label: const Text('下一頁'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade600,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
