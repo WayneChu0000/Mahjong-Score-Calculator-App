@@ -1,4 +1,5 @@
 {
     "cmake.ignoreCMakeListsMissing": true,
-    "chat.agent.maxRequests": 50
+    "chat.agent.maxRequests": 50,
+    "dart.flutterSdkPath": "~/Desktop/Download/flutter"
 }

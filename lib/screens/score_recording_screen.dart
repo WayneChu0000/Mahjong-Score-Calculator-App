@@ -151,22 +151,31 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ScoreCalculationScreen(
-          players: _updatedPlayers,
-          currentRound: _scoreService.getCurrentRound(),
-          scoreService: _scoreService,
-          onScoreSubmitted: (Map<String, int> scoreChanges) {
-            // 調用原始回調，通知上層組件
-            widget.onScoreSubmitted(scoreChanges);
-            
-            // 注意：在 ScoreCalculationScreen 中已經調用了 scoreService.incrementRound()
-            // 所以這裡不需要再次增加回合數
-            
-            // 開啟下一局
-            _startNextRound();
-          },
+          players: _updatedPlayers.map((player) => player.name).toList(),
         ),
       ),
-    );
+    ).then((result) {
+      // 當從計分畫面返回時處理結果
+      if (result != null && result is Map<String, int>) {
+        // 調用原始回調，通知上層組件
+        widget.onScoreSubmitted(result);
+        
+        // 更新分數服務
+        _scoreService.updateScores(result);
+        
+        // 增加回合數
+        _scoreService.incrementRound();
+        
+        // 檢查遊戲是否結束
+        if (_scoreService.isGameEnd()) {
+          _showGameEndDialog();
+          return;
+        }
+        
+        // 開啟下一局
+        _startNextRound();
+      }
+    });
   }
 
   // 無結果結束本回合

@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-import '../models/player.dart';
-import '../services/score_service.dart';
 import 'dart:io';
 import 'dart:async'; // 添加這行引入 StreamSubscription
 import 'package:image_picker/image_picker.dart';
 
 class ScoreCalculationScreen extends StatefulWidget {
-  final List<Player> players;
-  final int currentRound;
-  final Function(Map<String, int>) onScoreSubmitted;
-  final ScoreService scoreService; // 新增分數服務
+  final List<String> players;
+  final String? groupName;
 
   const ScoreCalculationScreen({
     super.key,
     required this.players,
-    required this.currentRound,
-    required this.onScoreSubmitted,
-    required this.scoreService, // 必須提供分數服務
+    this.groupName,
   });
 
   @override
@@ -25,13 +19,13 @@ class ScoreCalculationScreen extends StatefulWidget {
 
 class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   // 當前選擇的玩家和風向
-  late Player _selectedDealer;
+  late String _selectedDealer;
   String _selectedWind = '東';
   
   // 和牌方式
   bool _isSelfDraw = true;
-  Player? _winningPlayer;
-  Player? _discardPlayer;
+  String? _winningPlayer;
+  String? _discardPlayer;
   
   // 番數和得分
   int _fanCount = 1;
@@ -46,30 +40,23 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   // 計算結果
   int _totalPoints = 0;
   
+  // 玩家分數映射
+  final Map<String, int> _playerScores = {};
+  
   // 監聽分數變化
   StreamSubscription? _scoreSubscription;
 
   @override
   void initState() {
     super.initState();
-    // 默認選擇第一個玩家作為莊家
-    _selectedDealer = widget.players.isNotEmpty ? widget.players[0] : Player(id: 0, name: "玩家1", score: 0);
-    _winningPlayer = _selectedDealer;
-    
-    // 確保只有在有效的 scoreService 時才訂閱
-    try {
-      // 監聽分數變化
-      _scoreSubscription = widget.scoreService.scoreStream.listen((scores) {
-        // 當分數變化時，更新UI
-        if (mounted) {
-          setState(() {
-            // 這裡不需要做任何事，因為我們使用 _getPlayerCurrentScore 方法來獲取最新分數
-          });
-        }
-      });
-    } catch (e) {
-      print('訂閱分數流時出錯: $e');
+    // 使用傳入的玩家列表初始化
+    for (String player in widget.players) {
+      _playerScores[player] = 0;
     }
+    
+    // 默認選擇第一個玩家作為莊家
+    _selectedDealer = widget.players.isNotEmpty ? widget.players[0] : "玩家1";
+    _winningPlayer = _selectedDealer;
   }
   
   @override
@@ -131,27 +118,27 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     if (_isSelfDraw && _winningPlayer != null) {
       // 自摸：其他玩家都輸分
       for (var player in widget.players) {
-        if (player.id != _winningPlayer!.id) {
+        if (player != _winningPlayer) {
           // 自摸時其他玩家都輸相同的分
-          scoreChanges[player.id.toString()] = -_totalPoints;
+          scoreChanges[player] = -_totalPoints;
         }
       }
       // 贏家得到所有分數
-      scoreChanges[_winningPlayer!.id.toString()] = _totalPoints * (widget.players.length - 1);
+      scoreChanges[_winningPlayer!] = _totalPoints * (widget.players.length - 1);
     } else if (!_isSelfDraw && _winningPlayer != null && _discardPlayer != null) {
       // 放槍：只有放槍者輸分
-      scoreChanges[_discardPlayer!.id.toString()] = -_totalPoints;
-      scoreChanges[_winningPlayer!.id.toString()] = _totalPoints;
+      scoreChanges[_discardPlayer!] = -_totalPoints;
+      scoreChanges[_winningPlayer!] = _totalPoints;
     }
     
     // 更新分數服務中的分數
-    widget.scoreService.updateScores(scoreChanges);
+    // widget.scoreService.updateScores(scoreChanges);
     
     // 增加回合數
-    widget.scoreService.incrementRound();
+    // widget.scoreService.incrementRound();
     
     // 調用回調函數，更新得分
-    widget.onScoreSubmitted(scoreChanges);
+    // widget.onScoreSubmitted(scoreChanges);
     
     // 顯示提交成功的消息
     ScaffoldMessenger.of(context).showSnackBar(
@@ -163,27 +150,17 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   }
 
   // 獲取玩家當前分數
-  int _getPlayerCurrentScore(Player player) {
-    return widget.scoreService.getPlayerScore(player.id.toString());
+  int _getPlayerCurrentScore(String player) {
+    return _playerScores[player] ?? 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    // 使用當前莊家和風向構建標題
-    String title = "第${widget.currentRound}局：莊家 - ${_selectedDealer.name} ($_selectedWind)";
-    
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            onPressed: () {
-              // 顯示幫助信息
-              _showHelpDialog();
-            },
-          ),
-        ],
+        title: Text(widget.groupName ?? '麻將計分'),
+        backgroundColor: Colors.red.shade700,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -206,19 +183,19 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     ),
                     const SizedBox(height: 16),
                     // 莊家選擇下拉框
-                    DropdownButtonFormField<Player>(
+                    DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
                         labelText: '莊家',
                         border: OutlineInputBorder(),
                       ),
                       value: _selectedDealer,
                       items: widget.players.map((player) {
-                        return DropdownMenuItem<Player>(
+                        return DropdownMenuItem<String>(
                           value: player,
-                          child: Text('${player.name} (當前: ${_getPlayerCurrentScore(player)}分)'),
+                          child: Text('$player (當前: ${_getPlayerCurrentScore(player)}分)'),
                         );
                       }).toList(),
-                      onChanged: (Player? newValue) {
+                      onChanged: (String? newValue) {
                         if (newValue != null) {
                           setState(() {
                             _selectedDealer = newValue;
@@ -338,19 +315,19 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     ),
                     const SizedBox(height: 16),
                     // 和牌玩家選擇
-                    DropdownButtonFormField<Player>(
+                    DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
                         labelText: '和牌玩家',
                         border: OutlineInputBorder(),
                       ),
                       value: _winningPlayer,
                       items: widget.players.map((player) {
-                        return DropdownMenuItem<Player>(
+                        return DropdownMenuItem<String>(
                           value: player,
-                          child: Text('${player.name} (當前: ${_getPlayerCurrentScore(player)}分)'),
+                          child: Text('$player (當前: ${_getPlayerCurrentScore(player)}分)'),
                         );
                       }).toList(),
-                      onChanged: (Player? newValue) {
+                      onChanged: (String? newValue) {
                         if (newValue != null) {
                           setState(() {
                             _winningPlayer = newValue;
@@ -361,21 +338,21 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     const SizedBox(height: 16),
                     // 放槍玩家選擇（僅當選擇放槍時顯示）
                     if (!_isSelfDraw)
-                      DropdownButtonFormField<Player>(
+                      DropdownButtonFormField<String>(
                         decoration: const InputDecoration(
                           labelText: '放槍玩家',
                           border: OutlineInputBorder(),
                         ),
                         value: _discardPlayer ?? (_winningPlayer == widget.players[0] ? widget.players.length > 1 ? widget.players[1] : null : widget.players[0]),
                         items: widget.players
-                            .where((player) => player.id != _winningPlayer?.id)
+                            .where((player) => player != _winningPlayer)
                             .map((player) {
-                          return DropdownMenuItem<Player>(
+                          return DropdownMenuItem<String>(
                             value: player,
-                            child: Text('${player.name} (當前: ${_getPlayerCurrentScore(player)}分)'),
+                            child: Text('$player (當前: ${_getPlayerCurrentScore(player)}分)'),
                           );
                         }).toList(),
-                        onChanged: (Player? newValue) {
+                        onChanged: (String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               _discardPlayer = newValue;
