@@ -7,14 +7,14 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      title: '個人資料',
+      title: 'Profile',
       currentIndex: 3,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 頭像和用戶名
+            // Avatar and username
             Center(
               child: Column(
                 children: [
@@ -29,21 +29,21 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    '預設玩家',
+                    'Default Player',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '加入時間: 2025年7月6日',
+                    'Joined: July 6, 2025',
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 32),
-            // 遊戲統計
+            // Game statistics
             const Text(
-              '遊戲統計',
+              'Game Statistics',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -54,24 +54,24 @@ class ProfileScreen extends StatelessWidget {
             _buildStatisticCard(
               context: context,
               stats: [
-                {'label': '總場次', 'value': '15'},
-                {'label': '勝場', 'value': '8'},
-                {'label': '敗場', 'value': '7'},
+                {'label': 'Total Games', 'value': '15'},
+                {'label': 'Wins', 'value': '8'},
+                {'label': 'Losses', 'value': '7'},
               ],
             ),
             const SizedBox(height: 16),
             _buildStatisticCard(
               context: context,
               stats: [
-                {'label': '總得分', 'value': '2500'},
-                {'label': '自摸次數', 'value': '5'},
-                {'label': '胡牌次數', 'value': '12'},
+                {'label': 'Total Score', 'value': '2500'},
+                {'label': 'Self-Draws', 'value': '5'},
+                {'label': 'Wins', 'value': '12'},
               ],
             ),
             const SizedBox(height: 32),
-            // 設置選項
+            // Settings options
             const Text(
-              '設置',
+              'Settings',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -84,28 +84,28 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: const Icon(Icons.person_outline),
-                    title: const Text('編輯資料'),
+                    title: const Text('Edit Profile'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      // 編輯資料功能
+                      // Edit profile feature
                     },
                   ),
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.color_lens),
-                    title: const Text('主題設置'),
+                    title: const Text('Theme Settings'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      // 主題設置功能
+                      // Theme settings feature
                     },
                   ),
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.settings),
-                    title: const Text('遊戲設置'),
+                    title: const Text('Game Settings'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      // 遊戲設置功能
+                      // Game settings feature
                     },
                   ),
                 ],

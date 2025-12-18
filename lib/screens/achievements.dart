@@ -22,54 +22,54 @@ class AchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 假設的成就列表
+    // Sample achievements list
     final achievements = [
       Achievement(
         id: '1',
-        title: '初學者',
-        description: '完成第一場遊戲',
+        title: 'Beginner',
+        description: 'Complete your first game',
         icon: Icons.stars,
         isUnlocked: true,
       ),
       Achievement(
         id: '2',
-        title: '連勝高手',
-        description: '連勝3場遊戲',
+        title: 'Winning Streak',
+        description: 'Win 3 games in a row',
         icon: Icons.whatshot,
         isUnlocked: true,
       ),
       Achievement(
         id: '3',
-        title: '麻將大師',
-        description: '總得分達到10000分',
+        title: 'Mahjong Master',
+        description: 'Reach total score of 10000',
         icon: Icons.emoji_events,
         isUnlocked: false,
       ),
       Achievement(
         id: '4',
-        title: '常客',
-        description: '玩滿20局遊戲',
+        title: 'Regular Player',
+        description: 'Play 20 rounds',
         icon: Icons.history,
         isUnlocked: false,
       ),
       Achievement(
         id: '5',
-        title: '自摸王',
-        description: '累計自摸10次',
+        title: 'Self-Draw King',
+        description: 'Self-draw 10 times',
         icon: Icons.gavel,
         isUnlocked: false,
       ),
       Achievement(
         id: '6',
-        title: '不敗神話',
-        description: '完成一局沒有輸過的遊戲',
+        title: 'Undefeated',
+        description: 'Complete a game without losing',
         icon: Icons.shield,
         isUnlocked: false,
       ),
     ];
 
     return BaseScreen(
-      title: '成就',
+      title: 'Achievements',
       currentIndex: 2,
       body: GridView.builder(
         padding: const EdgeInsets.all(16),

@@ -8,7 +8,7 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 假設這是從數據庫或存儲中獲取的歷史記錄
+    // Sample data - would be fetched from database or storage
     final List<GameRecord> records = [
       GameRecord(
         id: '1',
@@ -31,13 +31,13 @@ class HistoryScreen extends StatelessWidget {
     ];
 
     return BaseScreen(
-      title: '遊戲歷史',
+      title: 'Game History',
       currentIndex: 1,
       body: records.isEmpty
           ? const Center(
               child: Text(
-                '暫無歷史記錄',
-                style: TextStyle(fontSize: 18, color: Colors.grey),
+                'No history records',
+                style: TextStyle(fontSize: 17, color: Colors.grey),
               ),
             )
           : ListView.builder(
@@ -50,16 +50,16 @@ class HistoryScreen extends StatelessWidget {
                     leading: const CircleAvatar(
                       child: Icon(Icons.history),
                     ),
-                    title: Text('遊戲 #${index + 1}'),
+                    title: Text('Game #${index + 1}'),
                     subtitle: Text(
-                      '日期: ${formatDate(record.date)}\n'
-                      '回合: ${record.rounds}',
+                      'Date: ${formatDate(record.date)}\n'
+                      'Rounds: ${record.rounds}',
                     ),
                     isThreeLine: true,
                     trailing: IconButton(
                       icon: const Icon(Icons.arrow_forward_ios),
                       onPressed: () {
-                        // 查看詳細歷史記錄
+                        // View detailed history record
                       },
                     ),
                   ),

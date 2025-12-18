@@ -1,67 +1,67 @@
 import 'dart:async';
 import '../models/player.dart';
 
-// 單例模式實現的分數服務
+// Score service implemented with singleton pattern
 class ScoreService {
-  // 單例實例
+  // Singleton instance
   static final ScoreService _instance = ScoreService._internal();
   
-  // 工廠建構函數
+  // Factory constructor
   factory ScoreService() {
     return _instance;
   }
   
-  // 私有建構函數
+  // Private constructor
   ScoreService._internal();
   
-  // 玩家分數映射表
+  // Player score map
   final Map<String, int> _playerScores = {};
   
-  // 公共分數
+  // Public score
   int _publicScore = 0;
   
-  // 當前回合和總回合
+  // Current round and total rounds
   int _currentRound = 1;
   int _totalRounds = 16;
   
-  // 分數流控制器
+  // Score stream controller
   final _scoreController = StreamController<Map<String, dynamic>>.broadcast();
   
-  // 公開分數流
+  // Public score stream
   Stream<Map<String, dynamic>> get scoreStream => _scoreController.stream;
   
-  // 初始化遊戲數據
+  // Initialize game data
   void initGame(List<Player> players, {int initialPublicScore = 0, int currentRound = 1, int totalRounds = 16}) {
-    // 初始化分數
+    // Initialize scores
     for (var player in players) {
       _playerScores[player.id.toString()] = player.score;
     }
     
-    // 設置公共分數和回合數
+    // Set public score and round numbers
     _publicScore = initialPublicScore;
     _currentRound = currentRound;
     _totalRounds = totalRounds;
     
-    // 通知監聽器
+    // Notify listeners
     _notifyListeners();
   }
   
-  // 獲取玩家分數
+  // Get player score
   int getPlayerScore(String playerId) {
     return _playerScores[playerId] ?? 0;
   }
   
-  // 獲取公共分數
+  // Get public score
   int getPublicScore() {
     return _publicScore;
   }
   
-  // 獲取當前回合
+  // Get current round
   int getCurrentRound() {
     return _currentRound;
   }
   
-  // 獲取總回合數
+  // Get total rounds
   int getTotalRounds() {
     return _totalRounds;
   }

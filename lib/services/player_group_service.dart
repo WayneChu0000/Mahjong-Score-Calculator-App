@@ -5,7 +5,7 @@ import '../models/player_group.dart';
 class PlayerGroupService {
   static const String _key = 'saved_player_groups';
   
-  // 獲取所有已儲存的玩家群組
+  // Get all saved player groups
   static Future<List<PlayerGroup>> getSavedGroups() async {
     final prefs = await SharedPreferences.getInstance();
     final String? jsonString = prefs.getString(_key);
@@ -18,31 +18,31 @@ class PlayerGroupService {
       final List<dynamic> jsonList = json.decode(jsonString);
       return jsonList.map((json) => PlayerGroup.fromJson(json)).toList();
     } catch (e) {
-      print('讀取玩家群組時發生錯誤: $e');
+      print('Error reading player groups: $e');
       return [];
     }
   }
   
-  // 儲存玩家群組
+  // Save player group
   static Future<bool> saveGroup(PlayerGroup group) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final List<PlayerGroup> currentGroups = await getSavedGroups();
       
-      // 檢查是否已存在相同名稱的群組
+      // Check if group with same name already exists
       final existingIndex = currentGroups.indexWhere(
         (g) => g.name == group.name
       );
       
       if (existingIndex != -1) {
-        // 更新現有群組
+        // Update existing group
         currentGroups[existingIndex] = group;
       } else {
-        // 新增群組
+        // Add new group
         currentGroups.add(group);
       }
       
-      // 轉換為 JSON 並儲存
+      // Convert to JSON and save
       final String jsonString = json.encode(
         currentGroups.map((g) => g.toJson()).toList()
       );
@@ -50,12 +50,12 @@ class PlayerGroupService {
       await prefs.setString(_key, jsonString);
       return true;
     } catch (e) {
-      print('儲存玩家群組時發生錯誤: $e');
+      print('Error saving player group: $e');
       return false;
     }
   }
   
-  // 刪除玩家群組
+  // Delete player group
   static Future<bool> deleteGroup(String groupName) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -70,12 +70,12 @@ class PlayerGroupService {
       await prefs.setString(_key, jsonString);
       return true;
     } catch (e) {
-      print('刪除玩家群組時發生錯誤: $e');
+      print('Error deleting player group: $e');
       return false;
     }
   }
   
-  // 載入特定群組
+  // Load specific group
   static Future<PlayerGroup?> loadGroup(String groupName) async {
     final List<PlayerGroup> groups = await getSavedGroups();
     try {

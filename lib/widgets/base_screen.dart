@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/history.dart';
-import '../screens/rules_screen.dart'; // 添加規則頁面
-import '../screens/settings_screen.dart'; // 添加設定頁面
+import '../screens/rules_screen.dart';
+import '../screens/settings_screen.dart';
 
 class BaseScreen extends StatefulWidget {
   final Widget body;
@@ -24,7 +24,7 @@ class _BaseScreenState extends State<BaseScreen> {
   void _onItemTapped(int index, BuildContext context) {
     if (index == widget.currentIndex) return;
 
-    // 根據選擇的導航項目切換頁面
+    // Switch pages based on selected navigation item
     Widget? nextScreen;
     switch (index) {
       case 0:
@@ -42,7 +42,7 @@ class _BaseScreenState extends State<BaseScreen> {
     }
 
     if (nextScreen != null) {
-      // 使用替換而不是推入，以避免頁面堆疊過多
+      // Use replacement instead of push to avoid excessive page stack
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => nextScreen!),
@@ -62,26 +62,26 @@ class _BaseScreenState extends State<BaseScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: '首頁',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
-            label: '歷史記錄',
+            label: 'History',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),
-            label: '規則',
+            label: 'Rules',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: '設定',
+            label: 'Settings',
           ),
         ],
         currentIndex: widget.currentIndex,
         selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
         onTap: (index) => _onItemTapped(index, context),
-        type: BottomNavigationBarType.fixed, // 固定顯示所有項目
+        type: BottomNavigationBarType.fixed, // Fixed display for all items
       ),
     );
   }

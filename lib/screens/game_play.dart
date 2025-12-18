@@ -15,7 +15,7 @@ class GamePlayScreen extends StatefulWidget {
     required this.players,
     this.groupId,
     this.groupName,
-    this.totalRounds = 16, // 默認16局
+    this.totalRounds = 16, // Default 16 rounds
   });
 
   @override
@@ -31,15 +31,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     super.initState();
     gamePlayers = List.from(widget.players);
     
-    // 初始化後立即打開計分記錄頁面
+    // Open score recording screen immediately after initialization
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _openScoreRecordingScreen();
     });
   }
 
-  // 打開計分記錄頁面
+  // Open score recording screen
   void _openScoreRecordingScreen() {
-    // 如果當前回合已超過總回合數，顯示遊戲結束
+    // If current round exceeds total rounds, show game end
     if (currentRound > widget.totalRounds) {
       _showGameEndSummary();
       return;
@@ -54,7 +54,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           totalRounds: widget.totalRounds,
           onScoreSubmitted: (Map<String, int> scoreChanges) {
             setState(() {
-              // 更新玩家分數
+              // Update player scores
               scoreChanges.forEach((playerId, scoreChange) {
                 final index = gamePlayers.indexWhere((p) => p.id.toString() == playerId);
                 if (index != -1) {
@@ -64,10 +64,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 }
               });
               
-              // 增加回合數
+              // Increment round
               currentRound++;
               
-              // 在下一幀打開新的計分記錄頁面
+              // Open new score recording screen on next frame
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 _openScoreRecordingScreen();
               });
@@ -80,20 +80,20 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     );
   }
   
-  // 顯示遊戲結束摘要
+  // Show game end summary
   void _showGameEndSummary() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('遊戲結束'),
+        title: const Text('Game Over'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('已完成所有回合，遊戲結束！'),
+            const Text('All rounds completed, game over!'),
             const SizedBox(height: 16),
-            const Text('最終分數：', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text('Final Scores:', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             ...gamePlayers.map((player) {
               return Padding(
@@ -118,13 +118,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              // 保存遊戲記錄
+              // Save game record
               _recordGame();
               
-              // 回到主頁
+              // Return to home page
               Navigator.popUntil(context, (route) => route.isFirst);
             },
-            child: const Text('保存並返回'),
+            child: const Text('Save & Return'),
           ),
         ],
       ),
@@ -132,33 +132,33 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   void _recordGame() {
-    // 這裡添加記錄遊戲的邏輯
-    // 創建遊戲記錄但不保存到本地變量
+    // Add logic to record game here
+    // Create game record but don't save to local variable
     GameRecord(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       date: DateTime.now(),
       players: List.from(gamePlayers),
-      rounds: currentRound - 1, // 實際完成的回合數
+      rounds: currentRound - 1, // Actual completed rounds
     );
     
-    // 這裡可以添加保存記錄的代碼
-    // 如果是玩家組合的遊戲，也更新組合的統計數據
+    // Can add code to save record here
+    // If it's a player group game, also update group statistics
     if (widget.groupId != null) {
       _updatePlayerGroupStats();
     }
   }
   
   void _updatePlayerGroupStats() {
-    // 實際應用中，這裡應該更新玩家組合的統計數據
-    print('更新玩家組合統計數據: ${widget.groupId}');
-    // TODO: 實現更新邏輯
+    // In actual application, should update player group statistics here
+    print('Update player group statistics: ${widget.groupId}');
+    // TODO: Implement update logic
   }
 
   @override
   Widget build(BuildContext context) {
     String title = widget.groupName != null && widget.groupName!.isNotEmpty
-        ? '${widget.groupName} - 第 $currentRound 回合'
-        : '第 $currentRound 回合';
+        ? '${widget.groupName} - Round $currentRound'
+        : 'Round $currentRound';
     
     return Scaffold(
       appBar: AppBar(
@@ -199,7 +199,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               children: [
                 ElevatedButton.icon(
                   icon: const Icon(Icons.add_circle),
-                  label: const Text('繼續遊戲'),
+                  label: const Text('Continue Game'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
@@ -208,7 +208,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 ),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.save),
-                  label: const Text('結束遊戲'),
+                  label: const Text('End Game'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,

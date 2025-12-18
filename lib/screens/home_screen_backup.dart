@@ -4,8 +4,10 @@ import '../widgets/base_screen.dart';
 import '../models/player.dart';
 import '../models/player_group.dart';
 import '../services/player_group_service.dart';
+import '../localization/app_localizations.dart';
 import 'player_setup.dart';
 import 'score_recording_screen.dart';
+import '../services/firebase_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -40,7 +42,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     
     _controller.forward();
     
-    // Load player groups data
+    // 載入玩家組合數據
     _loadPlayerGroups();
   }
   
@@ -54,7 +56,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         });
       }
     } catch (e) {
-      debugPrint('Failed to load player groups: $e');
+      print('載入玩家組合失敗: $e');
       if (mounted) {
         setState(() {
           _playerGroups = [];
@@ -98,12 +100,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   const Text(
                                     'Welcome Back!',
                                     style: TextStyle(
-                                      fontSize: 22,
+                                      fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  ScoreDisplay(gamesPlayed: _playerGroups.length),
+                                  const ScoreDisplay(gamesPlayed: 15),
                                 ],
                               ),
                             ),
@@ -113,17 +115,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       
                       const SizedBox(height: 24),
                       
-                      // Main action buttons
+                      // 主要功能按鈕
                       Row(
                         children: [
                           Expanded(
                             child: ElevatedButton.icon(
-                              icon: const Icon(Icons.add, size: 20),
-                              label: const Text('New Group'),
+                              icon: const Icon(Icons.add),
+                              label: const Text('新玩家組合'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                padding: const EdgeInsets.symmetric(vertical: 12),
                               ),
                               onPressed: () async {
                                 final result = await Navigator.push(
@@ -133,27 +135,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   ),
                                 );
                                 
-                                // Reload list if new group was created
+                                // 如果有新的群組被創建，重新載入列表
                                 if (result == true) {
                                   _loadPlayerGroups();
                                 }
                               },
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 16),
                           Expanded(
                             child: ElevatedButton.icon(
-                              icon: const Icon(Icons.history, size: 20),
-                              label: const Text('History'),
+                              icon: const Icon(Icons.history),
+                              label: const Text('歷史記錄'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                padding: const EdgeInsets.symmetric(vertical: 12),
                               ),
                               onPressed: () {
-                                // TODO: Implement history page
+                                // TODO: 實現歷史記錄頁面
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('History feature coming soon...')),
+                                  const SnackBar(content: Text('歷史記錄功能開發中...')),
                                 );
                               },
                             ),
@@ -161,20 +163,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ],
                       ),
                       
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
+
+                      // // Firebase 連線測試按鈕
+                      // Align(
+                      //   alignment: Alignment.centerRight,
+                      //   child: OutlinedButton.icon(
+                      //     icon: const Icon(Icons.cloud_done),
+                      //     label: const Text('測試 Firebase'),
+                      //     onPressed: () async {
+                      //       final messenger = ScaffoldMessenger.of(context);
+                      //       try {
+                      //         final res = await FirebaseService.instance.ping();
+                      //         messenger.showSnackBar(
+                      //           SnackBar(content: Text('Firebase 正常: $res')),
+                      //         );
+                      //       } catch (e) {
+                      //         messenger.showSnackBar(
+                      //           SnackBar(content: Text('Firebase 失敗: $e')),
+                      //         );
+                      //       }
+                      //     },
+                      //   ),
+                      // ),
                       
-                      // Saved groups header
+                      // 已保存的玩家組合標題
                       if (_playerGroups.isNotEmpty) ...[
+                        const SizedBox(height: 16),
                         Row(
                           children: [
                             const Text(
-                              'Saved Player Groups',
+                              '已保存的玩家組合',
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             const Spacer(),
                             TextButton(
                               onPressed: _showAllPlayerGroups,
-                              child: const Text('View All'),
+                              child: const Text('查看全部'),
                             ),
                           ],
                         ),
@@ -184,7 +209,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               
-                // Scrollable player groups list
+                // 可滾動的玩家組合列表
                 Expanded(
                   child: _playerGroups.isNotEmpty
                       ? RefreshIndicator(
@@ -213,66 +238,50 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
                                                 ),
-                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            const SizedBox(width: 8),
                                             Text(
-                                              '${group.players.length} players',
+                                              '${group.players.length} 位玩家',
                                               style: TextStyle(
                                                 color: Colors.grey.shade600,
-                                                fontSize: 13,
+                                                fontSize: 14,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 10),
+                                        const SizedBox(height: 8),
                                         Wrap(
-                                          spacing: 6,
-                                          runSpacing: 4,
+                                          spacing: 8,
                                           children: group.players.map((player) {
                                             return Chip(
-                                              label: Text(
-                                                player,
-                                                style: const TextStyle(fontSize: 11),
-                                              ),
+                                              label: Text(player),
                                               backgroundColor: Colors.green.shade50,
-                                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                                              visualDensity: VisualDensity.compact,
+                                              labelStyle: const TextStyle(fontSize: 12),
                                             );
                                           }).toList(),
                                         ),
-                                        const SizedBox(height: 10),
+                                        const SizedBox(height: 8),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'Created: ${_formatDateTime(group.createdAt)}',
+                                              '建立時間: ${_formatDateTime(group.createdAt)}',
                                               style: TextStyle(
                                                 color: Colors.grey.shade600,
-                                                fontSize: 11,
+                                                fontSize: 12,
                                               ),
                                             ),
                                             Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 TextButton.icon(
-                                                  icon: const Icon(Icons.edit, size: 14),
-                                                  label: const Text('Edit', style: TextStyle(fontSize: 12)),
-                                                  style: TextButton.styleFrom(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                                    minimumSize: const Size(60, 32),
-                                                  ),
+                                                  icon: const Icon(Icons.edit, size: 16),
+                                                  label: const Text('編輯'),
                                                   onPressed: () => _editPlayerGroup(group),
                                                 ),
-                                                const SizedBox(width: 4),
                                                 TextButton.icon(
-                                                  icon: const Icon(Icons.play_arrow, size: 14),
-                                                  label: const Text('Start', style: TextStyle(fontSize: 12)),
-                                                  style: TextButton.styleFrom(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                                    minimumSize: const Size(60, 32),
-                                                  ),
+                                                  icon: const Icon(Icons.play_arrow, size: 16),
+                                                  label: const Text('開始'),
                                                   onPressed: () => _startGameWithGroup(group),
                                                 ),
                                               ],
@@ -300,30 +309,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 const SizedBox(height: 16),
                                 const Text(
-                                  'No Saved Player Groups',
+                                  '沒有已保存的玩家組合',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey,
-                                    fontWeight: FontWeight.w500,
                                   ),
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Create your first group to get started',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey,
-                                  ),
-                                  textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 24),
                                 ElevatedButton.icon(
                                   icon: const Icon(Icons.add),
-                                  label: const Text('Create Player Group'),
+                                  label: const Text('創建玩家組合'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green,
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                                   ),
                                   onPressed: () async {
                                     final result = await Navigator.push(
@@ -348,14 +346,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
   
-  // Format date and time
+  // 格式化日期時間
   String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.year}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')} '
+    return '${dateTime.year}/${dateTime.month}/${dateTime.day} '
            '${dateTime.hour.toString().padLeft(2, '0')}:'
            '${dateTime.minute.toString().padLeft(2, '0')}';
   }
   
-  // Show all player groups
+  // 顯示所有玩家組合
   void _showAllPlayerGroups() {
     showModalBottomSheet(
       context: context,
@@ -373,7 +371,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Row(
                 children: [
                   const Text(
-                    'All Player Groups',
+                    '所有玩家組合',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const Spacer(),
@@ -393,7 +391,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: ListTile(
                         title: Text(group.name),
                         subtitle: Text(
-                          '${group.players.length} players\nCreated: ${_formatDateTime(group.createdAt)}',
+                          '${group.players.length} 位玩家\n建立於 ${_formatDateTime(group.createdAt)}',
                         ),
                         isThreeLine: true,
                         trailing: Row(
@@ -401,7 +399,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.edit),
-                              tooltip: 'Edit',
                               onPressed: () {
                                 Navigator.pop(context);
                                 _editPlayerGroup(group);
@@ -409,7 +406,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ),
                             IconButton(
                               icon: const Icon(Icons.play_arrow),
-                              tooltip: 'Start',
                               onPressed: () {
                                 Navigator.pop(context);
                                 _startGameWithGroup(group);
@@ -433,17 +429,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
   
-  // Edit player group
+  // 編輯玩家組合
   void _editPlayerGroup(PlayerGroup group) {
-    // TODO: Implement edit functionality
+    // TODO: 實現編輯功能
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Edit group "${group.name}" - Coming soon...')),
+      SnackBar(content: Text('編輯群組「${group.name}」功能開發中...')),
     );
   }
   
-  // Start game with selected player group
+  // 使用選定的玩家組合開始遊戲
   void _startGameWithGroup(PlayerGroup group) async {
-    // Update last played time
+    // 更新最後遊戲時間
     final updatedGroup = group.copyWith(
       lastPlayedAt: DateTime.now(),
     );
@@ -459,15 +455,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Player(id: group.players.indexOf(playerName), name: playerName, score: 0)
             ).toList(),
             currentRound: 1,
-            totalRounds: 16, // Standard mahjong rounds
+            totalRounds: 16, // 標準麻將局數
             onScoreSubmitted: (Map<String, int> scoreChanges) {
-              debugPrint('Score updated for group "${group.name}"');
+              print('玩家組合「${group.name}」分數已更新');
             },
             groupName: group.name,
           ),
         ),
       ).then((_) {
-        // Reload groups list after game ends
+        // 遊戲結束後重新載入群組列表
         _loadPlayerGroups();
       });
     }

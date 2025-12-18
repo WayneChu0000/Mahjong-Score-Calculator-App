@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen>
     
     _animationController.forward();
     
-    // 延遲導航到主頁面
+    // Delayed navigation to home page
     Future.delayed(const Duration(milliseconds: 2000), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // App 圖標
+                    // App icon
                     Container(
                       width: 120,
                       height: 120,
@@ -102,24 +102,24 @@ class _SplashScreenState extends State<SplashScreen>
                     
                     const SizedBox(height: 30),
                     
-                    // App 名稱
+                    // App name
                     Text(
-                      '麻將計分器',
+                      'Mahjong Calculator',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.green.shade800,
-                        letterSpacing: 2,
+                        letterSpacing: 1.5,
                       ),
                     ),
                     
                     const SizedBox(height: 10),
                     
-                    // 副標題
+                    // Subtitle
                     Text(
-                      '讓計分更簡單',
+                      'Making Scoring Easier',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         color: Colors.green.shade600,
                         fontWeight: FontWeight.w300,
                       ),
@@ -127,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen>
                     
                     const SizedBox(height: 50),
                     
-                    // 載入指示器
+                    // Loading indicator
                     SizedBox(
                       width: 40,
                       height: 40,

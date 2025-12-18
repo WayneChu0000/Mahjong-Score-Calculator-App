@@ -11,7 +11,7 @@ class PlayerGroup {
     this.lastPlayedAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  // 從 JSON 建立 PlayerGroup
+  // Create PlayerGroup from JSON
   factory PlayerGroup.fromJson(Map<String, dynamic> json) {
     return PlayerGroup(
       name: json['name'],
@@ -23,7 +23,7 @@ class PlayerGroup {
     );
   }
 
-  // 轉換為 JSON
+  // Convert to JSON
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -33,7 +33,7 @@ class PlayerGroup {
     };
   }
 
-  // 建立副本
+  // Create copy
   PlayerGroup copyWith({
     String? name,
     List<String>? players,

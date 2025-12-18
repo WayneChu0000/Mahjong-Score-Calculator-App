@@ -29,22 +29,22 @@ class TutorialContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '歡迎使用麻將計分器',
+            'Welcome to Mahjong Score Calculator',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16),
           Text(
-            '這個應用程式將幫助你：',
+            'This app will help you:',
             style: TextStyle(fontSize: 18),
           ),
           SizedBox(height: 8),
-          Text('• 學習麻將基本規則'),
-          Text('• 計算麻將得分'),
-          Text('• 記錄遊戲成績'),
-          Text('• 管理玩家群組'),
+          Text('• Learn basic mahjong rules'),
+          Text('• Calculate mahjong scores'),
+          Text('• Record game results'),
+          Text('• Manage player groups'),
           SizedBox(height: 16),
           Text(
-            '讓我們開始學習麻將吧！',
+            'Let\'s start learning mahjong!',
             style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
           ),
         ],
@@ -59,48 +59,48 @@ class TutorialContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            '麻將牌的種類',
+            'Types of Mahjong Tiles',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           
-          // 萬子牌
+          // Character tiles
           _buildTileSection(
-            '萬子牌 (1m-9m)',
-            '以萬為單位，從一萬到九萬',
+            'Character Tiles (1m-9m)',
+            'Numbered 1 to 9 in characters',
             ['1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m'],
           ),
           
           const SizedBox(height: 16),
           
-          // 筒子牌
+          // Circle tiles
           _buildTileSection(
-            '筒子牌 (1p-9p)',
-            '以筒為單位，從一筒到九筒',
+            'Circle Tiles (1p-9p)',
+            'Numbered 1 to 9 in circles',
             ['1p', '2p', '3p', '4p', '5p', '6p', '7p', '8p', '9p'],
           ),
           
           const SizedBox(height: 16),
           
-          // 索子牌
+          // Bamboo tiles
           _buildTileSection(
-            '索子牌 (1s-9s)',
-            '以索為單位，從一索到九索',
+            'Bamboo Tiles (1s-9s)',
+            'Numbered 1 to 9 in bamboo',
             ['1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s'],
           ),
           
           const SizedBox(height: 16),
           
-          // 字牌
+          // Honor tiles
           _buildTileSection(
-            '字牌 (1z-7z)',
-            '包括風牌（東南西北）和三元牌（白發中）',
+            'Honor Tiles (1z-7z)',
+            'Include wind tiles (E/S/W/N) and dragon tiles (White/Green/Red)',
             ['1z', '2z', '3z', '4z', '5z', '6z', '7z'],
           ),
           
           const SizedBox(height: 16),
           
-          // 字牌說明
+          // Honor tiles explanation
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -112,12 +112,12 @@ class TutorialContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '字牌說明：',
+                  'Honor Tiles:',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 4),
-                Text('1z = 東風　2z = 南風　3z = 西風　4z = 北風'),
-                Text('5z = 白板　6z = 發財　7z = 紅中'),
+                Text('1z = East　2z = South　3z = West　4z = North'),
+                Text('5z = White　6z = Green　7z = Red'),
               ],
             ),
           ),
@@ -156,45 +156,45 @@ class TutorialContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '基本規則',
+            'Basic Rules',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16),
           
           Text(
-            '1. 遊戲目標',
+            '1. Game Objective',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
-          Text('麻將的目標是湊成一副完整的牌，通常由以下組合構成：'),
-          Text('• 4組順子或刻子 + 1對將牌'),
-          Text('• 7對子（七對子和牌）'),
-          Text('• 特殊牌型（如十三么、國士無雙等）'),
+          Text('The goal of mahjong is to form a complete hand, usually consisting of:'),
+          Text('• 4 sets (chow/pong) + 1 pair (eyes)'),
+          Text('• 7 pairs (Seven Pairs hand)'),
+          Text('• Special hands (e.g., Thirteen Orphans)'),
           
           SizedBox(height: 16),
           
           Text(
-            '2. 基本術語',
+            '2. Basic Terms',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
-          Text('• 順子：連續的三張牌（如 1m-2m-3m）'),
-          Text('• 刻子：三張相同的牌（如 5p-5p-5p）'),
-          Text('• 將牌：一對相同的牌作為將'),
-          Text('• 自摸：自己摸到胡牌'),
-          Text('• 放炮：打出讓別人胡牌的牌'),
+          Text('• Chow: Three consecutive tiles (e.g., 1m-2m-3m)'),
+          Text('• Pong: Three identical tiles (e.g., 5p-5p-5p)'),
+          Text('• Eyes: A pair of identical tiles'),
+          Text('• Self-Draw: Draw your own winning tile'),
+          Text('• Discard: Discard a tile that lets others win'),
           
           SizedBox(height: 16),
           
           Text(
-            '3. 遊戲流程',
+            '3. Game Flow',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
-          Text('• 每人起手13張牌'),
-          Text('• 依次摸牌、出牌'),
-          Text('• 可以吃、碰、槓別人的牌'),
-          Text('• 湊齊完整牌型即可胡牌'),
+          Text('• Each player starts with 13 tiles'),
+          Text('• Take turns drawing and discarding tiles'),
+          Text('• Can chow, pong, or kong others\' tiles'),
+          Text('• Form a complete hand to win'),
         ],
       ),
     );
@@ -207,36 +207,36 @@ class TutorialContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            '計分系統',
+            'Scoring System',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           
           const Text(
-            '香港麻將計分規則',
+            'Hong Kong Mahjong Scoring Rules',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('麻將的分數由「番數」決定：'),
-          const Text('• 1番 = 1分'),
-          const Text('• 2番 = 2分'),
-          const Text('• 3番 = 4分'),
-          const Text('• 4番 = 8分'),
-          const Text('• 5番 = 16分'),
-          const Text('• 以此類推...'),
+          const Text('Mahjong scoring is determined by fan count:'),
+          const Text('• 1 fan = 1 point'),
+          const Text('• 2 fan = 2 points'),
+          const Text('• 3 fan = 4 points'),
+          const Text('• 4 fan = 8 points'),
+          const Text('• 5 fan = 16 points'),
+          const Text('• And so on...'),
           
           const SizedBox(height: 16),
           
           const Text(
-            '常見番數',
+            'Common Fan Counts',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           
-          _buildScoringExample('平和', '1番', '四組順子加雙將', ['1m', '2m', '3m']),
-          _buildScoringExample('碰碰和', '4番', '四組刻子加雙將', ['5p', '5p', '5p']),
-          _buildScoringExample('清一色', '7番', '全部同一花色', ['1s', '2s', '3s']),
-          _buildScoringExample('大三元', '8番', '中發白三組刻子', ['7z', '7z', '7z']),
+          _buildScoringExample('All Chows', '1 fan', 'Four chows plus a pair', ['1m', '2m', '3m']),
+          _buildScoringExample('All Pongs', '4 fan', 'Four pongs plus a pair', ['5p', '5p', '5p']),
+          _buildScoringExample('Pure Hand', '7 fan', 'All same suit', ['1s', '2s', '3s']),
+          _buildScoringExample('Big Three Dragons', '8 fan', 'Three dragon pongs (White/Green/Red)', ['7z', '7z', '7z']),
           
           const SizedBox(height: 16),
           
@@ -251,11 +251,11 @@ class TutorialContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '提示：',
+                  'Tip:',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 4),
-                Text('使用本應用的計分功能可以自動計算番數和得分！'),
+                Text('Use this app\'s scoring feature to automatically calculate fan and score!'),
               ],
             ),
           ),

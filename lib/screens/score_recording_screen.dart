@@ -27,26 +27,26 @@ class ScoreRecordingScreen extends StatefulWidget {
 }
 
 class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
-  // 莊家索引
+  // Dealer index
   int _dealerIndex = 0;
   
-  // 使用ScoreService
+  // Use ScoreService
   final ScoreService _scoreService = ScoreService();
   
-  // 記錄分數訂閱
+  // Score subscription
   StreamSubscription? _scoreSubscription;
   
-  // 更新後的玩家列表
+  // Updated player list
   late List<Player> _updatedPlayers;
 
   @override
   void initState() {
     super.initState();
     
-    // 初始化玩家列表
+    // Initialize player list
     _updatedPlayers = List.from(widget.players);
     
-    // 初始化分數服務
+    // Initialize score service
     _scoreService.initGame(
       widget.players, 
       initialPublicScore: 0,
@@ -54,13 +54,13 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       totalRounds: widget.totalRounds
     );
     
-    // 安全訂閱分數變化
+    // Subscribe to score changes safely
     try {
-      // 訂閱分數變化
+      // Subscribe to score changes
       _scoreSubscription = _scoreService.scoreStream.listen((gameData) {
         if (mounted) {
           setState(() {
-            // 更新玩家列表以反映最新分數
+            // Update player list to reflect latest scores
             _updatedPlayers = widget.players.map((player) {
               return player.copyWith(
                 score: gameData[player.id.toString()] ?? player.score
@@ -70,15 +70,15 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       }
       });
     } catch (e) {
-      print('訂閱分數流時出錯: $e');
+      print('Error subscribing to score stream: $e');
     }
     
-    // 默認第一個玩家為莊家
+    // Default first player as dealer
     _dealerIndex = 0;
     
-    // 檢查是否已超過總回合數
+    // Check if total rounds exceeded
     if (_scoreService.isGameEnd()) {
-      // 延遲執行，避免在 initState 中直接導航
+      // Delay execution to avoid direct navigation in initState
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showGameEndDialog();
       });
@@ -87,29 +87,29 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
   
   @override
   void dispose() {
-    // 安全取消訂閱
+    // Cancel subscription safely
     try {
       _scoreSubscription?.cancel();
     } catch (e) {
-      print('取消分數訂閱時出錯: $e');
+      print('Error canceling score subscription: $e');
     }
     super.dispose();
   }
   
-  // 顯示遊戲結束對話框
+  // Show game end dialog
   void _showGameEndDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('遊戲結束'),
+        title: const Text('Game Over'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('已完成所有回合，遊戲結束！'),
+            const Text('All rounds completed, game over!'),
             const SizedBox(height: 16),
-            const Text('最終分數：', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text('Final Scores:', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             ...widget.players.map((player) {
               final score = _scoreService.getPlayerScore(player.id.toString());
@@ -135,17 +135,17 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              // 回到主頁
+              // Return to home page
               Navigator.popUntil(context, (route) => route.isFirst);
             },
-            child: const Text('返回主頁'),
+            child: const Text('Back to Home'),
           ),
         ],
       ),
     );
   }
 
-  // 打開高級計分計算器
+  // Open advanced score calculator
   void _openScoreCalculator() {
     Navigator.push(
       context,
@@ -155,91 +155,91 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         ),
       ),
     ).then((result) {
-      // 當從計分畫面返回時處理結果
+      // Handle result when returning from score calculation screen
       if (result != null && result is Map<String, int>) {
-        // 調用原始回調，通知上層組件
+        // Call original callback to notify parent component
         widget.onScoreSubmitted(result);
         
-        // 更新分數服務
+        // Update score service
         _scoreService.updateScores(result);
         
-        // 增加回合數
+        // Increment round
         _scoreService.incrementRound();
         
-        // 檢查遊戲是否結束
+        // Check if game has ended
         if (_scoreService.isGameEnd()) {
           _showGameEndDialog();
           return;
         }
         
-        // 開啟下一局
+        // Start next round
         _startNextRound();
       }
     });
   }
 
-  // 無結果結束本回合
+  // End round with no result
   void _endRoundWithNoResult() {
-    // 創建一個全零的分數變化映射
+    // Create a zero score change map
     Map<String, int> noChangeScores = {};
     for (var player in widget.players) {
       noChangeScores[player.id.toString()] = 0;
     }
     
-    // 調用原始回調，通知上層組件
+    // Call original callback to notify parent component
     widget.onScoreSubmitted(noChangeScores);
     
-    // 更新分數（雖然沒有變化，但保持一致的調用方式）
+    // Update scores (no change but keep consistent calling method)
     _scoreService.updateScores(noChangeScores);
     
-    // 增加回合數
+    // Increment round
     _scoreService.incrementRound();
     
-    // 檢查遊戲是否結束
+    // Check if game has ended
     if (_scoreService.isGameEnd()) {
-      // 顯示遊戲結束對話框
+      // Show game end dialog
       _showGameEndDialog();
       return;
     }
     
-    // 開啟下一局
+    // Start next round
     _startNextRound();
   }
   
-  // 開始下一局
+  // Start next round
   void _startNextRound() {
-    // 獲取當前回合和總回合數
+    // Get current round and total rounds
     final currentRound = _scoreService.getCurrentRound();
     final totalRounds = _scoreService.getTotalRounds();
     
-    // 如果已超過總回合數，顯示遊戲結束對話框
+    // If total rounds exceeded, show game end dialog
     if (currentRound > totalRounds) {
       _showGameEndDialog();
       return;
     }
     
-    // 獲取更新後的玩家列表
+    // Get updated player list
     final updatedPlayers = widget.players.map((player) {
       return player.copyWith(
         score: _scoreService.getPlayerScore(player.id.toString())
       );
     }).toList();
     
-    // 刷新當前頁面
+    // Refresh current page
     setState(() {
       _updatedPlayers = updatedPlayers;
     });
     
-    // 這裡可以選擇不創建新頁面，而是直接刷新當前頁面
-    // 這樣可以避免頁面堆棧過深
+    // Can choose not to create new page, just refresh current page
+    // This avoids page stack getting too deep
   }
 
-  // 選擇莊家
+  // Select dealer
   void _selectDealer() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('選擇莊家'),
+        title: const Text('Select Dealer'),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -268,17 +268,17 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 獲取莊家
+    // Get dealer
     final dealer = widget.players[_dealerIndex];
     
-    // 從 ScoreService 獲取當前回合和總回合數
+    // Get current round and total rounds from ScoreService
     final currentRound = _scoreService.getCurrentRound();
     final totalRounds = _scoreService.getTotalRounds();
     
-    // 標題設定
-    String title = '麻將計分';
+    // Title setting
+    String title = 'Mahjong Scoring';
     if (widget.groupName != null && widget.groupName!.isNotEmpty) {
-      title = '${widget.groupName} - 第 $currentRound 局'; // 使用 ScoreService 的回合數
+      title = '${widget.groupName} - Round $currentRound'; // Use ScoreService's round number
     }
     
     return Scaffold(
@@ -290,7 +290,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 當前牌局信息
+            // Current round information
             Card(
               elevation: 2,
               child: Padding(
@@ -301,9 +301,9 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        '第 $currentRound 局 / 共 $totalRounds 局', // 使用 ScoreService 的回合數
+                        'Round $currentRound / Total $totalRounds', // Use ScoreService's round number
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -311,10 +311,10 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {
-                        // 編輯牌局信息，如修改總局數
-                        _selectDealer(); // 這裡僅實現選擇莊家
+                        // Edit round info, such as modifying total rounds
+                        _selectDealer(); // Only implement dealer selection here
                       },
-                      tooltip: '選擇莊家',
+                      tooltip: 'Select Dealer',
                     ),
                   ],
                 ),
@@ -323,16 +323,16 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
             
             const SizedBox(height: 16),
             
-            // 玩家分數顯示區域
+            // Player scores display area
             Expanded(
               child: ListView(
                 children: [
-                  // 莊家分數
+                  // Dealer score
                   _buildPlayerScoreCard(dealer, isDealer: true),
                   
                   const SizedBox(height: 8),
                   
-                  // 其他玩家分數
+                  // Other player scores
                   ...widget.players
                       .where((player) => player.id != dealer.id)
                       .map((player) => Column(
@@ -348,13 +348,13 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
             
             const SizedBox(height: 24),
             
-            // 底部操作按鈕
+            // Bottom action buttons
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.calculate),
-                    label: const Text('計算得分'),
+                    label: const Text('Calculate Score'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
@@ -367,7 +367,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.close),
-                    label: const Text('無結果'),
+                    label: const Text('No Result'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -383,9 +383,9 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     );
   }
   
-  // 構建玩家分數卡片
+  // Build player score card
   Widget _buildPlayerScoreCard(Player player, {bool isDealer = false}) {
-    // 獲取當前分數
+    // Get current score
     final currentScore = _scoreService.getPlayerScore(player.id.toString());
     
     return Card(
@@ -394,7 +394,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            // 莊家標記
+            // Dealer indicator
             if (isDealer)
               Container(
                 padding: const EdgeInsets.all(4),
@@ -403,7 +403,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
-                  '莊',
+                  'D',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -414,10 +414,10 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
             
             const SizedBox(width: 8),
             
-            // 玩家名稱
+            // Player name
             Expanded(
               child: Text(
-                isDealer ? '莊家 (${player.name})' : player.name,
+                isDealer ? 'Dealer (${player.name})' : player.name,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: isDealer ? FontWeight.bold : FontWeight.normal,
@@ -425,11 +425,11 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
               ),
             ),
             
-            // 分數顯示
+            // Score display
             Text(
-              '當前分數: $currentScore',
+              'Score: $currentScore',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: currentScore >= 0 ? Colors.green : Colors.red,
               ),

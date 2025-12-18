@@ -51,11 +51,11 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      title: '規則與教程',
+      title: 'Rules & Tutorial',
       currentIndex: 2,
       body: Column(
         children: [
-          // 頂部標籤
+          // Top tabs
           Material(
             color: Colors.green.shade50,
             child: TabBar(
@@ -66,25 +66,25 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
               tabs: const [
                 Tab(
                   icon: Icon(Icons.menu_book),
-                  text: '規則參考',
+                  text: 'Rules Reference',
                 ),
                 Tab(
                   icon: Icon(Icons.school),
-                  text: '麻將教程',
+                  text: 'Mahjong Tutorial',
                 ),
               ],
             ),
           ),
           
-          // 標籤內容
+          // Tab content
           Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
-                // 規則參考頁面
+                // Rules reference page
                 _buildRulesReferenceTab(),
                 
-                // 麻將教程頁面
+                // Mahjong tutorial page
                 _buildTutorialTab(),
               ],
             ),
@@ -94,12 +94,12 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
     );
   }
 
-  // 規則參考標籤的內容
+  // Rules reference tab content
   Widget _buildRulesReferenceTab() {
     return ListView(
       padding: const EdgeInsets.all(12.0),
       children: [
-        // 搜尋區域
+        // Search area
         Card(
           elevation: 2,
           child: Padding(
@@ -111,14 +111,14 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                     DropdownButton<String>(
                       value: _selectedRuleSet,
                       items: const [
-                        DropdownMenuItem(value: 'hk', child: Text('香港規則')),
-                        DropdownMenuItem(value: 'mixed', child: Text('混雜規則')),
+                        DropdownMenuItem(value: 'hk', child: Text('Hong Kong Rules')),
+                        DropdownMenuItem(value: 'mixed', child: Text('Mixed Rules')),
                       ],
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
+                      onChanged: (value) {
+                        if (value != null) {
                           setState(() {
-                            _selectedRuleSet = newValue;
-                            // 實際應用中，這裡可以切換不同的規則集
+                            _selectedRuleSet = value;
+                            // In practice, this can switch between different rule sets
                           });
                         }
                       },
@@ -127,7 +127,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                     Expanded(
                       child: TextField(
                         decoration: const InputDecoration(
-                          labelText: '搜尋規則',
+                          labelText: 'Search Rules',
                           prefixIcon: Icon(Icons.search),
                           border: OutlineInputBorder(),
                         ),
@@ -148,27 +148,27 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
         const SizedBox(height: 16),
 
-        // 規則卡片列表
+        // Rule cards list
         ..._filteredRules.map((rule) => RuleCard(rule: rule)).toList(),
 
-        // 底部空間，提供良好的滾動體驗
+        // Bottom space for good scrolling experience
         const SizedBox(height: 16),
       ],
     );
   }
   
-  // 教學標籤的內容
+  // Tutorial tab content
   Widget _buildTutorialTab() {
     const tutorialTitles = [
-      '歡迎使用',
-      '麻將牌型',
-      '基本規則',
-      '計分系統',
+      'Welcome',
+      'Mahjong Tiles',
+      'Basic Rules',
+      'Scoring System',
     ];
 
     return Column(
       children: [
-        // 教學頁面導航
+        // Tutorial page navigation
         Container(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -231,7 +231,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
           ),
         ),
         
-        // 教學內容頁面
+        // Tutorial content pages
         Expanded(
           child: PageView(
             controller: _tutorialPageController,
@@ -249,7 +249,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
           ),
         ),
         
-        // 底部導航按鈕
+        // Bottom navigation buttons
         Container(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -268,7 +268,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                       }
                     : null,
                 icon: const Icon(Icons.arrow_back),
-                label: const Text('上一頁'),
+                label: const Text('Previous'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey.shade600,
                   foregroundColor: Colors.white,
@@ -296,7 +296,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                       }
                     : null,
                 icon: const Icon(Icons.arrow_forward),
-                label: const Text('下一頁'),
+                label: const Text('Next'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green.shade600,
                   foregroundColor: Colors.white,
@@ -310,7 +310,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   }
 }
 
-// 顯示番數的紅色圓圈小部件 - 保留原有代碼
+// Widget to display fan count in a red circle
 class FanWidget extends StatelessWidget {
   final String fan;
 
@@ -332,7 +332,7 @@ class FanWidget extends StatelessWidget {
   }
 }
 
-// RuleCard 類 - 保留原有代碼
+// RuleCard class
 class RuleCard extends StatefulWidget {
   final Rule rule;
 
@@ -347,7 +347,7 @@ class _RuleCardState extends State<RuleCard> {
 
   @override
   Widget build(BuildContext context) {
-    // 保留原有的規則卡片實現...
+    // Keep original rule card implementation...
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Column(
@@ -359,7 +359,7 @@ class _RuleCardState extends State<RuleCard> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 規則圖片或圖標
+                    // Rule image or icon
                     Container(
                       width: 60,
                       height: 60,
@@ -385,7 +385,7 @@ class _RuleCardState extends State<RuleCard> {
                     
                     const SizedBox(width: 12),
                     
-                    // 規則信息
+                    // Rule information
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,7 +416,7 @@ class _RuleCardState extends State<RuleCard> {
                                   color: Colors.green,
                                 ),
                                 label: Text(
-                                  _showExample ? '隱藏實例' : '查看實例',
+                                  _showExample ? 'Hide Example' : 'View Example',
                                   style: TextStyle(color: Colors.green),
                                 ),
                                 onPressed: () {
@@ -435,7 +435,7 @@ class _RuleCardState extends State<RuleCard> {
               ),
             ],
           ),
-          // 展開的實例部分
+          // Expanded example section
           if (_showExample)
             Container(
               width: double.infinity,
@@ -451,14 +451,14 @@ class _RuleCardState extends State<RuleCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    '實例說明:',
+                    'Example Explanation:',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // 使用 Wrap 顯示麻將牌
+                  // Use Wrap to display mahjong tiles
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,

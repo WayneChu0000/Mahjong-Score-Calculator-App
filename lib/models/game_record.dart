@@ -13,7 +13,7 @@ class GameRecord {
     required this.rounds,
   });
 
-  // 從JSON創建對象的工廠方法（用於後續數據存儲）
+  // Factory method to create object from JSON (for future data storage)
   factory GameRecord.fromJson(Map<String, dynamic> json) {
     return GameRecord(
       id: json['id'] as String,
@@ -29,7 +29,7 @@ class GameRecord {
     );
   }
 
-  // 轉換為JSON的方法（用於後續數據存儲）
+  // Method to convert to JSON (for future data storage)
   Map<String, dynamic> toJson() {
     return {
       'id': id,

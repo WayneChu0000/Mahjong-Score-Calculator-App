@@ -37,16 +37,16 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('確認刪除'),
-        content: Text('確定要刪除群組「$groupName」嗎？'),
+        title: const Text('Confirm Delete'),
+        content: Text('Are you sure you want to delete group "$groupName"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('刪除', style: TextStyle(color: Colors.red)),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -56,11 +56,11 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
       final success = await PlayerGroupService.deleteGroup(groupName);
       
       if (success) {
-        _loadSavedGroups(); // 重新載入列表
+        _loadSavedGroups(); // Reload list
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('群組「$groupName」已刪除'),
+              content: Text('Group "$groupName" deleted'),
               backgroundColor: Colors.green,
             ),
           );
@@ -70,12 +70,12 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
   }
 
   void _startGameWithGroup(PlayerGroup group) {
-    // 更新玩家群組的最後遊戲時間
+    // Update player group's last played time
     final updatedGroup = group.copyWith(
       lastPlayedAt: DateTime.now(),
     );
     
-    // 儲存更新後的群組
+    // Save updated group
     PlayerGroupService.saveGroup(updatedGroup);
     
     Navigator.push(
@@ -83,11 +83,11 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
       MaterialPageRoute(
         builder: (context) => ScoreCalculationScreen(
           players: group.players,
-          groupName: group.name, // 如果 ScoreCalculationScreen 支援群組名稱
+          groupName: group.name, // If ScoreCalculationScreen supports group name
         ),
       ),
     ).then((_) {
-      // 當從遊戲畫面返回時，重新載入群組列表以更新最後遊戲時間
+      // When returning from game screen, reload group list to update last played time
       _loadSavedGroups();
     });
   }
@@ -96,7 +96,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('已儲存的玩家群組'),
+        title: const Text('Saved Player Groups'),
         backgroundColor: Colors.red.shade700,
         foregroundColor: Colors.white,
       ),
@@ -107,13 +107,13 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                 ? const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min, // 重要：限制 Column 大小
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.group_off, size: 64, color: Colors.grey),
                         SizedBox(height: 16),
                         Text(
-                          '尚未儲存任何玩家群組',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                          'No saved player groups',
+                          style: TextStyle(fontSize: 17, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -121,7 +121,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                 : RefreshIndicator(
                     onRefresh: _loadSavedGroups,
                     child: ListView.builder(
-                      padding: const EdgeInsets.all(8), // 添加內邊距
+                      padding: const EdgeInsets.all(8),
                       itemCount: _savedGroups.length,
                       itemBuilder: (context, index) {
                         final group = _savedGroups[index];
@@ -144,12 +144,12 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min, // 限制 Column 大小
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text('玩家: ${group.players.join(', ')}'),
+                                Text('Players: ${group.players.join(', ')}'),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '建立時間: ${_formatDateTime(group.createdAt)}',
+                                  'Created: ${_formatDateTime(group.createdAt)}',
                                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                                 ),
                               ],
@@ -159,22 +159,22 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                 PopupMenuItem(
                                   value: 'play',
                                   child: Row(
-                                    mainAxisSize: MainAxisSize.min, // 限制 Row 大小
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(Icons.play_arrow, color: Colors.green),
                                       SizedBox(width: 8),
-                                      Text('開始遊戲'),
+                                      Text('Start Game'),
                                     ],
                                   ),
                                 ),
                                 PopupMenuItem(
                                   value: 'delete',
                                   child: Row(
-                                    mainAxisSize: MainAxisSize.min, // 限制 Row 大小
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(Icons.delete, color: Colors.red),
                                       SizedBox(width: 8),
-                                      Text('刪除群組'),
+                                      Text('Delete Group'),
                                     ],
                                   ),
                                 ),

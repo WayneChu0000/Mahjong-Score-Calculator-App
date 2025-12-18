@@ -15,20 +15,20 @@ class MahjongTile extends StatelessWidget {
   });
 
   String _getImagePath() {
-    // 解析牌面：例如 '1m' -> value='1', suit='m'
+    // Parse tile face: e.g., '1m' -> value='1', suit='m'
     if (tile.length < 2) return 'assets/images/tiles/back.png';
     
     final value = tile.substring(0, tile.length - 1);
     final suit = tile.substring(tile.length - 1);
     
     switch (suit) {
-      case 'm': // 萬子牌
+      case 'm': // Character tiles
         return 'assets/images/tiles/wan/${value}m.png';
-      case 'p': // 筒子牌
+      case 'p': // Circle tiles
         return 'assets/images/tiles/tong/${value}p.png';
-      case 's': // 索子牌
+      case 's': // Bamboo tiles
         return 'assets/images/tiles/suo/${value}s.png';
-      case 'z': // 字牌（風牌+箭牌）
+      case 'z': // Honor tiles (winds + dragons)
         return 'assets/images/tiles/honor/${value}z.png';
       default:
         return 'assets/images/tiles/back.png';
@@ -70,7 +70,7 @@ class MahjongTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: size,
-        height: size * 1.4, // 麻將牌的長寬比約為 1:1.4
+        height: size * 1.4, // Mahjong tile aspect ratio ~1:1.4
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? Colors.red : Colors.grey.shade300,
@@ -92,7 +92,7 @@ class MahjongTile extends StatelessWidget {
             _getImagePath(),
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              // 如果圖片載入失敗，顯示文字
+              // If image fails to load, display text
               return Container(
                 color: Colors.grey.shade100,
                 child: Center(

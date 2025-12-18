@@ -30,7 +30,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   void initState() {
     super.initState();
     
-    // 初始化玩家列表
+    // Initialize player list
     if (widget.existingPlayers != null) {
       players = List.from(widget.existingPlayers!);
       selectedPlayerCount = players.length;
@@ -40,10 +40,10 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
       _isNewGroup = true;
     }
     
-    // 初始化組名控制器
+    // Initialize group name controller
     _groupNameController = TextEditingController(text: widget.groupName ?? '');
     
-    // 如果設置為直接開始，則跳過設置直接開始遊戲
+    // If set to direct start, skip setup and start game
     if (widget.directStart) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _startGame();
@@ -60,30 +60,30 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   void _initializePlayers() {
     players = List.generate(
       4,
-      (index) => Player(id: index, name: '玩家 ${index + 1}', score: 0),
+      (index) => Player(id: index, name: 'Player ${index + 1}', score: 0),
     );
   }
   
   void _startGame() {
-    // 保存玩家組合（實際應用中應該保存到數據庫或 SharedPreferences）
+    // Save player group (should save to database or SharedPreferences in production)
     _savePlayerGroup();
     
-    // 只保留選定數量的玩家
+    // Only keep selected number of players
     final selectedPlayers = players.take(selectedPlayerCount).toList();
     
-    // 直接進入計分記錄頁面
+    // Navigate to score recording screen
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ScoreRecordingScreen(
           players: selectedPlayers,
           currentRound: 1,
-          totalRounds: 16, // 預設16局
+          totalRounds: 16, // Default 16 rounds
           onScoreSubmitted: (Map<String, int> scoreChanges) {
-            // 在這裡可以保存遊戲記錄
-            print('回合結束，分數變化: $scoreChanges');
+            // Can save game records here
+            debugPrint('Round ended, score changes: $scoreChanges');
             
-            // 注意：在這裡不需要額外處理，因為 ScoreRecordingScreen 會處理回合遞增
+            // Note: No extra handling needed here as ScoreRecordingScreen handles round progression
           },
           groupId: widget.groupId,
           groupName: _groupNameController.text,
@@ -93,16 +93,16 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   }
   
   void _savePlayerGroup() {
-    // 實際應用中，這裡應該保存玩家組合到數據庫或 SharedPreferences
-    print('保存玩家組合: ${_groupNameController.text}');
-    // TODO: 實現保存邏輯
+    // In production, should save player group to database or SharedPreferences
+    debugPrint('Saving player group: ${_groupNameController.text}');
+    // TODO: Implement save logic
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.existingPlayers != null ? '編輯玩家' : '設置玩家'),
+        title: Text(widget.existingPlayers != null ? 'Edit Players' : 'Setup Players'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -113,19 +113,19 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 組名輸入
+            // Group name input
             TextField(
               controller: _groupNameController,
               decoration: const InputDecoration(
-                labelText: '組合名稱',
+                labelText: 'Group Name',
                 border: OutlineInputBorder(),
-                hintText: '例如：週末麻將團',
+                hintText: 'e.g., Weekend Mahjong Group',
               ),
             ),
             
             const SizedBox(height: 20),
             
-            // 玩家數量選擇
+            // Player count selection
             Card(
               elevation: 2,
               child: Padding(
@@ -133,25 +133,25 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                 child: Column(
                   children: [
                     const Text(
-                      '選擇玩家數量',
+                      'Select Number of Players',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
                     SegmentedButton<int>(
                       segments: const [
-                        ButtonSegment<int>(value: 2, label: Text('2人')),
-                        ButtonSegment<int>(value: 3, label: Text('3人')),
-                        ButtonSegment<int>(value: 4, label: Text('4人')),
+                        ButtonSegment<int>(value: 2, label: Text('2 Players')),
+                        ButtonSegment<int>(value: 3, label: Text('3 Players')),
+                        ButtonSegment<int>(value: 4, label: Text('4 Players')),
                       ],
                       selected: {selectedPlayerCount},
                       onSelectionChanged: (Set<int> newSelection) {
                         setState(() {
                           selectedPlayerCount = newSelection.first;
                           
-                          // 如果增加了玩家數量，添加新玩家
+                          // If player count increased, add new players
                           if (selectedPlayerCount > players.length) {
                             for (int i = players.length; i < selectedPlayerCount; i++) {
-                              players.add(Player(id: i, name: '玩家 ${i + 1}', score: 0));
+                              players.add(Player(id: i, name: 'Player ${i + 1}', score: 0));
                             }
                           }
                         });
@@ -164,7 +164,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             
             const SizedBox(height: 20),
             
-            // 玩家列表
+            // Player list
             Expanded(
               child: ListView.builder(
                 itemCount: selectedPlayerCount,
@@ -189,7 +189,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
               ),
             ),
             
-            // 底部按鈕
+            // Bottom buttons
             Row(
               children: [
                 if (!_isNewGroup) 
@@ -201,7 +201,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                       onPressed: () {
                         _deleteGroup();
                       },
-                      child: const Text('刪除組合'),
+                      child: const Text('Delete Group'),
                     ),
                   ),
                 if (!_isNewGroup) const SizedBox(width: 16),
@@ -215,7 +215,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                     onPressed: () {
                       _startGame();
                     },
-                    child: const Text('開始遊戲', style: TextStyle(fontSize: 16)),
+                    child: const Text('Start Game', style: TextStyle(fontSize: 16)),
                   ),
                 ),
               ],
@@ -226,18 +226,18 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
     );
   }
   
-  // 編輯玩家名稱
+  // Edit player name
   Future<void> _editPlayerName(int index) async {
     final TextEditingController controller = TextEditingController(text: players[index].name);
     
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('編輯玩家 ${index + 1}'),
+        title: Text('Edit Player ${index + 1}'),
         content: TextField(
           controller: controller,
           decoration: const InputDecoration(
-            labelText: '玩家名稱',
+            labelText: 'Player Name',
             border: OutlineInputBorder(),
           ),
           autofocus: true,
@@ -245,7 +245,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
@@ -254,37 +254,37 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
               });
               Navigator.pop(context);
             },
-            child: const Text('確定'),
+            child: const Text('OK'),
           ),
         ],
       ),
     );
   }
   
-  // 刪除玩家組合
+  // Delete player group
   Future<void> _deleteGroup() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('確認刪除'),
-        content: const Text('確定要刪除這個玩家組合嗎？這個操作不可撤銷。'),
+        title: const Text('Confirm Delete'),
+        content: const Text('Are you sure you want to delete this player group? This action cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('取消'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('刪除', style: TextStyle(color: Colors.red)),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
     );
     
     if (confirmed == true) {
-      // 實際應用中，這裡應該從數據庫或 SharedPreferences 中刪除組合
-      print('刪除玩家組合: ${widget.groupId}');
-      // TODO: 實現刪除邏輯
+      // In production, should delete from database or SharedPreferences
+      debugPrint('Deleting player group: ${widget.groupId}');
+      // TODO: Implement delete logic
       
       Navigator.pop(context);
     }

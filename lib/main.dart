@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/splash_screen.dart';
 import 'services/settings_service.dart';
-import 'services/score_service.dart'; // 添加這行
+import 'services/score_service.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // 顯示啟動畫面，不阻塞 UI
+  // Show splash screen without blocking UI
   runApp(const MyApp());
   
-  // 背景初始化 Firebase 和其他服務
+  // Initialize Firebase and other services in background
   _initializeServicesInBackground();
 }
 
-// 在背景非阻塞地初始化服務
+// Initialize services in background non-blocking
 void _initializeServicesInBackground() async {
   try {
-    // 並行初始化多個服務
+    // Initialize multiple services in parallel
     await Future.wait([
       _initializeFirebase(),
       SettingsService.instance.init(),
       _initializeScoreService(),
     ]);
   } catch (e) {
-    // 記錄錯誤但不影響 App 啟動
-    debugPrint('服務初始化警告: $e');
+    // Log error but don't affect app startup
+    debugPrint('Service initialization warning: $e');
   }
 }
 
@@ -33,12 +33,12 @@ Future<void> _initializeFirebase() async {
   try {
     await Firebase.initializeApp();
   } catch (e) {
-    debugPrint('Firebase 初始化失敗: $e');
+    debugPrint('Firebase initialization failed: $e');
   }
 }
 
 Future<void> _initializeScoreService() async {
-  // 延遲初始化 ScoreService
+  // Lazy initialize ScoreService
   ScoreService();
 }
 
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '麻將計分器',
+      title: 'Mahjong Score Calculator',
       theme: ThemeData(
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,

@@ -9,7 +9,7 @@ class Player {
     required this.score,
   });
 
-  // 複製並修改玩家數據的方法
+  // Method to copy and modify player data
   Player copyWith({
     int? id,
     String? name,

@@ -13,8 +13,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final SettingsService _settings = SettingsService.instance;
   bool _isNotificationsEnabled = true;
   bool _isSoundEnabled = false;
-  String _selectedLanguage = '繁體中文';
-  String _selectedTheme = '淺色模式';
+  String _selectedLanguage = 'Traditional Chinese';
+  String _selectedTheme = 'Light Mode';
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _settings.setTheme(_selectedTheme);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('設定已保存')),
+      const SnackBar(content: Text('Settings saved')),
     );
   }
 
@@ -47,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _loadSettings();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('已恢復預設設定')),
+      const SnackBar(content: Text('Settings reset to defaults')),
     );
   }
 
@@ -55,19 +55,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('清除所有數據'),
-        content: const Text('此操作將刪除所有遊戲記錄和設定，且不可撤銷。確定要繼續嗎？'),
+        title: const Text('Clear All Data'),
+        content: const Text('This will delete all game records and settings permanently. Are you sure you want to continue?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('取消'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               _clearAllData();
             },
-            child: const Text('確定', style: TextStyle(color: Colors.red)),
+            child: const Text('OK', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -80,7 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!mounted) return;
     
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('所有數據已清除')),
+      const SnackBar(content: Text('All data cleared')),
     );
   }
 
@@ -88,10 +88,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-        title: const Text('選擇語言'),
+        title: const Text('Select Language'),
         children: [
-          _buildLanguageOption('繁體中文'),
-          _buildLanguageOption('簡體中文'),
+          _buildLanguageOption('Traditional Chinese'),
+          _buildLanguageOption('Simplified Chinese'),
           _buildLanguageOption('English'),
         ],
       ),
@@ -121,11 +121,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-        title: const Text('主題模式'),
+        title: const Text('Theme Mode'),
         children: [
-          _buildThemeOption('淺色模式'),
-          _buildThemeOption('深色模式'),
-          _buildThemeOption('跟隨系統'),
+          _buildThemeOption('Light Mode'),
+          _buildThemeOption('Dark Mode'),
+          _buildThemeOption('Follow System'),
         ],
       ),
     );
@@ -153,25 +153,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      title: '設定',
-      currentIndex: 3, // 假設設定頁為底部導航第四項
+      title: 'Settings',
+      currentIndex: 3, // Settings page is the fourth item in bottom navigation
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // 語言設定
+          // Language Settings
           _buildSettingCard(
             icon: Icons.language,
-            title: '語言設定',
+            title: 'Language Settings',
             subtitle: _selectedLanguage,
             onTap: _showLanguageSelectionDialog,
           ),
           
           const SizedBox(height: 16),
           
-          // 開始通知
+          // Notifications
           _buildSwitchCard(
             icon: Icons.notifications,
-            title: '開始通知',
+            title: 'Notifications',
             value: _isNotificationsEnabled,
             onChanged: (value) {
               setState(() {
@@ -182,10 +182,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           
           const SizedBox(height: 16),
           
-          // 音效
+          // Sound Effects
           _buildSwitchCard(
             icon: Icons.volume_up,
-            title: '音效',
+            title: 'Sound Effects',
             value: _isSoundEnabled,
             onChanged: (value) {
               setState(() {
@@ -196,27 +196,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
           
           const SizedBox(height: 16),
           
-          // 主題模式
+          // Theme Mode
           _buildSettingCard(
             icon: Icons.color_lens,
-            title: '主題模式',
+            title: 'Theme Mode',
             subtitle: _selectedTheme,
             onTap: _showThemeSelectionDialog,
           ),
           
           const SizedBox(height: 16),
           
-          // 清除所有數據
+          // Clear All Data
           _buildSettingCard(
             icon: Icons.delete_forever,
-            title: '清除所有數據',
+            title: 'Clear All Data',
             titleColor: Colors.red,
             onTap: _showClearDataConfirmDialog,
           ),
           
           const SizedBox(height: 32),
           
-          // 保存設定按鈕
+          // Save Settings Button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.amber,
@@ -224,18 +224,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             onPressed: _saveSettings,
-            child: const Text('保存設定', style: TextStyle(fontSize: 16)),
+            child: const Text('Save Settings', style: TextStyle(fontSize: 16)),
           ),
           
           const SizedBox(height: 16),
           
-          // 恢復預設設定按鈕
+          // Reset to Defaults Button
           OutlinedButton(
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             onPressed: _resetSettings,
-            child: const Text('恢復預設設定', style: TextStyle(fontSize: 16)),
+            child: const Text('Reset to Defaults', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),

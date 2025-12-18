@@ -13,13 +13,13 @@ class ScoreDisplay extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildStatColumn('總場次', gamesPlayed.toString()),
+        _buildStatColumn('Saved Groups', gamesPlayed.toString()),
       ],
     );
   }
 
   Widget _buildStatColumn(String label, String value) {
-    final isScore = label == '總得分';
+    final isScore = label == 'Total Score';
     
     return Column(
       children: [
@@ -37,7 +37,7 @@ class ScoreDisplay extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 13,
             color: Colors.grey.shade700,
           ),
         ),

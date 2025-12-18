@@ -20,10 +20,10 @@ class TileGroup extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       margin: const EdgeInsets.only(right: 8, bottom: 8),
-      // 使用 Wrap 代替 Row，可以自動換行
+      // Use Wrap instead of Row for automatic line wrapping
       child: Wrap(
-        spacing: 2, // 牌之間的水平間距
-        runSpacing: 2, // 行之間的垂直間距
+        spacing: 2, // Horizontal spacing between tiles
+        runSpacing: 2, // Vertical spacing between rows
         children: tiles.map((tile) => MahjongTile(tile: tile)).toList(),
       ),
     );
