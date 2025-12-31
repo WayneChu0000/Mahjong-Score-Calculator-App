@@ -103,6 +103,7 @@ class ScoreService {
   
   // 檢查遊戲是否結束
   bool isGameEnd() {
+    if (_totalRounds == 0) return false; // Unlimited rounds
     return _currentRound > _totalRounds;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
-import '../screens/history.dart';
 import '../screens/rules_screen.dart';
 import '../screens/settings_screen.dart';
 
@@ -31,12 +30,9 @@ class _BaseScreenState extends State<BaseScreen> {
         nextScreen = const HomePage();
         break;
       case 1:
-        nextScreen = const HistoryScreen();
-        break;
-      case 2:
         nextScreen = const RulesScreen();
         break;
-      case 3:
+      case 2:
         nextScreen = const SettingsScreen();
         break;
     }
@@ -63,10 +59,6 @@ class _BaseScreenState extends State<BaseScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),

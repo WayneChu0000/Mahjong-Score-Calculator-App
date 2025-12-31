@@ -12,11 +12,12 @@ class RulesScreen extends StatefulWidget {
 }
 
 class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStateMixin {
-  String _selectedRuleSet = 'hk';
+  String _selectedFan = 'All';
   String _searchQuery = '';
   List<Rule> _filteredRules = [];
   late TabController _tabController;
   late PageController _tutorialPageController;
+  late TextEditingController _searchController;
   int _currentTutorialPage = 0;
 
   @override
@@ -25,21 +26,41 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
     _filteredRules = rules;
     _tabController = TabController(length: 2, vsync: this);
     _tutorialPageController = PageController();
+    _searchController = TextEditingController();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     _tutorialPageController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
   void _filterRules() {
     setState(() {
+      List<Rule> tempRules = rules;
+      
+      // Filter by fan
+      if (_selectedFan != 'All') {
+        // Extract number from "X fan" string in rule.fan
+        // rule.fan format is "X fan"
+        // _selectedFan format is "X Fan" or "X Fans"
+        String targetFanStr = _selectedFan.split(' ')[0];
+        int targetFan = int.tryParse(targetFanStr) ?? 0;
+        
+        tempRules = tempRules.where((rule) {
+          String ruleFanStr = rule.fan.split(' ')[0];
+          int ruleFan = int.tryParse(ruleFanStr) ?? 0;
+          return ruleFan == targetFan;
+        }).toList();
+      }
+
+      // Filter by search query
       if (_searchQuery.isEmpty) {
-        _filteredRules = rules;
+        _filteredRules = tempRules;
       } else {
-        _filteredRules = rules
+        _filteredRules = tempRules
             .where((rule) =>
                 rule.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
                 rule.description.toLowerCase().contains(_searchQuery.toLowerCase()))
@@ -52,15 +73,19 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     return BaseScreen(
       title: 'Rules & Tutorial',
-      currentIndex: 2,
+      currentIndex: 1,
       body: Column(
         children: [
           // Top tabs
           Material(
-            color: Colors.green.shade50,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFF1E1E1E)
+                : Colors.green.shade50,
             child: TabBar(
               controller: _tabController,
-              labelColor: Colors.green.shade800,
+              labelColor: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.green.shade300
+                  : Colors.green.shade800,
               unselectedLabelColor: Colors.grey,
               indicatorColor: Colors.green,
               tabs: const [
@@ -96,6 +121,12 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
   // Rules reference tab content
   Widget _buildRulesReferenceTab() {
+    // Generate fan options
+    final List<String> fanOptions = ['All'];
+    for (int i = 1; i <= 13; i++) {
+      fanOptions.add('$i Fan${i > 1 ? 's' : ''}');
+    }
+
     return ListView(
       padding: const EdgeInsets.all(12.0),
       children: [
@@ -109,16 +140,18 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                 Row(
                   children: [
                     DropdownButton<String>(
-                      value: _selectedRuleSet,
-                      items: const [
-                        DropdownMenuItem(value: 'hk', child: Text('Hong Kong Rules')),
-                        DropdownMenuItem(value: 'mixed', child: Text('Mixed Rules')),
-                      ],
+                      value: _selectedFan,
+                      items: fanOptions.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                       onChanged: (value) {
                         if (value != null) {
                           setState(() {
-                            _selectedRuleSet = value;
-                            // In practice, this can switch between different rule sets
+                            _selectedFan = value;
+                            _filterRules();
                           });
                         }
                       },
@@ -126,6 +159,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                     const SizedBox(width: 12),
                     Expanded(
                       child: TextField(
+                        controller: _searchController,
                         decoration: const InputDecoration(
                           labelText: 'Search Rules',
                           prefixIcon: Icon(Icons.search),
@@ -157,14 +191,26 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
     );
   }
   
+  void _navigateToRule(String ruleName) {
+    setState(() {
+      _searchQuery = ruleName;
+      _searchController.text = ruleName;
+      _selectedFan = 'All'; // Reset fan filter to ensure rule is found
+      _filterRules();
+    });
+    _tabController.animateTo(0); // Switch to Rules Reference tab
+  }
+
   // Tutorial tab content
   Widget _buildTutorialTab() {
     const tutorialTitles = [
       'Welcome',
       'Mahjong Tiles',
       'Basic Rules',
-      'Scoring System',
+      'Score',
     ];
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       children: [
@@ -193,7 +239,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                     decoration: BoxDecoration(
                       color: _currentTutorialPage == index 
                           ? Colors.green.shade600 
-                          : Colors.grey.shade200,
+                          : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
@@ -207,7 +253,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                           ][index],
                           color: _currentTutorialPage == index 
                               ? Colors.white 
-                              : Colors.grey.shade600,
+                              : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                           size: 20,
                         ),
                         const SizedBox(height: 4),
@@ -216,7 +262,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                           style: TextStyle(
                             color: _currentTutorialPage == index 
                                 ? Colors.white 
-                                : Colors.grey.shade600,
+                                : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -240,11 +286,11 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                 _currentTutorialPage = index;
               });
             },
-            children: const [
-              TutorialContent(pageIndex: 0),
-              TutorialContent(pageIndex: 1),
-              TutorialContent(pageIndex: 2),
-              TutorialContent(pageIndex: 3),
+            children: [
+              TutorialContent(pageIndex: 0, onRuleTap: _navigateToRule),
+              TutorialContent(pageIndex: 1, onRuleTap: _navigateToRule),
+              TutorialContent(pageIndex: 2, onRuleTap: _navigateToRule),
+              TutorialContent(pageIndex: 3, onRuleTap: _navigateToRule),
             ],
           ),
         ),
@@ -347,6 +393,8 @@ class _RuleCardState extends State<RuleCard> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     // Keep original rule card implementation...
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -364,7 +412,7 @@ class _RuleCardState extends State<RuleCard> {
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                        color: isDark ? Colors.green.withOpacity(0.2) : Colors.green.shade50,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: widget.rule.imagePath.isNotEmpty
@@ -402,7 +450,7 @@ class _RuleCardState extends State<RuleCard> {
                             widget.rule.description,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade700,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -417,7 +465,7 @@ class _RuleCardState extends State<RuleCard> {
                                 ),
                                 label: Text(
                                   _showExample ? 'Hide Example' : 'View Example',
-                                  style: TextStyle(color: Colors.green),
+                                  style: const TextStyle(color: Colors.green),
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -441,7 +489,7 @@ class _RuleCardState extends State<RuleCard> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.green.shade50,
+                color: isDark ? Colors.green.withOpacity(0.1) : Colors.green.shade50,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),

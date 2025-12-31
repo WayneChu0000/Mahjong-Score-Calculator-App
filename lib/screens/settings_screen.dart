@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/base_screen.dart';
 import '../services/settings_service.dart';
+import '../services/auth_service.dart';
+import 'auth_wrapper.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -11,77 +13,54 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final SettingsService _settings = SettingsService.instance;
-  bool _isNotificationsEnabled = true;
-  bool _isSoundEnabled = false;
-  String _selectedLanguage = 'Traditional Chinese';
-  String _selectedTheme = 'Light Mode';
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    // Listen to settings changes
+    _settings.addListener(_onSettingsChanged);
   }
 
-  Future<void> _loadSettings() async {
-    setState(() {
-      _isNotificationsEnabled = _settings.isNotificationsEnabled;
-      _isSoundEnabled = _settings.isSoundEnabled;
-      _selectedLanguage = _settings.language;
-      _selectedTheme = _settings.theme;
-    });
+  @override
+  void dispose() {
+    _settings.removeListener(_onSettingsChanged);
+    super.dispose();
   }
 
-  Future<void> _saveSettings() async {
-    await _settings.setNotificationsEnabled(_isNotificationsEnabled);
-    await _settings.setSoundEnabled(_isSoundEnabled);
-    await _settings.setLanguage(_selectedLanguage);
-    await _settings.setTheme(_selectedTheme);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Settings saved')),
-    );
+  void _onSettingsChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  Future<void> _resetSettings() async {
-    await _settings.resetToDefaults();
-    await _loadSettings();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Settings reset to defaults')),
-    );
-  }
-
-  Future<void> _showClearDataConfirmDialog() async {
-    return showDialog(
+  Future<void> _signOut() async {
+    final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Clear All Data'),
-        content: const Text('This will delete all game records and settings permanently. Are you sure you want to continue?'),
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context).pop(false),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _clearAllData();
-            },
-            child: const Text('OK', style: TextStyle(color: Colors.red)),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Logout', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
     );
-  }
 
-  Future<void> _clearAllData() async {
-    await _settings.clearAllData();
-    
-    if (!mounted) return;
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('All data cleared')),
-    );
+    if (confirmed == true) {
+      await AuthService().signOut();
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const AuthWrapper()),
+          (route) => false,
+        );
+      }
+    }
   }
 
   void _showLanguageSelectionDialog() {
@@ -90,9 +69,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (context) => SimpleDialog(
         title: const Text('Select Language'),
         children: [
-          _buildLanguageOption('Traditional Chinese'),
-          _buildLanguageOption('Simplified Chinese'),
           _buildLanguageOption('English'),
+          const Divider(),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            child: Text('More languages coming soon...', style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)),
+          ),
         ],
       ),
     );
@@ -101,16 +83,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildLanguageOption(String language) {
     return SimpleDialogOption(
       onPressed: () {
-        setState(() {
-          _selectedLanguage = language;
-        });
+        _settings.setLanguage(language);
         Navigator.pop(context);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(language),
-          if (_selectedLanguage == language)
+          if (_settings.language == language)
             const Icon(Icons.check, color: Colors.green),
         ],
       ),
@@ -134,17 +114,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildThemeOption(String theme) {
     return SimpleDialogOption(
       onPressed: () {
-        setState(() {
-          _selectedTheme = theme;
-        });
+        _settings.setTheme(theme);
         Navigator.pop(context);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(theme),
-          if (_selectedTheme == theme)
+          if (_settings.theme == theme)
             const Icon(Icons.check, color: Colors.green),
+        ],
+      ),
+    );
+  }
+
+  void _showAboutDialog() {
+    showAboutDialog(
+      context: context,
+      applicationName: 'Mahjong Calculator',
+      applicationVersion: '1.0.0',
+      applicationIcon: const Icon(Icons.casino, size: 50, color: Colors.green),
+      children: [
+        const Text('A simple and easy-to-use Mahjong score calculator.'),
+        const SizedBox(height: 10),
+        const Text('© 2025 Mahjong Calculator Team'),
+      ],
+    );
+  }
+
+  void _showFeedbackDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Feedback'),
+        content: const Text('Please send your feedback to support@example.com'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPrivacyPolicyDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Privacy Policy'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'We respect your privacy. This app stores your game data locally and on Firebase for synchronization purposes. We do not share your personal data with third parties.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
         ],
       ),
     );
@@ -154,44 +182,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return BaseScreen(
       title: 'Settings',
-      currentIndex: 3, // Settings page is the fourth item in bottom navigation
+      currentIndex: 2, // Settings page is the third item in bottom navigation
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // Language Settings
           _buildSettingCard(
             icon: Icons.language,
-            title: 'Language Settings',
-            subtitle: _selectedLanguage,
+            title: 'Language',
+            subtitle: _settings.language,
             onTap: _showLanguageSelectionDialog,
-          ),
-          
-          const SizedBox(height: 16),
-          
-          // Notifications
-          _buildSwitchCard(
-            icon: Icons.notifications,
-            title: 'Notifications',
-            value: _isNotificationsEnabled,
-            onChanged: (value) {
-              setState(() {
-                _isNotificationsEnabled = value;
-              });
-            },
-          ),
-          
-          const SizedBox(height: 16),
-          
-          // Sound Effects
-          _buildSwitchCard(
-            icon: Icons.volume_up,
-            title: 'Sound Effects',
-            value: _isSoundEnabled,
-            onChanged: (value) {
-              setState(() {
-                _isSoundEnabled = value;
-              });
-            },
           ),
           
           const SizedBox(height: 16),
@@ -200,42 +200,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSettingCard(
             icon: Icons.color_lens,
             title: 'Theme Mode',
-            subtitle: _selectedTheme,
+            subtitle: _settings.theme,
             onTap: _showThemeSelectionDialog,
           ),
           
           const SizedBox(height: 16),
-          
-          // Clear All Data
+
+          // About Us
           _buildSettingCard(
-            icon: Icons.delete_forever,
-            title: 'Clear All Data',
-            titleColor: Colors.red,
-            onTap: _showClearDataConfirmDialog,
+            icon: Icons.info,
+            title: 'About Us',
+            onTap: _showAboutDialog,
           ),
-          
-          const SizedBox(height: 32),
-          
-          // Save Settings Button
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            onPressed: _saveSettings,
-            child: const Text('Save Settings', style: TextStyle(fontSize: 16)),
-          ),
-          
+
           const SizedBox(height: 16),
-          
-          // Reset to Defaults Button
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            onPressed: _resetSettings,
-            child: const Text('Reset to Defaults', style: TextStyle(fontSize: 16)),
+
+          // Feedback
+          _buildSettingCard(
+            icon: Icons.feedback,
+            title: 'Feedback',
+            onTap: _showFeedbackDialog,
+          ),
+
+          const SizedBox(height: 16),
+
+          // Privacy Policy
+          _buildSettingCard(
+            icon: Icons.privacy_tip,
+            title: 'Privacy Policy',
+            onTap: _showPrivacyPolicyDialog,
+          ),
+
+          const SizedBox(height: 16),
+
+          // Logout
+          _buildSettingCard(
+            icon: Icons.logout,
+            title: 'Logout',
+            titleColor: Colors.red,
+            onTap: _signOut,
           ),
         ],
       ),
@@ -259,23 +262,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         subtitle: subtitle != null ? Text(subtitle) : null,
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: onTap,
-      ),
-    );
-  }
-
-  Widget _buildSwitchCard({
-    required IconData icon,
-    required String title,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return Card(
-      child: SwitchListTile(
-        secondary: Icon(icon, color: Colors.green),
-        title: Text(title),
-        value: value,
-        activeColor: Colors.amber,
-        onChanged: onChanged,
       ),
     );
   }

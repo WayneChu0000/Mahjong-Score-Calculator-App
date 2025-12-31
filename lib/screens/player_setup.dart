@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/player.dart';
+import '../models/player_group.dart';
+import '../services/player_group_service.dart';
 import 'score_recording_screen.dart';
 
 class PlayerSetupScreen extends StatefulWidget {
@@ -7,6 +9,11 @@ class PlayerSetupScreen extends StatefulWidget {
   final String? groupName;
   final String? groupId;
   final bool directStart;
+  final int? currentRound;
+  final int? dealerIndex;
+  final int? prevalentWindIndex;
+  final int? currentDealerGameCount;
+  final int? totalWindRounds;
 
   const PlayerSetupScreen({
     super.key, 
@@ -14,6 +21,11 @@ class PlayerSetupScreen extends StatefulWidget {
     this.groupName,
     this.groupId,
     this.directStart = false,
+    this.currentRound,
+    this.dealerIndex,
+    this.prevalentWindIndex,
+    this.currentDealerGameCount,
+    this.totalWindRounds,
   });
 
   @override
@@ -25,6 +37,8 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   List<Player> players = [];
   late TextEditingController _groupNameController;
   bool _isNewGroup = true;
+  bool _hasSavedGroup = false;
+  int _selectedDealerIndex = 0;
 
   @override
   void initState() {
@@ -38,6 +52,12 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
     } else {
       _initializePlayers();
       _isNewGroup = true;
+    }
+    
+    // Initialize dealer index
+    _selectedDealerIndex = widget.dealerIndex ?? 0;
+    if (_selectedDealerIndex >= selectedPlayerCount) {
+      _selectedDealerIndex = 0;
     }
     
     // Initialize group name controller
@@ -64,21 +84,33 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
     );
   }
   
-  void _startGame() {
-    // Save player group (should save to database or SharedPreferences in production)
-    _savePlayerGroup();
+  Future<void> _startGame() async {
+    // Save player group
+    await _savePlayerGroup();
     
+    if (!mounted) return;
+
     // Only keep selected number of players
     final selectedPlayers = players.take(selectedPlayerCount).toList();
     
+    final String groupName = _groupNameController.text.trim().isEmpty
+        ? 'Group ${DateTime.now().toString().substring(0, 16)}'
+        : _groupNameController.text.trim();
+
+    // Check if dealer changed
+    bool dealerChanged = false;
+    if (!_isNewGroup && widget.dealerIndex != null && widget.dealerIndex != _selectedDealerIndex) {
+        dealerChanged = true;
+    }
+
     // Navigate to score recording screen
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ScoreRecordingScreen(
           players: selectedPlayers,
-          currentRound: 1,
-          totalRounds: 16, // Default 16 rounds
+          currentRound: widget.currentRound ?? 1,
+          totalRounds: 0, // 0 means unlimited rounds
           onScoreSubmitted: (Map<String, int> scoreChanges) {
             // Can save game records here
             debugPrint('Round ended, score changes: $scoreChanges');
@@ -86,29 +118,103 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             // Note: No extra handling needed here as ScoreRecordingScreen handles round progression
           },
           groupId: widget.groupId,
-          groupName: _groupNameController.text,
+          groupName: groupName,
+          initialDealerIndex: _selectedDealerIndex,
+          initialPrevalentWindIndex: dealerChanged ? 0 : widget.prevalentWindIndex,
+          initialDealerGameCount: dealerChanged ? 1 : widget.currentDealerGameCount,
+          initialTotalWindRounds: dealerChanged ? 1 : widget.totalWindRounds,
         ),
       ),
     );
   }
   
-  void _savePlayerGroup() {
-    // In production, should save player group to database or SharedPreferences
-    debugPrint('Saving player group: ${_groupNameController.text}');
-    // TODO: Implement save logic
+  Future<void> _savePlayerGroup() async {
+    final String groupName = _groupNameController.text.trim().isEmpty
+        ? 'Group ${DateTime.now().toString().substring(0, 16)}'
+        : _groupNameController.text.trim();
+
+    final List<String> playerNames = players
+        .take(selectedPlayerCount)
+        .map((p) => p.name)
+        .toList();
+
+    PlayerGroup? existingGroup;
+    // Try to load existing group if we are editing
+    if (!_isNewGroup && widget.groupName != null) {
+       existingGroup = await PlayerGroupService.loadGroup(widget.groupName!);
+    }
+
+    // Handle renaming: if name changed, delete old group
+    if (!_isNewGroup && widget.groupName != null && widget.groupName != groupName) {
+      await PlayerGroupService.deleteGroup(widget.groupName!);
+    }
+
+    PlayerGroup newGroup;
+    if (existingGroup != null) {
+        // Preserve state, but update names
+        // Use current players' scores which are initialized from existingPlayers
+        Map<String, int> newScores = {};
+        for (var player in players.take(selectedPlayerCount)) {
+            newScores[player.name] = player.score;
+        }
+
+        // Check if dealer changed
+        bool dealerChanged = existingGroup.dealerIndex != _selectedDealerIndex;
+
+        newGroup = existingGroup.copyWith(
+            name: groupName,
+            players: playerNames,
+            currentScores: newScores,
+            dealerIndex: _selectedDealerIndex,
+            prevalentWindIndex: dealerChanged ? 0 : existingGroup.prevalentWindIndex,
+            currentDealerGameCount: dealerChanged ? 1 : existingGroup.currentDealerGameCount,
+            totalWindRounds: dealerChanged ? 1 : existingGroup.totalWindRounds,
+        );
+    } else {
+        newGroup = PlayerGroup(
+          name: groupName,
+          players: playerNames,
+          createdAt: DateTime.now(),
+          lastPlayedAt: DateTime.now(),
+          dealerIndex: _selectedDealerIndex,
+          prevalentWindIndex: 0,
+          currentDealerGameCount: 1,
+          totalWindRounds: 1,
+          currentRound: 1,
+          currentScores: {for (var name in playerNames) name: 0},
+        );
+    }
+
+    await PlayerGroupService.saveGroup(newGroup);
+    debugPrint('Saved player group: $groupName');
+    setState(() {
+      _hasSavedGroup = true;
+    });
+  }
+
+  Future<void> _saveAndExit() async {
+    await _savePlayerGroup();
+    if (mounted) {
+      Navigator.pop(context, true);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.existingPlayers != null ? 'Edit Players' : 'Setup Players'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, _hasSavedGroup);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.existingPlayers != null ? 'Edit Players' : 'Setup Players'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, _hasSavedGroup),
+          ),
         ),
-      ),
-      body: Padding(
+        body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -120,45 +226,6 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                 labelText: 'Group Name',
                 border: OutlineInputBorder(),
                 hintText: 'e.g., Weekend Mahjong Group',
-              ),
-            ),
-            
-            const SizedBox(height: 20),
-            
-            // Player count selection
-            Card(
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    const Text(
-                      'Select Number of Players',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16),
-                    SegmentedButton<int>(
-                      segments: const [
-                        ButtonSegment<int>(value: 2, label: Text('2 Players')),
-                        ButtonSegment<int>(value: 3, label: Text('3 Players')),
-                        ButtonSegment<int>(value: 4, label: Text('4 Players')),
-                      ],
-                      selected: {selectedPlayerCount},
-                      onSelectionChanged: (Set<int> newSelection) {
-                        setState(() {
-                          selectedPlayerCount = newSelection.first;
-                          
-                          // If player count increased, add new players
-                          if (selectedPlayerCount > players.length) {
-                            for (int i = players.length; i < selectedPlayerCount; i++) {
-                              players.add(Player(id: i, name: 'Player ${i + 1}', score: 0));
-                            }
-                          }
-                        });
-                      },
-                    ),
-                  ],
-                ),
               ),
             ),
             
@@ -189,22 +256,59 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
               ),
             ),
             
+            const SizedBox(height: 16),
+
+            // Dealer Selection
+            DropdownButtonFormField<int>(
+              decoration: const InputDecoration(
+                labelText: 'Initial Dealer',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.person),
+              ),
+              value: _selectedDealerIndex,
+              items: List.generate(selectedPlayerCount, (index) {
+                return DropdownMenuItem<int>(
+                  value: index,
+                  child: Text(players[index].name),
+                );
+              }),
+              onChanged: (int? newValue) {
+                if (newValue != null) {
+                  setState(() {
+                    _selectedDealerIndex = newValue;
+                  });
+                }
+              },
+            ),
+
+            const SizedBox(height: 16),
+            
             // Bottom buttons
             Row(
               children: [
-                if (!_isNewGroup) 
+                if (!_isNewGroup) ...[
                   Expanded(
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        foregroundColor: Colors.red,
                       ),
-                      onPressed: () {
-                        _deleteGroup();
-                      },
-                      child: const Text('Delete Group'),
+                      onPressed: _deleteGroup,
+                      child: const Text('Delete'),
                     ),
                   ),
-                if (!_isNewGroup) const SizedBox(width: 16),
+                  const SizedBox(width: 8),
+                ],
+                Expanded(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    ),
+                    onPressed: _saveAndExit,
+                    child: const Text('Save'),
+                  ),
+                ),
+                const SizedBox(width: 8),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -212,10 +316,8 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
                     ),
-                    onPressed: () {
-                      _startGame();
-                    },
-                    child: const Text('Start Game', style: TextStyle(fontSize: 16)),
+                    onPressed: _startGame,
+                    child: const Text('Start'),
                   ),
                 ),
               ],
@@ -223,7 +325,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
   
   // Edit player name
@@ -281,12 +383,14 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
       ),
     );
     
-    if (confirmed == true) {
-      // In production, should delete from database or SharedPreferences
-      debugPrint('Deleting player group: ${widget.groupId}');
-      // TODO: Implement delete logic
-      
-      Navigator.pop(context);
+    if (confirmed == true && widget.groupName != null) {
+      await PlayerGroupService.deleteGroup(widget.groupName!);
+      setState(() {
+        _hasSavedGroup = true;
+      });
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
     }
   }
 }

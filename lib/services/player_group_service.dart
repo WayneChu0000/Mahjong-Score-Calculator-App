@@ -1,24 +1,31 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/player_group.dart';
 
 class PlayerGroupService {
-  static const String _key = 'saved_player_groups';
+  // Helper to get the collection for the current user
+  static CollectionReference? _getUserGroupCollection() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('player_groups');
+  }
   
   // Get all saved player groups
   static Future<List<PlayerGroup>> getSavedGroups() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? jsonString = prefs.getString(_key);
-    
-    if (jsonString == null) {
-      return [];
-    }
-    
     try {
-      final List<dynamic> jsonList = json.decode(jsonString);
-      return jsonList.map((json) => PlayerGroup.fromJson(json)).toList();
+      final collection = _getUserGroupCollection();
+      if (collection == null) return [];
+
+      final querySnapshot = await collection.get();
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return PlayerGroup.fromJson(data);
+      }).toList();
     } catch (e) {
-      print('Error reading player groups: $e');
+      print('Error reading player groups from Firebase: $e');
       return [];
     }
   }
@@ -26,31 +33,14 @@ class PlayerGroupService {
   // Save player group
   static Future<bool> saveGroup(PlayerGroup group) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final List<PlayerGroup> currentGroups = await getSavedGroups();
-      
-      // Check if group with same name already exists
-      final existingIndex = currentGroups.indexWhere(
-        (g) => g.name == group.name
-      );
-      
-      if (existingIndex != -1) {
-        // Update existing group
-        currentGroups[existingIndex] = group;
-      } else {
-        // Add new group
-        currentGroups.add(group);
-      }
-      
-      // Convert to JSON and save
-      final String jsonString = json.encode(
-        currentGroups.map((g) => g.toJson()).toList()
-      );
-      
-      await prefs.setString(_key, jsonString);
+      final collection = _getUserGroupCollection();
+      if (collection == null) return false;
+
+      // Use name as document ID
+      await collection.doc(group.name).set(group.toJson());
       return true;
     } catch (e) {
-      print('Error saving player group: $e');
+      print('Error saving player group to Firebase: $e');
       return false;
     }
   }
@@ -58,29 +48,31 @@ class PlayerGroupService {
   // Delete player group
   static Future<bool> deleteGroup(String groupName) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final List<PlayerGroup> currentGroups = await getSavedGroups();
-      
-      currentGroups.removeWhere((group) => group.name == groupName);
-      
-      final String jsonString = json.encode(
-        currentGroups.map((g) => g.toJson()).toList()
-      );
-      
-      await prefs.setString(_key, jsonString);
+      final collection = _getUserGroupCollection();
+      if (collection == null) return false;
+
+      await collection.doc(groupName).delete();
       return true;
     } catch (e) {
-      print('Error deleting player group: $e');
+      print('Error deleting player group from Firebase: $e');
       return false;
     }
   }
   
   // Load specific group
   static Future<PlayerGroup?> loadGroup(String groupName) async {
-    final List<PlayerGroup> groups = await getSavedGroups();
     try {
-      return groups.firstWhere((group) => group.name == groupName);
+      final collection = _getUserGroupCollection();
+      if (collection == null) return null;
+
+      final doc = await collection.doc(groupName).get();
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        return PlayerGroup.fromJson(data);
+      }
+      return null;
     } catch (e) {
+      print('Error loading player group from Firebase: $e');
       return null;
     }
   }

@@ -7,33 +7,24 @@ import 'services/score_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Show splash screen without blocking UI
-  runApp(const MyApp());
+  // Initialize Firebase first to avoid "No Firebase App" errors
+  await Firebase.initializeApp();
   
-  // Initialize Firebase and other services in background
-  _initializeServicesInBackground();
+  // Initialize other services
+  _initializeOtherServices();
+  
+  runApp(const MyApp());
 }
 
-// Initialize services in background non-blocking
-void _initializeServicesInBackground() async {
+// Initialize other services in background
+void _initializeOtherServices() async {
   try {
-    // Initialize multiple services in parallel
     await Future.wait([
-      _initializeFirebase(),
       SettingsService.instance.init(),
       _initializeScoreService(),
     ]);
   } catch (e) {
-    // Log error but don't affect app startup
     debugPrint('Service initialization warning: $e');
-  }
-}
-
-Future<void> _initializeFirebase() async {
-  try {
-    await Firebase.initializeApp();
-  } catch (e) {
-    debugPrint('Firebase initialization failed: $e');
   }
 }
 
@@ -42,16 +33,80 @@ Future<void> _initializeScoreService() async {
   ScoreService();
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final SettingsService _settings = SettingsService.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _settings.addListener(_onSettingsChanged);
+  }
+
+  @override
+  void dispose() {
+    _settings.removeListener(_onSettingsChanged);
+    super.dispose();
+  }
+
+  void _onSettingsChanged() {
+    setState(() {});
+  }
+
+  ThemeMode _getThemeMode() {
+    switch (_settings.theme) {
+      case 'Dark Mode':
+        return ThemeMode.dark;
+      case 'Light Mode':
+        return ThemeMode.light;
+      case 'Follow System':
+      default:
+        return ThemeMode.system;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mahjong Score Calculator',
+      themeMode: _getThemeMode(),
       theme: ThemeData(
         primarySwatch: Colors.green,
+        brightness: Brightness.light,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+        ),
+      ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.green,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        // cardTheme: const CardTheme(
+        //   color: Color(0xFF2C2C2C),
+        //   elevation: 4,
+        // ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1F1F1F),
+          foregroundColor: Colors.white,
+        ),
+        chipTheme: ChipThemeData(
+          backgroundColor: Colors.green.withOpacity(0.2),
+          labelStyle: const TextStyle(color: Colors.white),
+        ),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.green,
+          secondary: Colors.amber,
+          surface: Colors.grey.shade900,
+        ),
       ),
       home: const SplashScreen(),
     );

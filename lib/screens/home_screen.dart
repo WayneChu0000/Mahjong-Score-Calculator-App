@@ -6,6 +6,7 @@ import '../models/player_group.dart';
 import '../services/player_group_service.dart';
 import 'player_setup.dart';
 import 'score_recording_screen.dart';
+import 'saved_groups_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,6 +48,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> _loadPlayerGroups() async {
     try {
       final groups = await PlayerGroupService.getSavedGroups();
+      // Sort by last played time (descending)
+      groups.sort((a, b) {
+        final aTime = a.lastPlayedAt ?? a.createdAt;
+        final bTime = b.lastPlayedAt ?? b.createdAt;
+        return bTime.compareTo(aTime);
+      });
+      
       if (mounted) {
         setState(() {
           _playerGroups = groups;
@@ -103,7 +111,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  ScoreDisplay(gamesPlayed: _playerGroups.length),
+                                  ScoreDisplay(
+                                    gamesPlayed: _playerGroups.fold(0, (sum, group) => sum + ((group.currentRound ?? 1) - 1))
+                                  ),
                                 ],
                               ),
                             ),
@@ -151,10 +161,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                               ),
                               onPressed: () {
-                                // TODO: Implement history page
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('History feature coming soon...')),
-                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SavedGroupsScreen(),
+                                  ),
+                                ).then((_) => _loadPlayerGroups());
                               },
                             ),
                           ),
@@ -168,12 +180,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         Row(
                           children: [
                             const Text(
-                              'Saved Player Groups',
+                              'Recent Groups',
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             const Spacer(),
                             TextButton(
-                              onPressed: _showAllPlayerGroups,
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SavedGroupsScreen(),
+                                  ),
+                                ).then((_) => _loadPlayerGroups());
+                              },
                               child: const Text('View All'),
                             ),
                           ],
@@ -220,7 +239,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             Text(
                                               '${group.players.length} players',
                                               style: TextStyle(
-                                                color: Colors.grey.shade600,
+                                                color: Theme.of(context).brightness == Brightness.dark 
+                                                    ? Colors.grey.shade400 
+                                                    : Colors.grey.shade600,
                                                 fontSize: 13,
                                               ),
                                             ),
@@ -236,7 +257,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 player,
                                                 style: const TextStyle(fontSize: 11),
                                               ),
-                                              backgroundColor: Colors.green.shade50,
+                                              backgroundColor: Theme.of(context).brightness == Brightness.dark
+                                                  ? Colors.green.withOpacity(0.2)
+                                                  : Colors.green.shade50,
                                               padding: const EdgeInsets.symmetric(horizontal: 4),
                                               visualDensity: VisualDensity.compact,
                                             );
@@ -249,7 +272,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             Text(
                                               'Created: ${_formatDateTime(group.createdAt)}',
                                               style: TextStyle(
-                                                color: Colors.grey.shade600,
+                                                color: Theme.of(context).brightness == Brightness.dark
+                                                    ? Colors.grey.shade400
+                                                    : Colors.grey.shade600,
                                                 fontSize: 11,
                                               ),
                                             ),
@@ -265,15 +290,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   ),
                                                   onPressed: () => _editPlayerGroup(group),
                                                 ),
-                                                const SizedBox(width: 4),
                                                 TextButton.icon(
-                                                  icon: const Icon(Icons.play_arrow, size: 14),
-                                                  label: const Text('Start', style: TextStyle(fontSize: 12)),
+                                                  icon: const Icon(Icons.delete, size: 14, color: Colors.red),
+                                                  label: const Text('Delete', style: TextStyle(fontSize: 12, color: Colors.red)),
                                                   style: TextButton.styleFrom(
                                                     padding: const EdgeInsets.symmetric(horizontal: 8),
                                                     minimumSize: const Size(60, 32),
                                                   ),
-                                                  onPressed: () => _startGameWithGroup(group),
+                                                  onPressed: () => _deleteGroup(group.name),
                                                 ),
                                               ],
                                             ),
@@ -350,9 +374,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   
   // Format date and time
   String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.year}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')} '
-           '${dateTime.hour.toString().padLeft(2, '0')}:'
-           '${dateTime.minute.toString().padLeft(2, '0')}';
+    final localTime = dateTime.toLocal();
+    return '${localTime.year}/${localTime.month.toString().padLeft(2, '0')}/${localTime.day.toString().padLeft(2, '0')} '
+           '${localTime.hour.toString().padLeft(2, '0')}:'
+           '${localTime.minute.toString().padLeft(2, '0')}';
   }
   
   // Show all player groups
@@ -435,10 +460,71 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   
   // Edit player group
   void _editPlayerGroup(PlayerGroup group) {
-    // TODO: Implement edit functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Edit group "${group.name}" - Coming soon...')),
+    // Map players with their current scores
+    final List<Player> playersWithScores = group.players.asMap().entries.map((entry) {
+      int score = 0;
+      if (group.currentScores != null && group.currentScores!.containsKey(entry.value)) {
+        score = group.currentScores![entry.value]!;
+      }
+      return Player(id: entry.key, name: entry.value, score: score);
+    }).toList();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PlayerSetupScreen(
+          existingPlayers: playersWithScores,
+          groupName: group.name,
+          groupId: group.name, // Use name as ID for now
+          currentRound: group.currentRound,
+          dealerIndex: group.dealerIndex,
+          prevalentWindIndex: group.prevalentWindIndex,
+          currentDealerGameCount: group.currentDealerGameCount,
+          totalWindRounds: group.totalWindRounds,
+        ),
+      ),
+    ).then((hasSaved) {
+      if (hasSaved == true) {
+        _loadPlayerGroups();
+      }
+    });
+  }
+
+  // Delete player group
+  Future<void> _deleteGroup(String groupName) async {
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Delete'),
+        content: Text('Are you sure you want to delete group "$groupName"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
+
+    if (confirmed == true) {
+      final success = await PlayerGroupService.deleteGroup(groupName);
+      
+      if (success) {
+        _loadPlayerGroups(); // Reload list
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Group "$groupName" deleted'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    }
   }
   
   // Start game with selected player group
@@ -451,19 +537,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     await PlayerGroupService.saveGroup(updatedGroup);
     
     if (mounted) {
+      // Load saved scores if available
+      final List<Player> players = group.players.asMap().entries.map((entry) {
+        int score = 0;
+        if (group.currentScores != null && group.currentScores!.containsKey(entry.value)) {
+          score = group.currentScores![entry.value]!;
+        }
+        return Player(id: entry.key, name: entry.value, score: score);
+      }).toList();
+
+      final int currentRound = group.currentRound ?? 1;
+      final int? dealerIndex = group.dealerIndex;
+      final int? prevalentWindIndex = group.prevalentWindIndex;
+      final int? currentDealerGameCount = group.currentDealerGameCount;
+      final int? totalWindRounds = group.totalWindRounds;
+
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ScoreRecordingScreen(
-            players: group.players.map((playerName) => 
-              Player(id: group.players.indexOf(playerName), name: playerName, score: 0)
-            ).toList(),
-            currentRound: 1,
-            totalRounds: 16, // Standard mahjong rounds
+            players: players,
+            currentRound: currentRound,
+            totalRounds: 0, // 0 means unlimited rounds
             onScoreSubmitted: (Map<String, int> scoreChanges) {
               debugPrint('Score updated for group "${group.name}"');
             },
             groupName: group.name,
+            initialDealerIndex: dealerIndex,
+            initialPrevalentWindIndex: prevalentWindIndex,
+            initialDealerGameCount: currentDealerGameCount,
+            initialTotalWindRounds: totalWindRounds,
           ),
         ),
       ).then((_) {

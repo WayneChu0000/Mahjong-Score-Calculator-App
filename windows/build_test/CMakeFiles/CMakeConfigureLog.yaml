@@ -1,0 +1,103 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineSystem.cmake:205 (message)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      The system is: Windows - 10.0.26100 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      1
+      .NET Framework ??MSBuild ? 17.14.23+b0019275e
+      撌脩???撱箇蔭??31/12/2025 19:21:25??
+      
+      蝭\xc2\x80暺?1 (?身?格?) 銝?撠? "D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj"??
+      PrepareForBuild:
+        甇?撱箇??桅? "Debug\\"??
+        蝯??撓?箏歇??楊霅臬閮箸?撘?撠??隤日?撅扎\xc2\x80??\xc2\x80閰喟敦鞈?嚗?? https://aka.ms/cpp/structured-output??
+        甇?撱箇??桅? "Debug\\CompilerIdCXX.tlog\\"??
+      InitializeBuildStatus:
+        ?望??鈭?"AlwaysCreate"嚗?甇斗迤?典遣蝡?"Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild"??
+        甇?霈???唾? "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild"??
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+      LINK : fatal error LNK1104: ?⊥???瑼? 'ucrtd.lib' [D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj]
+      撠? "D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (?身?格?) 撱箇蔭摰? -- 憭望???
+      
+      撱箇蔭憭望???
+      
+      "D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (?身?格?) (1) ->
+      (Link ?格?) -> 
+        LINK : fatal error LNK1104: ?⊥???瑼? 'ucrtd.lib' [D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj]
+      
+          0 ?郎??
+          1 ?隤?
+      
+      蝬??? 00:00:02.13
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      1
+      .NET Framework ??MSBuild ? 17.14.23+b0019275e
+      撌脩???撱箇蔭??31/12/2025 19:21:28??
+      
+      蝭\xc2\x80暺?1 (?身?格?) 銝?撠? "D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj"??
+      PrepareForBuild:
+        甇?撱箇??桅? "Debug\\"??
+        蝯??撓?箏歇??楊霅臬閮箸?撘?撠??隤日?撅扎\xc2\x80??\xc2\x80閰喟敦鞈?嚗?? https://aka.ms/cpp/structured-output??
+        甇?撱箇??桅? "Debug\\CompilerIdCXX.tlog\\"??
+      InitializeBuildStatus:
+        ?望??鈭?"AlwaysCreate"嚗?甇斗迤?典遣蝡?"Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild"??
+        甇?霈???唾? "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild"??
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+      LINK : fatal error LNK1104: ?⊥???瑼? 'ucrtd.lib' [D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj]
+      撠? "D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (?身?格?) 撱箇蔭摰? -- 憭望???
+      
+      撱箇蔭憭望???
+      
+      "D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (?身?格?) (1) ->
+      (Link ?格?) -> 
+        LINK : fatal error LNK1104: ?⊥???瑼? 'ucrtd.lib' [D:\\FYP\\Mahjong-Score-Calculator-App\\windows\\build_test\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj]
+      
+          0 ?郎??
+          1 ?隤?
+      
+      蝬??? 00:00:02.11
+      
+      
+...
