@@ -124,10 +124,10 @@ class TutorialContent extends StatelessWidget {
           
           const SizedBox(height: 16),
           
-          // Circle tiles
+          // Dots tiles
           _buildTileSection(
-            'Circle Tiles',
-            'Numbered 1 to 9 in circles',
+            'Dots Tiles',
+            'Numbered 1 to 9 in dots',
             ['1p', '2p', '3p', '4p', '5p', '6p', '7p', '8p', '9p'],
           ),
           
@@ -145,7 +145,7 @@ class TutorialContent extends StatelessWidget {
           // Honor tiles
           _buildTileSection(
             'Honor Tiles',
-            'Include wind tiles (E/S/W/N) and dragon tiles (White/Green/Red)',
+            'Include Wind tiles (East/South/West/North) and Dragon tiles (Red/Green/White)',
             ['1z', '2z', '3z', '4z', '5z', '6z', '7z'],
           ),
           

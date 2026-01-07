@@ -20,10 +20,10 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
   bool _isValid = false;
 
   final Map<String, List<String>> _tileCategories = {
-    'Wan': List.generate(9, (i) => '${i + 1}m'),
-    'Tong': List.generate(9, (i) => '${i + 1}p'),
-    'Suo': List.generate(9, (i) => '${i + 1}s'),
-    'Honor': List.generate(7, (i) => '${i + 1}z'),
+    'Characters': List.generate(9, (i) => '${i + 1}m'),
+    'Dots': List.generate(9, (i) => '${i + 1}p'),
+    'Bamboo': List.generate(9, (i) => '${i + 1}s'),
+    'Honors': List.generate(7, (i) => '${i + 1}z'),
   };
 
   @override
@@ -106,10 +106,10 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     String suit = tile.substring(1);
     String folder = '';
     switch (suit) {
-      case 'm': folder = 'wan'; break;
-      case 'p': folder = 'tong'; break;
-      case 's': folder = 'suo'; break;
-      case 'z': folder = 'honor'; break;
+      case 'm': folder = 'characters'; break;
+      case 'p': folder = 'dots'; break;
+      case 's': folder = 'bamboo'; break;
+      case 'z': folder = 'honors'; break;
     }
     return 'assets/images/tiles/$folder/$tile.png';
   }
@@ -127,10 +127,10 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           tabs: const [
-            Tab(text: 'Wan'),
-            Tab(text: 'Tong'),
-            Tab(text: 'Suo'),
-            Tab(text: 'Honor'),
+            Tab(text: 'Characters'),
+            Tab(text: 'Dots'),
+            Tab(text: 'Bamboo'),
+            Tab(text: 'Honors'),
           ],
         ),
         actions: [
@@ -215,7 +215,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
             height: 160,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color: Theme.of(context).cardColor,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),

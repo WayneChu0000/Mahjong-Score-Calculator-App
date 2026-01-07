@@ -105,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           _buildThemeOption('Light Mode'),
           _buildThemeOption('Dark Mode'),
-          _buildThemeOption('Follow System'),
+          // _buildThemeOption('Follow System'),
         ],
       ),
     );
@@ -206,32 +206,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
           
           const SizedBox(height: 16),
 
-          // About Us
-          _buildSettingCard(
-            icon: Icons.info,
-            title: 'About Us',
-            onTap: _showAboutDialog,
-          ),
+          // // About Us
+          // _buildSettingCard(
+          //   icon: Icons.info,
+          //   title: 'About Us',
+          //   onTap: _showAboutDialog,
+          // ),
 
-          const SizedBox(height: 16),
+          // const SizedBox(height: 16),
 
-          // Feedback
-          _buildSettingCard(
-            icon: Icons.feedback,
-            title: 'Feedback',
-            onTap: _showFeedbackDialog,
-          ),
+          // // Feedback
+          // _buildSettingCard(
+          //   icon: Icons.feedback,
+          //   title: 'Feedback',
+          //   onTap: _showFeedbackDialog,
+          // ),
 
-          const SizedBox(height: 16),
+          // const SizedBox(height: 16),
 
-          // Privacy Policy
-          _buildSettingCard(
-            icon: Icons.privacy_tip,
-            title: 'Privacy Policy',
-            onTap: _showPrivacyPolicyDialog,
-          ),
+          // // Privacy Policy
+          // _buildSettingCard(
+          //   icon: Icons.privacy_tip,
+          //   title: 'Privacy Policy',
+          //   onTap: _showPrivacyPolicyDialog,
+          // ),
 
-          const SizedBox(height: 16),
+          // const SizedBox(height: 16),
 
           // Logout
           _buildSettingCard(

@@ -477,32 +477,32 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                             ),
                           ),
                           
-                          // North (Top) - Player 3 (if exists)
-                          if (widget.players.length > 3)
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: _buildCompactPlayerCard(widget.players[3], 3),
-                            ),
-                            
-                          // South (Bottom) - Player 1 (if exists)
-                          if (widget.players.length > 1)
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: _buildCompactPlayerCard(widget.players[1], 1),
-                            ),
-                            
-                          // West (Left) - Player 2 (if exists)
+                          // Player 2 (Opposite/West relative to 0) - Top
                           if (widget.players.length > 2)
                             Align(
-                              alignment: Alignment.centerLeft,
+                              alignment: Alignment.topCenter,
                               child: _buildCompactPlayerCard(widget.players[2], 2),
                             ),
                             
-                          // East (Right) - Player 0 (if exists)
+                          // Player 0 (Self/East relative to 0) - Bottom
                           if (widget.players.isNotEmpty)
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment: Alignment.bottomCenter,
                               child: _buildCompactPlayerCard(widget.players[0], 0),
+                            ),
+                            
+                          // Player 3 (Left/North relative to 0) - Left
+                          if (widget.players.length > 3)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: _buildCompactPlayerCard(widget.players[3], 3),
+                            ),
+                            
+                          // Player 1 (Right/South relative to 0) - Right
+                          if (widget.players.length > 1)
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: _buildCompactPlayerCard(widget.players[1], 1),
                             ),
                         ],
                       ),

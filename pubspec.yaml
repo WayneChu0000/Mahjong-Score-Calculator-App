@@ -67,8 +67,8 @@ flutter:
   assets:
     - assets/images/
     - assets/images/tiles/
-    - assets/images/tiles/honor/
-    - assets/images/tiles/wan/
-    - assets/images/tiles/tong/
-    - assets/images/tiles/suo/
+    - assets/images/tiles/honors/
+    - assets/images/tiles/characters/
+    - assets/images/tiles/dots/
+    - assets/images/tiles/bamboo/
     - assets/images/tutorial/

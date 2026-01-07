@@ -23,13 +23,13 @@ class MahjongTile extends StatelessWidget {
     
     switch (suit) {
       case 'm': // Character tiles
-        return 'assets/images/tiles/wan/${value}m.png';
-      case 'p': // Circle tiles
-        return 'assets/images/tiles/tong/${value}p.png';
+        return 'assets/images/tiles/characters/${value}m.png';
+      case 'p': // Dots tiles
+        return 'assets/images/tiles/dots/${value}p.png';
       case 's': // Bamboo tiles
-        return 'assets/images/tiles/suo/${value}s.png';
+        return 'assets/images/tiles/bamboo/${value}s.png';
       case 'z': // Honor tiles (winds + dragons)
-        return 'assets/images/tiles/honor/${value}z.png';
+        return 'assets/images/tiles/honors/${value}z.png';
       default:
         return 'assets/images/tiles/back.png';
     }

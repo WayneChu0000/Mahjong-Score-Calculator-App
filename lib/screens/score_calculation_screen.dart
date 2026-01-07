@@ -181,8 +181,8 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     }
 
     // Check for Dragon Pongs (if not Big/Small Three Dragons)
-    bool hasBigThreeDragons = matchedRules.any((r) => r['name'] == 'Big Three Dragons');
-    bool hasSmallThreeDragons = matchedRules.any((r) => r['name'] == 'Small Three Dragons');
+    bool hasBigThreeDragons = matchedRules.any((r) => r['name'].toString().startsWith('Big Three Dragons'));
+    bool hasSmallThreeDragons = matchedRules.any((r) => r['name'].toString().startsWith('Small Three Dragons'));
 
     if (!hasBigThreeDragons && !hasSmallThreeDragons) {
        // Count dragon pongs
@@ -208,8 +208,8 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
 
     // Check for Wind Pongs (Round Wind / Seat Wind)
     // Only if not Big/Small Four Winds
-    bool hasBigFourWinds = matchedRules.any((r) => r['name'] == 'Big Four Winds');
-    bool hasSmallFourWinds = matchedRules.any((r) => r['name'] == 'Small Four Winds');
+    bool hasBigFourWinds = matchedRules.any((r) => r['name'].toString().startsWith('Big Four Winds'));
+    bool hasSmallFourWinds = matchedRules.any((r) => r['name'].toString().startsWith('Small Four Winds'));
 
     if (!hasBigFourWinds && !hasSmallFourWinds) {
       Map<String, int> windCounts = {};
@@ -457,10 +457,10 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     String suit = tile.substring(1);
     String folder = '';
     switch (suit) {
-      case 'm': folder = 'wan'; break;
-      case 'p': folder = 'tong'; break;
-      case 's': folder = 'suo'; break;
-      case 'z': folder = 'honor'; break;
+      case 'm': folder = 'characters'; break;
+      case 'p': folder = 'dots'; break;
+      case 's': folder = 'bamboo'; break;
+      case 'z': folder = 'honors'; break;
     }
     return 'assets/images/tiles/$folder/$tile.png';
   }
@@ -982,12 +982,20 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         // Total Score
                         DataRow(cells: [
                           const DataCell(Text('Total Score', style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataCell(Text(
-                            _isSelfDraw 
-                              ? '$_totalPoints / person (Total ${_totalPoints * 3})' 
-                              : '$_totalPoints points', 
-                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green)
-                          )),
+                          DataCell(
+                            Container(
+                              constraints: const BoxConstraints(maxWidth: 180), // Constrain width to ensure it doesn't overflow screen
+                              child: Text(
+                                _isSelfDraw 
+                                  // ? '$_totalPoints / person\n(Total ${_totalPoints * 3})' 
+                                  ? '$_totalPoints / person' 
+                                  : '$_totalPoints points', 
+                                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+                                softWrap: true,
+                                overflow: TextOverflow.visible, 
+                              ),
+                            )
+                          ),
                         ]),
                       ],
                     ),
