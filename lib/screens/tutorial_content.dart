@@ -151,6 +151,15 @@ class TutorialContent extends StatelessWidget {
           
           const SizedBox(height: 16),
           
+          // Flower tiles
+          _buildTileSection(
+            'Flower Tiles',
+            'Flowers (Plum, Orchid, Chrysanthemum, Bamboo) and Seasons (Spring, Summer, Autumn, Winter)',
+            ['1f', '2f', '3f', '4f', '5f', '6f', '7f', '8f'],
+          ),
+
+          const SizedBox(height: 16),
+
 
         ],
       ),

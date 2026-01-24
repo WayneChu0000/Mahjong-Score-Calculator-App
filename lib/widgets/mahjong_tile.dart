@@ -30,6 +30,18 @@ class MahjongTile extends StatelessWidget {
         return 'assets/images/tiles/bamboo/${value}s.png';
       case 'z': // Honor tiles (winds + dragons)
         return 'assets/images/tiles/honors/${value}z.png';
+      case 'f': // Flower tiles
+        switch (value) {
+          case '1': return 'assets/images/tiles/flowers/Plum.png';
+          case '2': return 'assets/images/tiles/flowers/Orchid.png';
+          case '3': return 'assets/images/tiles/flowers/Chrysanthemum.png';
+          case '4': return 'assets/images/tiles/flowers/Bamboo.png';
+          case '5': return 'assets/images/tiles/flowers/Spring.png';
+          case '6': return 'assets/images/tiles/flowers/Summer.png';
+          case '7': return 'assets/images/tiles/flowers/Autumn.png';
+          case '8': return 'assets/images/tiles/flowers/Winter.png';
+          default: return 'assets/images/tiles/back.png';
+        }
       default:
         return 'assets/images/tiles/back.png';
     }
@@ -43,11 +55,11 @@ class MahjongTile extends StatelessWidget {
     
     switch (suit) {
       case 'm':
-        return '${value}萬';
+        return '$value萬';
       case 'p':
-        return '${value}筒';
+        return '$value筒';
       case 's':
-        return '${value}索';
+        return '$value索';
       case 'z':
         switch (value) {
           case '1': return '東';
@@ -58,6 +70,18 @@ class MahjongTile extends StatelessWidget {
           case '6': return '發';
           case '7': return '中';
           default: return tile;
+        }
+      case 'f':
+        switch (value) {
+          case '1': return '梅';
+          case '2': return '蘭';
+          case '3': return '菊';
+          case '4': return '竹';
+          case '5': return '春';
+          case '6': return '夏';
+          case '7': return '秋';
+          case '8': return '冬';
+          default: return '花';
         }
       default:
         return tile;

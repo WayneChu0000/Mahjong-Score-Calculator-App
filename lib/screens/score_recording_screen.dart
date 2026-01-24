@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/player.dart';
 import '../services/score_service.dart';
 import '../services/player_group_service.dart';
+import '../models/player_group.dart';
+import '../models/player_stats.dart';
 import 'score_calculation_screen.dart';
 import 'rules_screen.dart';
 import 'dart:async';
@@ -55,9 +57,19 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
   // Updated player list
   late List<Player> _updatedPlayers;
 
+  // Round History for stats
+  List<Map<String, dynamic>> _roundHistory = [];
+  
+  // Flag to check if round history is loaded
+  bool _isRoundHistoryLoaded = false;
+  
   @override
   void initState() {
     super.initState();
+    
+    // Load round history if group exists
+    _loadRoundHistory();
+
     
     // Initialize player list
     _updatedPlayers = List.from(widget.players);
@@ -105,7 +117,22 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       });
     }
   }
-  
+
+  Future<void> _loadRoundHistory() async {
+      if (widget.groupName != null) {
+          final group = await PlayerGroupService.loadGroup(widget.groupName!);
+          if (group != null && group.roundHistory != null) {
+              setState(() {
+                  _roundHistory = List.from(group.roundHistory!);
+                  _isRoundHistoryLoaded = true;
+              });
+          }
+      }
+      setState(() {
+          _isRoundHistoryLoaded = true;
+      });
+  }
+
   @override
   void dispose() {
     // Cancel subscription safely
@@ -117,6 +144,78 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     super.dispose();
   }
   
+  Future<void> _finishGame() async {
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    if (widget.groupName != null) {
+      final group = await PlayerGroupService.loadGroup(widget.groupName!);
+      if (group != null) {
+        // Calculate stats additions
+        Map<String, PlayerStats> stats = Map.from(group.playerStats ?? {});
+        
+        // Ensure all players have stats initialized
+        for(var p in widget.players) {
+            if (!stats.containsKey(p.name)) {
+                stats[p.name] = PlayerStats(playerName: p.name);
+            }
+        }
+
+        // Update stats per player
+        for (var p in widget.players) {
+             var s = stats[p.name]!;
+             
+             // Total Score (Net score change)
+             int finalScore = _scoreService.getPlayerScore(p.id.toString());
+             
+             int handsWon = 0;
+             int tsumoCount = 0;
+             int ronCount = 0;
+             
+             for (var round in _roundHistory) {
+                 if (round['winningPlayer'] == p.name) {
+                     handsWon++;
+                     if (round['isSelfDraw'] == true) {
+                         tsumoCount++;
+                     } else {
+                         ronCount++;
+                     }
+                 }
+             }
+
+            // Update stats
+            stats[p.name] = s.copyWith(
+                totalGamesPlayed: s.totalGamesPlayed + _roundHistory.length, // Total Hands
+                totalWins: s.totalWins + handsWon,
+                totalTsumo: s.totalTsumo + tsumoCount,
+                totalRon: s.totalRon + ronCount,
+                totalScore: s.totalScore + finalScore,
+            );
+        }
+
+        final updatedGroup = group.copyWith(
+            playerStats: stats,
+            // Do NOT increment here anymore, we increment on START
+            totalGamesPlayedInGroup: group.totalGamesPlayedInGroup,
+            lastPlayedAt: DateTime.now(),
+        );
+        
+        await PlayerGroupService.saveGroup(updatedGroup);
+      }
+    }
+    
+    if (mounted) {
+       // Close loading
+       Navigator.pop(context); 
+       // Return to home
+       Navigator.popUntil(context, (route) => route.isFirst);
+    }
+  }
+
   // Show game end dialog
   void _showGameEndDialog() {
     showDialog(
@@ -151,7 +250,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                   ],
                 ),
               );
-            }).toList(),
+            }),
           ],
         ),
         actions: [
@@ -162,16 +261,14 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
             child: const Text('Back to Game'),
           ),
           TextButton(
-            onPressed: () {
-              // Return to home page
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
+            onPressed: _finishGame,
             child: const Text('Finish Game'),
           ),
         ],
       ),
     );
   }
+
 
   // Open advanced score calculator
   void _openScoreCalculator() {
@@ -186,12 +283,23 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       ),
     ).then((result) {
       // Handle result when returning from score calculation screen
-      if (result != null && result is Map<String, int>) {
+      if (result != null) {
+        Map<String, int> scoreChanges;
+        
+        if (result is Map<String, int>) {
+           scoreChanges = result;
+        } else if (result is Map<String, dynamic> && result.containsKey('scores')) {
+           scoreChanges = Map<String, int>.from(result['scores']);
+           _roundHistory.add(result);
+        } else {
+           return;
+        }
+
         // Call original callback to notify parent component
-        widget.onScoreSubmitted(result);
+        widget.onScoreSubmitted(scoreChanges);
         
         // Update score service
-        _scoreService.updateScores(result);
+        _scoreService.updateScores(scoreChanges);
         
         // Determine winner and rotate dealer if necessary
         // If dealer has positive score change, dealer stays (Renchan)
@@ -199,7 +307,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         final dealerId = widget.players[_dealerIndex].id.toString();
         bool dealerWon = false;
         
-        if (result.containsKey(dealerId) && result[dealerId]! > 0) {
+        if (scoreChanges.containsKey(dealerId) && scoreChanges[dealerId]! > 0) {
           dealerWon = true;
         }
         
@@ -244,6 +352,15 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     
     // Call original callback to notify parent component
     widget.onScoreSubmitted(noChangeScores);
+    
+    // Add to history
+    _roundHistory.add({
+      'scores': noChangeScores,
+      'winningPlayer': null,
+      'isSelfDraw': false,
+      'resultType': 'No Result',
+      'timestamp': DateTime.now().toIso8601String(),
+    });
     
     // Update Game Count for No Result (Renchan)
     setState(() {
@@ -305,10 +422,10 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
           width: double.maxFinite,
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: widget.players.length,
+            itemCount: _updatedPlayers.length,
             itemBuilder: (context, index) {
               return RadioListTile<int>(
-                title: Text(widget.players[index].name),
+                title: Text(_updatedPlayers[index].name),
                 value: index,
                 groupValue: _dealerIndex,
                 onChanged: (int? value) {
@@ -325,6 +442,140 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _handlePlayerSwap(int fromIndex, int toIndex) async {
+    if (fromIndex == toIndex) return;
+
+    final fromPlayer = _updatedPlayers[fromIndex];
+    final toPlayer = _updatedPlayers[toIndex];
+
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Change Position'),
+        content: Text('Swap positions of ${fromPlayer.name} and ${toPlayer.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Swap'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      setState(() {
+        // Find current dealer ID to track them
+        final dealerId = _updatedPlayers[_dealerIndex].id;
+        
+        // Swap
+        final temp = _updatedPlayers[fromIndex];
+        _updatedPlayers[fromIndex] = _updatedPlayers[toIndex];
+        _updatedPlayers[toIndex] = temp;
+        
+        // Update dealer index
+        for (int i = 0; i < _updatedPlayers.length; i++) {
+          if (_updatedPlayers[i].id == dealerId) {
+            _dealerIndex = i;
+            break;
+          }
+        }
+      });
+      
+      if (!mounted) return;
+
+      // Show advanced reset dialog
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          bool resetDealer = false;
+          bool resetWind = false;
+          
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: const Text('Reset Game State?'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                     CheckboxListTile(
+                       title: const Text("Reset Dealer Position"),
+                       subtitle: const Text("Choose a new dealer"),
+                       value: resetDealer,
+                       onChanged: (val) => setState(() => resetDealer = val!),
+                     ),
+                     CheckboxListTile(
+                       title: const Text("Reset Wind Round"),
+                       subtitle: const Text("Reset to East 1"),
+                       value: resetWind,
+                       onChanged: (val) => setState(() => resetWind = val!),
+                     ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                     onPressed: () => Navigator.pop(context),
+                     child: const Text('Cancel Reset'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                        Navigator.pop(context);
+                        this.setState(() {
+                             if (resetWind) {
+                                 _prevalentWindIndex = 0;
+                                 _currentDealerGameCount = 1; 
+                                 _totalWindRounds = 1;
+                             }
+                        });
+                        
+                        if (resetDealer) {
+                             _selectDealer();
+                        }
+                    },
+                    child: const Text('Apply'),
+                  ),
+                ],
+              );
+            }
+          );
+        },
+      );
+    }
+  }
+
+  Widget _buildDraggablePosition(int index, Alignment alignment) {
+     if (index >= _updatedPlayers.length) return const SizedBox.shrink();
+
+     return Align(
+        alignment: alignment,
+        child: DragTarget<int>(
+          onWillAccept: (data) => data != null && data != index,
+          onAccept: (fromIndex) => _handlePlayerSwap(fromIndex, index),
+          builder: (context, candidateData, rejectedData) {
+            return LongPressDraggable<int>(
+              data: index,
+              feedback: Material(
+                color: Colors.transparent,
+                child: Opacity(
+                  opacity: 0.7,
+                  child: _buildCompactPlayerCard(_updatedPlayers[index], index),
+                ),
+              ),
+              childWhenDragging: Opacity(
+                opacity: 0.3,
+                child: _buildCompactPlayerCard(_updatedPlayers[index], index),
+              ),
+              child: _buildCompactPlayerCard(_updatedPlayers[index], index),
+            );
+          },
+        ),
+     );
   }
 
   Future<void> _saveGameState() async {
@@ -345,16 +596,102 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         prevalentWindIndex: _prevalentWindIndex,
         currentDealerGameCount: _currentDealerGameCount,
         totalWindRounds: _totalWindRounds,
+        roundHistory: _roundHistory,
       );
       
       await PlayerGroupService.saveGroup(updatedGroup);
     }
   }
 
+  void _showStatsDialog() {
+    int totalRounds = _roundHistory.length;
+    int totalWins = 0;
+    
+    // Calculate total wins to derive No Result cnt
+    // Using a map to avoid double counting if multiple winners per round (if supported)
+    // But simplistic approach: iterate rounds.
+    int noResultCount = 0;
+    for (var round in _roundHistory) {
+         if (round['winningPlayer'] == null) {
+             noResultCount++;
+         }
+    }
+    double noResultRate = totalRounds > 0 ? noResultCount / totalRounds : 0;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                const Text('Current Game Stats'),
+                if (totalRounds > 0)
+                    Text('No Result Rate: ${(noResultRate * 100).toStringAsFixed(2)}%', 
+                        style: const TextStyle(fontSize: 14, color: Colors.grey)),
+            ],
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: totalRounds == 0 
+            ? const Text('No rounds played yet.') 
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.players.length,
+                itemBuilder: (context, index) {
+                  final player = widget.players[index];
+                  int wins = 0;
+                  int tsumos = 0;
+                  int rons = 0;
+                  int dealsIn = 0;
+                  
+                  for(var round in _roundHistory) {
+                    if (round['winningPlayer'] == player.name) {
+                      wins++;
+                      if (round['isSelfDraw'] == true) tsumos++;
+                      else rons++;
+                    }
+                    if (round['discardPlayer'] == player.name) {
+                        dealsIn++;
+                    }
+                  }
+                  
+                  double winRate = totalRounds > 0 ? wins / totalRounds : 0;
+                  
+                  return ListTile(
+                    title: Text(player.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Win Rate: ${(winRate * 100).toStringAsFixed(2)}%'),
+                        Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                                 Text('Self-Draw: $tsumos'),
+                                 Text('Discard: $rons'),
+                                 Text('Deal-in: $dealsIn'),
+                             ]
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     // Get dealer
-    final dealer = widget.players[_dealerIndex];
+    final dealer = _updatedPlayers[_dealerIndex];
     
     // Get current round and total rounds from ScoreService
     final currentRound = _scoreService.getCurrentRound();
@@ -367,10 +704,20 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       title = '${widget.groupName} - $windName Round - Game $_currentDealerGameCount';
     }
     
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        await _saveGameState();
+        return true;
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart),
+            tooltip: 'Game Statistics',
+            onPressed: _showStatsDialog,
+          ),
           IconButton(
             icon: const Icon(Icons.menu_book),
             tooltip: 'Rules Reference',
@@ -407,9 +754,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        totalRounds > 0 
-                            ? '$windName Round - Game $_currentDealerGameCount / Total $totalRounds' 
-                            : '$windName Round - Game $_currentDealerGameCount',
+                        '$windName Round - Game $_currentDealerGameCount',
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
@@ -478,32 +823,20 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                           ),
                           
                           // Player 2 (Opposite/West relative to 0) - Top
-                          if (widget.players.length > 2)
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: _buildCompactPlayerCard(widget.players[2], 2),
-                            ),
+                          if (_updatedPlayers.length > 2)
+                            _buildDraggablePosition(2, Alignment.topCenter),
                             
                           // Player 0 (Self/East relative to 0) - Bottom
-                          if (widget.players.isNotEmpty)
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: _buildCompactPlayerCard(widget.players[0], 0),
-                            ),
+                          if (_updatedPlayers.isNotEmpty)
+                            _buildDraggablePosition(0, Alignment.bottomCenter),
                             
                           // Player 3 (Left/North relative to 0) - Left
-                          if (widget.players.length > 3)
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: _buildCompactPlayerCard(widget.players[3], 3),
-                            ),
+                          if (_updatedPlayers.length > 3)
+                            _buildDraggablePosition(3, Alignment.centerLeft),
                             
                           // Player 1 (Right/South relative to 0) - Right
-                          if (widget.players.length > 1)
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: _buildCompactPlayerCard(widget.players[1], 1),
-                            ),
+                          if (_updatedPlayers.length > 1)
+                            _buildDraggablePosition(1, Alignment.centerRight),
                         ],
                       ),
                     );
@@ -570,6 +903,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

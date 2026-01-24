@@ -40,7 +40,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   // Fan count and score
   int _fanCount = 1;
   int _effectiveFan = 1; // Total effective fan after bonuses
-  int _basePoints = 1;
+  final int _basePoints = 1;
   bool _selfDrawBonus = false;
   
   // Flower and Special Conditions
@@ -497,7 +497,13 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     );
     
     // Return to previous page with result
-    Navigator.pop(context, scoreChanges);
+    Navigator.pop(context, {
+      'scores': scoreChanges,
+      'winningPlayer': _winningPlayer,
+      'isSelfDraw': _isSelfDraw,
+      'discardPlayer': _isSelfDraw ? null : _discardPlayer,
+      'totalPoints': _totalPoints,
+    });
   }
 
   // // Get player's current score
@@ -596,7 +602,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         labelText: 'Winning Player',
                         border: OutlineInputBorder(),
                       ),
-                      value: _winningPlayer,
+                      initialValue: _winningPlayer,
                       items: widget.players.map((player) {
                         return DropdownMenuItem<String>(
                           value: player.name,
@@ -627,7 +633,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                               border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                             ),
-                            value: _roundWind,
+                            initialValue: _roundWind,
                             items: _winds.map((wind) {
                               return DropdownMenuItem<String>(
                                 value: wind,
@@ -653,7 +659,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                               border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                             ),
-                            value: _seatWind,
+                            initialValue: _seatWind,
                             items: _winds.map((wind) {
                               return DropdownMenuItem<String>(
                                 value: wind,
@@ -682,7 +688,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                           labelText: 'Discard Player',
                           border: OutlineInputBorder(),
                         ),
-                        value: _discardPlayer,
+                        initialValue: _discardPlayer,
                         items: widget.players
                             .where((player) => player.name != _winningPlayer)
                             .map((player) {
@@ -727,7 +733,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         labelText: 'Fan',
                         border: OutlineInputBorder(),
                       ),
-                      value: _fanCount,
+                      initialValue: _fanCount,
                       items: List.generate(14, (index) => index).map((fan) {
                         return DropdownMenuItem<int>(
                           value: fan,
@@ -752,7 +758,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         labelText: 'Flower Score',
                         border: OutlineInputBorder(),
                       ),
-                      value: _selectedFlowerOption,
+                      initialValue: _selectedFlowerOption,
                       items: _flowerOptions.map((option) {
                         return DropdownMenuItem<String>(
                           value: option,
@@ -781,7 +787,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         labelText: 'Special Winning Condition',
                         border: OutlineInputBorder(),
                       ),
-                      value: _selectedSpecialCondition,
+                      initialValue: _selectedSpecialCondition,
                       items: _specialConditions.map((condition) {
                         return DropdownMenuItem<String>(
                           value: condition,

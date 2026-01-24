@@ -112,7 +112,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   ],
                 ),
               );
-            }).toList(),
+            }),
           ],
         ),
         actions: [

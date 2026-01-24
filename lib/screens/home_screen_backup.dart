@@ -4,10 +4,8 @@ import '../widgets/base_screen.dart';
 import '../models/player.dart';
 import '../models/player_group.dart';
 import '../services/player_group_service.dart';
-import '../localization/app_localizations.dart';
 import 'player_setup.dart';
 import 'score_recording_screen.dart';
-import '../services/firebase_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

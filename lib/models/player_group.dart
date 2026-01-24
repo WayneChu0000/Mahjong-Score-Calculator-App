@@ -1,3 +1,5 @@
+import 'player_stats.dart';
+
 class PlayerGroup {
   final String name;
   final List<String> players;
@@ -9,6 +11,9 @@ class PlayerGroup {
   final int? prevalentWindIndex;
   final int? currentDealerGameCount;
   final int? totalWindRounds;
+  final int totalGamesPlayedInGroup;
+  final Map<String, PlayerStats>? playerStats;
+  final List<Map<String, dynamic>>? roundHistory;
 
   PlayerGroup({
     required this.name,
@@ -21,6 +26,9 @@ class PlayerGroup {
     this.prevalentWindIndex,
     this.currentDealerGameCount,
     this.totalWindRounds,
+    this.totalGamesPlayedInGroup = 0,
+    this.playerStats,
+    this.roundHistory,
   }) : createdAt = createdAt ?? DateTime.now();
 
   // Create PlayerGroup from JSON
@@ -40,6 +48,14 @@ class PlayerGroup {
       prevalentWindIndex: json['prevalentWindIndex'],
       currentDealerGameCount: json['currentDealerGameCount'],
       totalWindRounds: json['totalWindRounds'],
+      totalGamesPlayedInGroup: json['totalGamesPlayedInGroup'] ?? 0,
+      playerStats: json['playerStats'] != null
+          ? (json['playerStats'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(key, PlayerStats.fromJson(value)))
+          : null,
+      roundHistory: json['roundHistory'] != null
+          ? List<Map<String, dynamic>>.from(json['roundHistory'])
+          : null,
     );
   }
 
@@ -56,6 +72,9 @@ class PlayerGroup {
       'prevalentWindIndex': prevalentWindIndex,
       'currentDealerGameCount': currentDealerGameCount,
       'totalWindRounds': totalWindRounds,
+      'totalGamesPlayedInGroup': totalGamesPlayedInGroup,
+      'playerStats': playerStats?.map((key, value) => MapEntry(key, value.toJson())),
+      'roundHistory': roundHistory,
     };
   }
 
@@ -71,6 +90,9 @@ class PlayerGroup {
     int? prevalentWindIndex,
     int? currentDealerGameCount,
     int? totalWindRounds,
+    int? totalGamesPlayedInGroup,
+    Map<String, PlayerStats>? playerStats,
+    List<Map<String, dynamic>>? roundHistory,
   }) {
     return PlayerGroup(
       name: name ?? this.name,
@@ -83,6 +105,9 @@ class PlayerGroup {
       prevalentWindIndex: prevalentWindIndex ?? this.prevalentWindIndex,
       currentDealerGameCount: currentDealerGameCount ?? this.currentDealerGameCount,
       totalWindRounds: totalWindRounds ?? this.totalWindRounds,
+      totalGamesPlayedInGroup: totalGamesPlayedInGroup ?? this.totalGamesPlayedInGroup,
+      playerStats: playerStats ?? this.playerStats,
+      roundHistory: roundHistory ?? this.roundHistory,
     );
   }
 }

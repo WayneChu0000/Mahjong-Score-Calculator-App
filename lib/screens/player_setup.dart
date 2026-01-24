@@ -3,9 +3,11 @@ import '../models/player.dart';
 import '../models/player_group.dart';
 import '../services/player_group_service.dart';
 import 'score_recording_screen.dart';
+import 'group_detail_screen.dart'; // Import for DealerSelectionDialog
 
 class PlayerSetupScreen extends StatefulWidget {
   final List<Player>? existingPlayers;
+// ... (rest of imports)
   final String? groupName;
   final String? groupId;
   final bool directStart;
@@ -85,8 +87,32 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   }
   
   Future<void> _startGame() async {
-    // Save player group
-    await _savePlayerGroup();
+    // Show dealer selection dialog first
+    if (!mounted) return;
+    
+    // Only keep selected number of players
+    final selectedPlayers = players.take(selectedPlayerCount).toList();
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => DealerSelectionDialog(
+        players: selectedPlayers.map((p) => p.name).toList(),
+        onDealerSelected: (dealerIndex) {
+          Navigator.pop(context);
+          _proceedToGame(dealerIndex);
+        },
+      ),
+    );
+  }
+
+  Future<void> _proceedToGame(int dealerIndex) async {
+    setState(() {
+      _selectedDealerIndex = dealerIndex;
+    });
+
+    // Save player group with the selected dealer and increment game count
+    await _savePlayerGroup(incrementGameCount: true);
     
     if (!mounted) return;
 
@@ -112,10 +138,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
           currentRound: widget.currentRound ?? 1,
           totalRounds: 0, // 0 means unlimited rounds
           onScoreSubmitted: (Map<String, int> scoreChanges) {
-            // Can save game records here
-            debugPrint('Round ended, score changes: $scoreChanges');
-            
-            // Note: No extra handling needed here as ScoreRecordingScreen handles round progression
+             // Handle score submission
           },
           groupId: widget.groupId,
           groupName: groupName,
@@ -128,7 +151,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
     );
   }
   
-  Future<void> _savePlayerGroup() async {
+  Future<void> _savePlayerGroup({bool incrementGameCount = false}) async {
     final String groupName = _groupNameController.text.trim().isEmpty
         ? 'Group ${DateTime.now().toString().substring(0, 16)}'
         : _groupNameController.text.trim();
@@ -160,6 +183,10 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
 
         // Check if dealer changed
         bool dealerChanged = existingGroup.dealerIndex != _selectedDealerIndex;
+        int currentGamesPlayed = existingGroup.totalGamesPlayedInGroup;
+        if (incrementGameCount) {
+          currentGamesPlayed += 1;
+        }
 
         newGroup = existingGroup.copyWith(
             name: groupName,
@@ -169,6 +196,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             prevalentWindIndex: dealerChanged ? 0 : existingGroup.prevalentWindIndex,
             currentDealerGameCount: dealerChanged ? 1 : existingGroup.currentDealerGameCount,
             totalWindRounds: dealerChanged ? 1 : existingGroup.totalWindRounds,
+            totalGamesPlayedInGroup: currentGamesPlayed,
         );
     } else {
         newGroup = PlayerGroup(
@@ -182,6 +210,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
           totalWindRounds: 1,
           currentRound: 1,
           currentScores: {for (var name in playerNames) name: 0},
+          totalGamesPlayedInGroup: incrementGameCount ? 1 : 0,
         );
     }
 
@@ -258,31 +287,6 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             
             const SizedBox(height: 16),
 
-            // Dealer Selection
-            DropdownButtonFormField<int>(
-              decoration: const InputDecoration(
-                labelText: 'Initial Dealer',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-              value: _selectedDealerIndex,
-              items: List.generate(selectedPlayerCount, (index) {
-                return DropdownMenuItem<int>(
-                  value: index,
-                  child: Text(players[index].name),
-                );
-              }),
-              onChanged: (int? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    _selectedDealerIndex = newValue;
-                  });
-                }
-              },
-            ),
-
-            const SizedBox(height: 16),
-            
             // Bottom buttons
             Row(
               children: [

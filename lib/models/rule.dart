@@ -50,7 +50,9 @@ final List<Rule> rules = [
     description: 'Flower tile matches your seat wind.',
     fan: '1 fan',
     explanation: 'The Flower tile number corresponds to your seat wind (1=East, 2=South, 3=West, 4=North).',
-    exampleTiles: [],
+    exampleTiles: [
+      ['1f', '5f'], // Plum (1) and Spring (1) for East
+    ],
     // Validator requires seat context
   ),
   Rule(
@@ -107,7 +109,10 @@ final List<Rule> rules = [
     description: 'Complete set of Flowers.',
     fan: '2 fan',
     explanation: 'Collecting a full set of numbered Flowers (1-4) or Seasons (1-4).',
-    exampleTiles: [],
+    exampleTiles: [
+      ['1f', '2f', '3f', '4f'], // Flowers: Plum, Orchid, Chrysanthemum, Bamboo
+      ['5f', '6f', '7f', '8f'], // Seasons: Spring, Summer, Autumn, Winter
+    ],
   ),
 
   // 3 Fan
@@ -116,7 +121,9 @@ final List<Rule> rules = [
     description: 'Seven Flowers.',
     fan: '3 fan',
     explanation: 'Collecting 7 Flower tiles allows for an immediate win.',
-    exampleTiles: [],
+    exampleTiles: [
+      ['1f', '2f', '3f', '4f', '5f', '6f', '7f'],
+    ],
   ),
   Rule(
     name: 'All Pongs (對對胡 - Deoi3 Deoi3 Wu4)',
@@ -231,7 +238,9 @@ final List<Rule> rules = [
     description: 'Eight Flowers.',
     fan: '8 fan',
     explanation: 'Collecting all 8 Flower tiles allows for an immediate win.',
-    exampleTiles: [],
+    exampleTiles: [
+      ['1f', '2f', '3f', '4f', '5f', '6f', '7f', '8f'],
+    ],
   ),
   Rule(
     name: 'Hidden Treasure (坎坎胡 - Ham2 Ham2 Wu4)',

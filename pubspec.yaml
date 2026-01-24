@@ -30,7 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.18.1
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.2.0
   image_picker: ^1.0.4 
@@ -70,5 +72,6 @@ flutter:
     - assets/images/tiles/honors/
     - assets/images/tiles/characters/
     - assets/images/tiles/dots/
+    - assets/images/tiles/flowers/
     - assets/images/tiles/bamboo/
     - assets/images/tutorial/

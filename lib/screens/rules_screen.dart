@@ -183,7 +183,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
         const SizedBox(height: 16),
 
         // Rule cards list
-        ..._filteredRules.map((rule) => RuleCard(rule: rule)).toList(),
+        ..._filteredRules.map((rule) => RuleCard(rule: rule)),
 
         // Bottom space for good scrolling experience
         const SizedBox(height: 16),

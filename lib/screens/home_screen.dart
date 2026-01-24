@@ -7,6 +7,7 @@ import '../services/player_group_service.dart';
 import 'player_setup.dart';
 import 'score_recording_screen.dart';
 import 'saved_groups_screen.dart';
+import 'group_detail_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -528,51 +529,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
   
   // Start game with selected player group
-  void _startGameWithGroup(PlayerGroup group) async {
-    // Update last played time
-    final updatedGroup = group.copyWith(
-      lastPlayedAt: DateTime.now(),
-    );
-    
-    await PlayerGroupService.saveGroup(updatedGroup);
-    
-    if (mounted) {
-      // Load saved scores if available
-      final List<Player> players = group.players.asMap().entries.map((entry) {
-        int score = 0;
-        if (group.currentScores != null && group.currentScores!.containsKey(entry.value)) {
-          score = group.currentScores![entry.value]!;
-        }
-        return Player(id: entry.key, name: entry.value, score: score);
-      }).toList();
-
-      final int currentRound = group.currentRound ?? 1;
-      final int? dealerIndex = group.dealerIndex;
-      final int? prevalentWindIndex = group.prevalentWindIndex;
-      final int? currentDealerGameCount = group.currentDealerGameCount;
-      final int? totalWindRounds = group.totalWindRounds;
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ScoreRecordingScreen(
-            players: players,
-            currentRound: currentRound,
-            totalRounds: 0, // 0 means unlimited rounds
-            onScoreSubmitted: (Map<String, int> scoreChanges) {
-              debugPrint('Score updated for group "${group.name}"');
-            },
-            groupName: group.name,
-            initialDealerIndex: dealerIndex,
-            initialPrevalentWindIndex: prevalentWindIndex,
-            initialDealerGameCount: currentDealerGameCount,
-            initialTotalWindRounds: totalWindRounds,
-          ),
-        ),
-      ).then((_) {
-        // Reload groups list after game ends
-        _loadPlayerGroups();
-      });
-    }
+  void _startGameWithGroup(PlayerGroup group) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GroupDetailScreen(group: group),
+      ),
+    ).then((_) {
+      // Reload groups list after returning from detail
+      _loadPlayerGroups();
+    });
   }
 }

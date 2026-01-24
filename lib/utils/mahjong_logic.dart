@@ -376,7 +376,9 @@ class MahjongLogic {
     if (kongsNeeded < 0 || kongsNeeded > 4) return false;
 
     Map<String, int> tileCounts = {};
-    for (var tile in tiles) tileCounts[tile] = (tileCounts[tile] ?? 0) + 1;
+    for (var tile in tiles) {
+      tileCounts[tile] = (tileCounts[tile] ?? 0) + 1;
+    }
 
     // Try every possible pair as eyes
     for (var tile in tileCounts.keys) {

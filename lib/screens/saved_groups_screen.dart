@@ -3,8 +3,8 @@ import '../services/player_group_service.dart';
 import '../models/player_group.dart';
 import '../models/player.dart';
 import 'score_recording_screen.dart';
-import 'score_calculation_screen.dart';
 import 'player_setup.dart';
+import 'group_detail_screen.dart';
 
 class SavedGroupsScreen extends StatefulWidget {
   const SavedGroupsScreen({super.key});
@@ -114,55 +114,12 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
   }
 
   void _startGameWithGroup(PlayerGroup group) {
-    // Update player group's last played time
-    final updatedGroup = group.copyWith(
-      lastPlayedAt: DateTime.now(),
-    );
-    
-    // Save updated group
-    PlayerGroupService.saveGroup(updatedGroup);
-    
-    // Convert List<String> to List<Player>
-    final List<Player> players = group.players.asMap().entries.map((entry) {
-      // Load saved score if available
-      int score = 0;
-      if (group.currentScores != null && group.currentScores!.containsKey(entry.value)) {
-        score = group.currentScores![entry.value]!;
-      }
-      
-      return Player(
-        id: entry.key,
-        name: entry.value,
-        score: score,
-      );
-    }).toList();
-
-    // Load saved round if available
-    final int currentRound = group.currentRound ?? 1;
-    final int? dealerIndex = group.dealerIndex;
-    final int? prevalentWindIndex = group.prevalentWindIndex;
-    final int? currentDealerGameCount = group.currentDealerGameCount;
-    final int? totalWindRounds = group.totalWindRounds;
-
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ScoreRecordingScreen(
-          players: players,
-          currentRound: currentRound,
-          totalRounds: 0, // 0 means unlimited rounds
-          onScoreSubmitted: (Map<String, int> scoreChanges) {
-            debugPrint('Round ended, score changes: $scoreChanges');
-          },
-          groupName: group.name,
-          initialDealerIndex: dealerIndex,
-          initialPrevalentWindIndex: prevalentWindIndex,
-          initialDealerGameCount: currentDealerGameCount,
-          initialTotalWindRounds: totalWindRounds,
-        ),
+        builder: (context) => GroupDetailScreen(group: group),
       ),
     ).then((_) {
-      // When returning from game screen, reload group list to update last played time
       _loadSavedGroups();
     });
   }
