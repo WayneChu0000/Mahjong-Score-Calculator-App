@@ -31,17 +31,9 @@ class MahjongTile extends StatelessWidget {
       case 'z': // Honor tiles (winds + dragons)
         return 'assets/images/tiles/honors/${value}z.png';
       case 'f': // Flower tiles
-        switch (value) {
-          case '1': return 'assets/images/tiles/flowers/Plum.png';
-          case '2': return 'assets/images/tiles/flowers/Orchid.png';
-          case '3': return 'assets/images/tiles/flowers/Chrysanthemum.png';
-          case '4': return 'assets/images/tiles/flowers/Bamboo.png';
-          case '5': return 'assets/images/tiles/flowers/Spring.png';
-          case '6': return 'assets/images/tiles/flowers/Summer.png';
-          case '7': return 'assets/images/tiles/flowers/Autumn.png';
-          case '8': return 'assets/images/tiles/flowers/Winter.png';
-          default: return 'assets/images/tiles/back.png';
-        }
+        // Based on user request: 1f=Plum, 5f=Spring, etc.
+        // Files are named 1f.png, 2f.png... 8f.png
+        return 'assets/images/tiles/flowers/${value}f.png';
       default:
         return 'assets/images/tiles/back.png';
     }

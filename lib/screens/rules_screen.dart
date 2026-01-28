@@ -205,8 +205,8 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   Widget _buildTutorialTab() {
     const tutorialTitles = [
       'Welcome',
-      'Mahjong Tiles',
-      'Basic Rules',
+      'Tiles',
+      'Rules',
       'Score',
     ];
 

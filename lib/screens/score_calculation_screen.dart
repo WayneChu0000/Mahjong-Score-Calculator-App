@@ -45,9 +45,11 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   bool _selfDrawBonus = false;
   
   // Flower and Special Conditions
-  String _selectedFlowerOption = 'No Flower';
+  // Use a map to track selected flowers. Keys are '1f'...'8f'. Values are true/false.
+  final Map<String, bool> _selectedFlowers = {};
   String _selectedSpecialCondition = 'None';
 
+/*
   final List<String> _flowerOptions = [
     'No Flower',
     'Flowers (No Score)',
@@ -57,6 +59,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     'Flower Hand',
     'Eight Immortals'
   ];
+*/
 
   final List<String> _specialConditions = [
     'None',
@@ -248,8 +251,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     // Add Self-Draw fan if applicable
     if (_isSelfDraw) {
       // Only add self-draw fan if NOT a special instant win hand that includes self-draw
-      bool isSpecialHand = _selectedFlowerOption == 'Flower Hand' || 
-                           _selectedFlowerOption == 'Eight Immortals' || 
+      bool isSpecialHand = _selectedFlowers.values.where((v) => v).length >= 7 || 
                            _selectedSpecialCondition == 'Heavenly Hand';
       
       if (!isSpecialHand) {
@@ -257,6 +259,18 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
         matchedRules.add({'name': 'Self-Draw', 'fan': 1});
       }
     }
+    
+    // Calculate Flower Fan for "Auto Fan Calculation" mode (when tiles are selected)
+    // Note: This logic is also duplicated/used in _calculateScoreInternal for final display
+    // But we include it here to update _fanCount if in pure auto mode.
+    // Actually, usually Flowers are added ON TOP of the hand's fan.
+    // Let's assume _fanCount tracks the Hand patterns only?
+    // Current design: _fanCount is the base. _calculateScore adds extras.
+    // But if we are in auto-calculate mode, we might want to include them in _fanCount directly.
+    // However, keeping them separate (Base Fan vs Bonus Fan) is safer.
+    // So we will NOT add flower fan here to _fanCount unless we want to merge them.
+    // Let's follow existing pattern: _fanCount is primarily from _calculateFanFromTiles (Hand Patterns).
+    // The previous code reset _fanCount entirely here.
     
     // Cap at 13 fan
     if (calculatedFan > 13) calculatedFan = 13;
@@ -312,30 +326,93 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
         effectiveFan += 2;
       } else if (_selectedSpecialCondition == 'Heavenly Hand') {
         effectiveFan = 13;
+        _displayRules.add({'name': 'Heavenly Hand', 'fan': 13});
       } else if (_selectedSpecialCondition == 'Earthly Hand') {
         effectiveFan = 13;
+        _displayRules.add({'name': 'Earthly Hand', 'fan': 13});
       }
     }
     
     // Add self-draw bonus (usually +1 fan)
     if (_selfDrawBonus) effectiveFan += 1;
     
-    // Handle Flower Options
-    if (_selectedFlowerOption == 'No Flower') {
-      effectiveFan += 1;
-    } else if (_selectedFlowerOption == 'Flowers (No Score)') {
-      // 0 fan, and no "No Flower" bonus
-    } else if (_selectedFlowerOption == '1 Flower') {
-      effectiveFan += 1;
-    } else if (_selectedFlowerOption == '2 Flowers') {
-      effectiveFan += 2;
-    } else if (_selectedFlowerOption == '1 Flower + 1 Flower Platform') {
-      effectiveFan += 3; // 1 (Own) + 2 (Platform)
-    } else if (_selectedFlowerOption == 'Flower Hand') {
-      effectiveFan = 3; // Fixed 3 fan
-      // Instant win, no extra self-draw bonus usually added on top of fixed fan unless specified
-    } else if (_selectedFlowerOption == 'Eight Immortals') {
-      effectiveFan = 8; // Fixed 8 fan
+    // Handle Flower Logic (New)
+    int flowerFan = 0;
+    List<String> flowerDisplayNames = [];
+    
+    int flowerCount = _selectedFlowers.values.where((v) => v).length;
+    
+    if (flowerCount == 0) {
+       // "No Flowers" rule (1 Fan)
+       // Usually only valid if the hand has NO flowers at all
+       flowerFan += 1;
+       flowerDisplayNames.add("No Flowers");
+    } else if (flowerCount == 7) {
+       // Flower Hand (3 Fan / Instant Win)
+       // Overrides normal flower counting
+       effectiveFan = 3; // Or add? Usually fixed or add. Assuming fixed base 3 for instant win + self draw?
+       // Let's assume it sets the base.
+       // Actually user request says "Flower Hand (Cat1 Zek3 Faa1) ... 3 fan".
+       // If it's an instant win, we usually ignore other hand patterns.
+       // But if we have tiles selected, we might want to respect hand + flowers.
+       // Usually "7 Flowers" is a special win hand replacing normal hand.
+       _displayRules = [{'name': 'Flower Hand (7 Flowers)', 'fan': 3}];
+       effectiveFan = 3;
+       flowerFan = 0; // Handled
+    } else if (flowerCount == 8) {
+       // Eight Immortals (8 Fan / Limit)
+       _displayRules = [{'name': 'Eight Immortals', 'fan': 8}];
+       effectiveFan = 8;
+       flowerFan = 0; // Handled
+    } else {
+       // Check "Own Flower"
+       // Seat Wind: East(1z), South(2z), West(3z), North(4z)
+       int seatIndex = 0; // 1-based index (1..4)
+       if (_seatWind == 'East') seatIndex = 1;
+       else if (_seatWind == 'South') seatIndex = 2;
+       else if (_seatWind == 'West') seatIndex = 3;
+       else if (_seatWind == 'North') seatIndex = 4;
+       
+       String ownFlower = '${seatIndex}f'; // 1f..4f corresponds to winds implicitly in numbering
+       String ownSeason = '${seatIndex + 4}f'; // 5f..8f
+       
+       // Handle Flower Set (1-4)
+       // Check "Flower Platform" (All 1-4)
+       bool hasFlowers1to4 = true;
+       for (int i=1; i<=4; i++) {
+           if (_selectedFlowers['${i}f'] != true) hasFlowers1to4 = false;
+       }
+       
+       if (hasFlowers1to4) {
+           flowerFan += 2;
+           flowerDisplayNames.add("Flower Platform (1-4)");
+       } else {
+           // Only count Own Flower if Platform condition is NOT met
+           if (_selectedFlowers[ownFlower] == true) {
+               flowerFan += 1;
+               flowerDisplayNames.add("Own Flower");
+           }
+       }
+
+       // Handle Season Set (5-8)
+       bool hasSeasons1to4 = true;
+       for (int i=5; i<=8; i++) {
+           if (_selectedFlowers['${i}f'] != true) hasSeasons1to4 = false;
+       }
+       
+       if (hasSeasons1to4) {
+           flowerFan += 2;
+           flowerDisplayNames.add("Flower Platform (5-8)");
+       } else {
+           // Only count Own Season if Platform condition is NOT met
+           if (_selectedFlowers[ownSeason] == true) {
+               flowerFan += 1;
+               flowerDisplayNames.add("Own Season");
+           }
+       }
+       
+       // Add specific flower fan to effective fan
+       effectiveFan += flowerFan;
     }
 
     // Cap at 13 fan
@@ -348,7 +425,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     
     // Determine if it counts as self-draw for scoring purposes
     bool countsAsSelfDraw = _isSelfDraw;
-    if (_selectedFlowerOption == 'Flower Hand' || _selectedFlowerOption == 'Eight Immortals' || _selectedSpecialCondition == 'Heavenly Hand') {
+    if (flowerCount >= 7 || _selectedSpecialCondition == 'Heavenly Hand') {
       countsAsSelfDraw = true;
     }
     
@@ -505,6 +582,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
       case 'p': folder = 'dots'; break;
       case 's': folder = 'bamboo'; break;
       case 'z': folder = 'honors'; break;
+      case 'f': folder = 'flowers'; break;
     }
     return 'assets/images/tiles/$folder/$tile.png';
   }
@@ -725,6 +803,8 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     ),
 
                     const SizedBox(height: 16),
+                    
+// Flower selection moved to Hand Preview area
                     // Discard player selection (only show when discard is selected)
                     if (!_isSelfDraw)
                       DropdownButtonFormField<String>(
@@ -796,6 +876,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     
                     const SizedBox(height: 16),
                     
+                    /* Removed old Flower Options Dropdown
                     // Flower Options Dropdown
                     DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
@@ -815,7 +896,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                             _selectedFlowerOption = newValue;
                             // Auto-set self-draw for instant win hands
                             if (newValue == 'Flower Hand' || newValue == 'Eight Immortals') {
-                              _isSelfDraw = true;
+                               _isSelfDraw = true;
                             }
                             _calculateScore();
                           });
@@ -824,6 +905,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     ),
 
                     const SizedBox(height: 16),
+                    */
 
                     // Special Winning Conditions Dropdown
                     DropdownButtonFormField<String>(
@@ -895,84 +977,175 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
             
             // Hand preview area
             Card(
-              child: InkWell(
-                onTap: _selectHand,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Hand Preview Area',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Hand Preview Area',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 16),
-                      if (_isAnalyzing)
-                        Container(
-                          height: 120,
-                          alignment: Alignment.center,
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(),
-                              SizedBox(height: 16),
-                              Text('Analyzing tiles...'),
-                            ],
-                          ),
-                        )
-                      else if (_capturedImage != null)
-                        Container(
-                          height: 120,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: FileImage(_capturedImage!),
-                              fit: BoxFit.cover,
+                    ),
+                    const SizedBox(height: 16),
+                    InkWell(
+                      onTap: _selectHand,
+                      child: _isAnalyzing
+                        ? Container(
+                            height: 120,
+                            alignment: Alignment.center,
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 16),
+                                Text('Analyzing tiles...'),
+                              ],
                             ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        )
-                      else if (_selectedTiles.isNotEmpty)
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 67, 125, 49),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.green.shade900, width: 2),
-                          ),
-                          child: Wrap(
-                            spacing: 4,
-                            runSpacing: 8,
-                            alignment: WrapAlignment.center,
-                            children: _selectedTiles.map((tile) {
-                              return Image.asset(
-                                _getAssetPath(tile),
-                                width: 30,
-                                height: 42,
-                                fit: BoxFit.contain,
-                              );
-                            }).toList(),
-                          ),
-                        )
-                      else
-                        Container(
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Take photo or click to select hand pattern',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                          )
+                        : _capturedImage != null
+                          ? Container(
+                              height: 120,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: FileImage(_capturedImage!),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            )
+                          : _selectedTiles.isNotEmpty
+                            ? Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 67, 125, 49),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.green.shade900, width: 2),
+                                ),
+                                child: Wrap(
+                                  spacing: 4,
+                                  runSpacing: 8,
+                                  alignment: WrapAlignment.center,
+                                  children: [
+                                    ..._selectedTiles.map((tile) {
+                                      return Image.asset(
+                                        _getAssetPath(tile),
+                                        width: 30,
+                                        height: 42,
+                                        fit: BoxFit.contain,
+                                      );
+                                    }), 
+                                    // Display selected flowers as visuals (not counted in tiles validator usually)
+                                    ..._selectedFlowers.entries.where((e) => e.value).map((e) {
+                                      return Image.asset(
+                                        _getAssetPath(e.key), // Using 1f..8f
+                                        width: 30,
+                                        height: 42,
+                                        fit: BoxFit.contain,
+                                      );
+                                    })
+                                  ].toList(),
+                                ),
+                              )
+                            : Container(
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    'Take photo or click to select hand pattern',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ),
+                              ),
+                    ),
+
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Select Flowers',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Flowers 1-4
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(4, (index) {
+                         int id = index + 1;
+                         String key = '${id}f';
+                         bool isSelected = _selectedFlowers[key] == true;
+                         
+                         return GestureDetector(
+                           onTap: () {
+                             setState(() {
+                               _selectedFlowers[key] = !isSelected;
+                               _calculateScore();
+                             });
+                           },
+                           child: Container(
+                             decoration: BoxDecoration(
+                               border: isSelected 
+                                  ? Border.all(color: Colors.amber, width: 3) 
+                                  : Border.all(color: Colors.transparent, width: 3),
+                               borderRadius: BorderRadius.circular(8),
+                             ),
+                             child: Opacity(
+                               opacity: isSelected ? 1.0 : 0.5,
+                               child: Image.asset(
+                                 _getAssetPath(key),
+                                 width: 45,
+                                 height: 60,
+                                 fit: BoxFit.contain,
+                               ),
+                             ),
+                           ),
+                         );
+                      }),
+                    ),
+                    const SizedBox(height: 12),
+                    // Flowers 5-8
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(4, (index) {
+                         int id = index + 5;
+                         String key = '${id}f';
+                         bool isSelected = _selectedFlowers[key] == true;
+                         
+                         return GestureDetector(
+                           onTap: () {
+                             setState(() {
+                               _selectedFlowers[key] = !isSelected;
+                               _calculateScore();
+                             });
+                           },
+                           child: Container(
+                             decoration: BoxDecoration(
+                               border: isSelected 
+                                  ? Border.all(color: Colors.amber, width: 3) 
+                                  : Border.all(color: Colors.transparent, width: 3),
+                               borderRadius: BorderRadius.circular(8),
+                             ),
+                             child: Opacity(
+                               opacity: isSelected ? 1.0 : 0.5,
+                               child: Image.asset(
+                                 _getAssetPath(key),
+                                 width: 45,
+                                 height: 60,
+                                 fit: BoxFit.contain,
+                               ),
+                             ),
+                           ),
+                         );
+                      }),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -1010,19 +1183,99 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         // Self-Draw (Manual mode or not captured in matched rules)
                         if (_isSelfDraw && 
                             !_displayRules.any((r) => r['name'] == 'Self-Draw') &&
-                            !['Flower Hand', 'Eight Immortals'].contains(_selectedFlowerOption) &&
+                            _selectedFlowers.values.where((v) => v).length < 7 && // Not instant win flower hand
                             _selectedSpecialCondition != 'Heavenly Hand')
                           const DataRow(cells: [
                             DataCell(Text('Self-Draw')),
                             DataCell(Text('+1 Fan')),
                           ]),
 
+                        // Flower Display Logic (New)
+                        // Iterate through the logic defined in _calculateScoreInternal implicitly or explicitly
+                        // Actually, _calculateScoreInternal stores total fan in _effectiveFan but doesn't fill _displayRules for flowers.
+                        // Let's add them here for display based on current selection state
+                        
+                        // We check the conditions again for display purposes solely in build method or update _displayRules
+                        // Better to update _displayRules in _calculateScoreInternal but since we can't easily change that method output 
+                        // without major refactor of this view logic (as it relies on _displayRules for table),
+                        // let's add rows here based on state.
+                        
+                        // Display Own Flower (Only if not part of a platform)
+                         if (() {
+                             int seatIndex = 0;
+                             if (_seatWind == 'East') seatIndex = 1; else if (_seatWind == 'South') seatIndex = 2;
+                             else if (_seatWind == 'West') seatIndex = 3; else if (_seatWind == 'North') seatIndex = 4;
+                             
+                             // Check Platform 1-4
+                             bool has1to4 = true;
+                             for(int i=1;i<=4;i++) if(_selectedFlowers['${i}f']!=true) has1to4=false;
+                             
+                             // Check Own Flower (1-4)
+                             bool hasOwnFlower = _selectedFlowers['${seatIndex}f'] == true;
+                             
+                             return hasOwnFlower && !has1to4 && _selectedFlowers.values.where((v) => v).length < 7;
+                         }())
+                          const DataRow(cells: [
+                            DataCell(Text('Own Flower')),
+                            DataCell(Text('+1 Fan')),
+                          ]),
+
+                         // Display Own Season (Only if not part of a platform)
+                         if (() {
+                             int seatIndex = 0;
+                             if (_seatWind == 'East') seatIndex = 1; else if (_seatWind == 'South') seatIndex = 2;
+                             else if (_seatWind == 'West') seatIndex = 3; else if (_seatWind == 'North') seatIndex = 4;
+                             
+                             // Check Platform 5-8
+                             bool has5to8 = true;
+                             for(int i=5;i<=8;i++) if(_selectedFlowers['${i}f']!=true) has5to8=false;
+                             
+                             // Check Own Season (5-8) (East=5, South=6, West=7, North=8)
+                             bool hasOwnSeason = _selectedFlowers['${seatIndex+4}f'] == true;
+                             
+                             return hasOwnSeason && !has5to8 && _selectedFlowers.values.where((v) => v).length < 7;
+                         }())
+                          const DataRow(cells: [
+                            DataCell(Text('Own Season')),
+                            DataCell(Text('+1 Fan')),
+                          ]),
+
+                        // Display No Flowers
+                        if (_selectedFlowers.values.where((v) => v).isEmpty)
+                          const DataRow(cells: [
+                            DataCell(Text('No Flowers')),
+                            DataCell(Text('+1 Fan')),
+                          ]),
+                        
+                        // Display Flower Platforms
+                        if (() {
+                           bool has1to4 = true;
+                           for(int i=1;i<=4;i++) if(_selectedFlowers['${i}f']!=true) has1to4=false;
+                           return has1to4 && _selectedFlowers.values.where((v) => v).length < 7;
+                        }())
+                           const DataRow(cells: [
+                            DataCell(Text('Flower Platform (1-4)')),
+                            DataCell(Text('+2 Fan')),
+                          ]),
+
+                        if (() {
+                           bool has5to8 = true;
+                           for(int i=5;i<=8;i++) if(_selectedFlowers['${i}f']!=true) has5to8=false;
+                           return has5to8 && _selectedFlowers.values.where((v) => v).length < 7;
+                        }())
+                           const DataRow(cells: [
+                            DataCell(Text('Flower Platform (5-8)')),
+                            DataCell(Text('+2 Fan')),
+                          ]),
+                          
+                        /* Removed old Flower Option Display
                         // Flower Option Display
                         if (_selectedFlowerOption != 'Flowers (No Score)')
                           DataRow(cells: [
                             DataCell(Text(_selectedFlowerOption)),
                             DataCell(Text(_getFlowerFanText(_selectedFlowerOption))),
                           ]),
+                        */
 
                         // Special Condition Display
                         // Hide Men Qian Qing if it was merged into Hidden Treasure

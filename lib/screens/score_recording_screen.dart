@@ -549,12 +549,10 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     }
   }
 
-  Widget _buildDraggablePosition(int index, Alignment alignment) {
+  Widget _buildDraggableTarget(int index, double width, double height) {
      if (index >= _updatedPlayers.length) return const SizedBox.shrink();
 
-     return Align(
-        alignment: alignment,
-        child: DragTarget<int>(
+     return DragTarget<int>(
           onWillAccept: (data) => data != null && data != index,
           onAccept: (fromIndex) => _handlePlayerSwap(fromIndex, index),
           builder: (context, candidateData, rejectedData) {
@@ -564,17 +562,16 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                 color: Colors.transparent,
                 child: Opacity(
                   opacity: 0.7,
-                  child: _buildCompactPlayerCard(_updatedPlayers[index], index),
+                  child: _buildCompactPlayerCard(_updatedPlayers[index], index, width, height),
                 ),
               ),
               childWhenDragging: Opacity(
                 opacity: 0.3,
-                child: _buildCompactPlayerCard(_updatedPlayers[index], index),
+                child: _buildCompactPlayerCard(_updatedPlayers[index], index, width, height),
               ),
-              child: _buildCompactPlayerCard(_updatedPlayers[index], index),
+              child: _buildCompactPlayerCard(_updatedPlayers[index], index, width, height),
             );
           },
-        ),
      );
   }
 
@@ -663,12 +660,13 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Win Rate: ${(winRate * 100).toStringAsFixed(2)}%'),
+                        const SizedBox(height: 4),
                         Row(
                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                              children: [
-                                 Text('Self-Draw: $tsumos'),
-                                 Text('Discard: $rons'),
-                                 Text('Deal-in: $dealsIn'),
+                                 Expanded(child: Text('Self-Draw: $tsumos', style: const TextStyle(fontSize: 12))),
+                                 Expanded(child: Text('Discard: $rons', style: const TextStyle(fontSize: 12), textAlign: TextAlign.center)),
+                                 Expanded(child: Text('Deal-in: $dealsIn', style: const TextStyle(fontSize: 12), textAlign: TextAlign.right)),
                              ]
                         )
                       ],
@@ -774,69 +772,142 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final size = constraints.biggest.shortestSide;
+                    
+                    // Center box size
+                    final double centerSize = size * 0.28;
+                    
+                    // We want equal spacing between center and all cards
+                    // Distance from center of layout to edge of center box = centerSize / 2
+                    // Distance from center of layout to inner edge of card should be (centerSize / 2 + gap)
+                    
+                    // Let's define the gap. To prevent cards from being too small, we minimize the gap.
+                    // But requirement says "ensure the button will not be too big and small".
+                    // Let's try to fit the standard card size (110x90) if possible, else shrink.
+                    
+                    // Max dimension available for (Gap + Card) on one side = (size - centerSize) / 2
+                    final double maxSideSpace = (size - centerSize) / 2;
+                    
+                    // define ideal card
+                    const double idealWidth = 100.0;
+                    const double idealHeight = 90.0; // Aspect ratio ~ 1.22
+                    
+                    // For vertical sides (Top/Bottom), we need space for Card Height
+                    // For horizontal sides (Left/Right), we need space for Card Width
+                    // To maintain symmetry in spacing, we should use the tighter constraint to determine the scale if needed, 
+                    // or just fit them into their respective spaces.
+                    // BUT user asked: "space ... should be same".
+                    
+                    // Let gap be proportional, say 5% of center size or just fixed small value.
+                    // Or let's maximize card size while keeping a minimum gap.
+                    double gap = 15.0; 
+                    
+                    // Calculate max possible width/height if we respect the gap
+                    // Vertical Constraint: 2 * (Height + gap) + centerSize <= size
+                    // Horizontal Constraint: 2 * (Width + gap) + centerSize <= size
+                    
+                    double finalCardWidth = idealWidth;
+                    double finalCardHeight = idealHeight;
+                    
+                    // Horizontal check
+                    if (2 * (idealWidth + gap) + centerSize > size) {
+                       // Need to shrink width
+                       finalCardWidth = (size - centerSize) / 2 - gap;
+                       if (finalCardWidth < 0) finalCardWidth = 0;
+                       // Maintain aspect ratio? Or just shrink height too?
+                       // Usually cards shrink proportionally.
+                       finalCardHeight = finalCardWidth * (idealHeight / idealWidth);
+                    }
+                    
+                    // Vertical check (with updated height from horizontal check, or original)
+                    if (2 * (finalCardHeight + gap) + centerSize > size) {
+                       // Need to shrink height further
+                       finalCardHeight = (size - centerSize) / 2 - gap;
+                       if (finalCardHeight < 0) finalCardHeight = 0;
+                       finalCardWidth = finalCardHeight * (idealWidth / idealHeight);
+                    }
+                    
+                    // Now we have finalCardWidth, finalCardHeight, and we know they fit with 'gap'.
+                    // To ensure EXACTLY equal spacing visually, we calculate the position.
+                    
+                    // Distance from center to Inner Edge of card = centerSize/2 + gap
+                    final double distFromCenter = centerSize / 2 + gap;
+
                     return SizedBox(
                       width: size,
                       height: size,
                       child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.center,
                         children: [
                           // Center table
-                          Center(
-                            child: Container(
-                              width: size * 0.3,
-                              height: size * 0.3,
-                              decoration: BoxDecoration(
-                                color: Colors.green.shade800,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 4),
+                          Container(
+                            width: centerSize,
+                            height: centerSize,
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade800,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Mahjong',
+                                  style: TextStyle(color: Colors.white70, fontSize: 10),
+                                ),
+                                Text(
+                                  '${['East', 'South', 'West', 'North'][_prevalentWindIndex]} Round',
+                                  style: const TextStyle(
+                                    color: Colors.white, 
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
                                   ),
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Mahjong',
-                                    style: TextStyle(color: Colors.white70, fontSize: 10),
+                                ),
+                                Text(
+                                  'Game $_currentDealerGameCount',
+                                  style: const TextStyle(
+                                    color: Colors.white70, 
+                                    fontSize: 12,
                                   ),
-                                  Text(
-                                    '${['East', 'South', 'West', 'North'][_prevalentWindIndex]} Round',
-                                    style: const TextStyle(
-                                      color: Colors.white, 
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Game $_currentDealerGameCount',
-                                    style: const TextStyle(
-                                      color: Colors.white70, 
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                           
-                          // Player 2 (Opposite/West relative to 0) - Top
+                          // Use Positioned for exact control
+                          // Player 2 (Top)
                           if (_updatedPlayers.length > 2)
-                            _buildDraggablePosition(2, Alignment.topCenter),
-                            
-                          // Player 0 (Self/East relative to 0) - Bottom
+                             Positioned(
+                               top: (size / 2) - distFromCenter - finalCardHeight,
+                               child: _buildDraggableTarget(2, finalCardWidth, finalCardHeight),
+                             ),
+
+                          // Player 0 (Bottom)
                           if (_updatedPlayers.isNotEmpty)
-                            _buildDraggablePosition(0, Alignment.bottomCenter),
-                            
-                          // Player 3 (Left/North relative to 0) - Left
+                             Positioned(
+                               bottom: (size / 2) - distFromCenter - finalCardHeight,
+                               child: _buildDraggableTarget(0, finalCardWidth, finalCardHeight),
+                             ),
+
+                          // Player 3 (Left)
                           if (_updatedPlayers.length > 3)
-                            _buildDraggablePosition(3, Alignment.centerLeft),
-                            
-                          // Player 1 (Right/South relative to 0) - Right
+                             Positioned(
+                               left: (size / 2) - distFromCenter - finalCardWidth,
+                               child: _buildDraggableTarget(3, finalCardWidth, finalCardHeight),
+                             ),
+
+                          // Player 1 (Right)
                           if (_updatedPlayers.length > 1)
-                            _buildDraggablePosition(1, Alignment.centerRight),
+                             Positioned(
+                               right: (size / 2) - distFromCenter - finalCardWidth,
+                               child: _buildDraggableTarget(1, finalCardWidth, finalCardHeight),
+                             ),
                         ],
                       ),
                     );
@@ -909,7 +980,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
   }
   
   // Build compact player card for table layout
-  Widget _buildCompactPlayerCard(Player player, int index) {
+  Widget _buildCompactPlayerCard(Player player, int index, double width, double height) {
     final isDealer = index == _dealerIndex;
     final currentScore = _scoreService.getPlayerScore(player.id.toString());
     
@@ -925,8 +996,8 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Container(
-      width: 110,
-      height: 90,
+      width: width,
+      height: height,
       margin: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
