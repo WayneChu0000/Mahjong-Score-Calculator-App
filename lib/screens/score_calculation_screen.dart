@@ -7,6 +7,7 @@ import 'tile_selection_screen.dart';
 import '../utils/mahjong_logic.dart';
 import '../models/rule.dart'; // Import Rule model
 import 'rules_screen.dart';
+import '../services/vision_service.dart'; // Import Vision Service
 
 class ScoreCalculationScreen extends StatefulWidget {
   final List<Player> players;
@@ -69,6 +70,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   
   // Hand preview
   File? _capturedImage;
+  bool _isAnalyzing = false;
   List<String> _selectedTiles = [];
   List<Map<String, dynamic>> _matchedRulesDetails = []; // Store matched rules for display
   List<Map<String, dynamic>> _displayRules = []; // Final rules for display
@@ -430,7 +432,49 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
       setState(() {
         _capturedImage = File(image.path);
         _selectedTiles.clear(); // Clear manual selection if photo taken
+        _isAnalyzing = true;
       });
+
+      try {
+        final detectedTiles = await VisionService.analyzeImage(_capturedImage!);
+        
+        // Sort tiles: suit (m, p, s, z, f) then value
+        detectedTiles.sort((a, b) {
+          if (a.length < 2 || b.length < 2) return a.compareTo(b);
+          final suitA = a.substring(a.length - 1);
+          final suitB = b.substring(b.length - 1);
+          final valA = a.substring(0, a.length - 1);
+          final valB = b.substring(0, b.length - 1);
+          
+          if (suitA != suitB) {
+            const order = ['m', 'p', 's', 'z', 'f'];
+            int idxA = order.indexOf(suitA);
+            int idxB = order.indexOf(suitB);
+            if (idxA == -1) idxA = 99;
+            if (idxB == -1) idxB = 99;
+            return idxA.compareTo(idxB);
+          }
+          return valA.compareTo(valB);
+        });
+
+        if (mounted) {
+          setState(() {
+            _selectedTiles = detectedTiles;
+            _isAnalyzing = false;
+          });
+          _calculateFanFromTiles();
+          _calculateScore();
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isAnalyzing = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to analyze tiles: $e')),
+          );
+        }
+      }
     }
   }
 
@@ -866,7 +910,20 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      if (_capturedImage != null)
+                      if (_isAnalyzing)
+                        Container(
+                          height: 120,
+                          alignment: Alignment.center,
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(height: 16),
+                              Text('Analyzing tiles...'),
+                            ],
+                          ),
+                        )
+                      else if (_capturedImage != null)
                         Container(
                           height: 120,
                           decoration: BoxDecoration(
