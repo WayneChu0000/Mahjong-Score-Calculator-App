@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'auth_wrapper.dart';
+import '../localization/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -104,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen>
                     
                     // App name
                     Text(
-                      'Mahjong Calculator',
+                      AppLocalizations.splashTitle,
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -117,7 +118,7 @@ class _SplashScreenState extends State<SplashScreen>
                     
                     // Subtitle
                     Text(
-                      'Making Scoring Easier',
+                      AppLocalizations.splashSubtitle,
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.green.shade600,

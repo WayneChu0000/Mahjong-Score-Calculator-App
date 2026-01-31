@@ -8,6 +8,7 @@ import 'player_setup.dart';
 import 'score_recording_screen.dart';
 import 'saved_groups_screen.dart';
 import 'group_detail_screen.dart';
+import '../localization/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -82,7 +83,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      title: 'Mahjong Calculator',
+      title: AppLocalizations.homeTitle,
       currentIndex: 0,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -104,9 +105,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               padding: const EdgeInsets.all(16.0),
                               child: Column(
                                 children: [
-                                  const Text(
-                                    'Welcome Back!',
-                                    style: TextStyle(
+                                  Text(
+                                    AppLocalizations.welcomeBack,
+                                    style: const TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -130,7 +131,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           Expanded(
                             child: ElevatedButton.icon(
                               icon: const Icon(Icons.add, size: 20),
-                              label: const Text('New Group'),
+                              label: Text(AppLocalizations.newGroup),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 foregroundColor: Colors.white,
@@ -155,7 +156,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           Expanded(
                             child: ElevatedButton.icon(
                               icon: const Icon(Icons.history, size: 20),
-                              label: const Text('History'),
+                              label: Text(AppLocalizations.history),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
                                 foregroundColor: Colors.white,
@@ -180,9 +181,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       if (_playerGroups.isNotEmpty) ...[
                         Row(
                           children: [
-                            const Text(
-                              'Recent Groups',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            Text(
+                              AppLocalizations.recentGroups,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             const Spacer(),
                             TextButton(
@@ -194,7 +195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   ),
                                 ).then((_) => _loadPlayerGroups());
                               },
-                              child: const Text('View All'),
+                              child: Text(AppLocalizations.viewAll),
                             ),
                           ],
                         ),
@@ -236,16 +237,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              '${group.players.length} players',
-                                              style: TextStyle(
-                                                color: Theme.of(context).brightness == Brightness.dark 
-                                                    ? Colors.grey.shade400 
-                                                    : Colors.grey.shade600,
-                                                fontSize: 13,
-                                              ),
-                                            ),
                                           ],
                                         ),
                                         const SizedBox(height: 10),
@@ -271,7 +262,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'Created: ${_formatDateTime(group.createdAt)}',
+                                              '${AppLocalizations.createdPrefix}${_formatDateTime(group.createdAt)}',
                                               style: TextStyle(
                                                 color: Theme.of(context).brightness == Brightness.dark
                                                     ? Colors.grey.shade400
@@ -284,7 +275,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               children: [
                                                 TextButton.icon(
                                                   icon: const Icon(Icons.edit, size: 14),
-                                                  label: const Text('Edit', style: TextStyle(fontSize: 12)),
+                                                  label: Text(AppLocalizations.edit, style: const TextStyle(fontSize: 12)),
                                                   style: TextButton.styleFrom(
                                                     padding: const EdgeInsets.symmetric(horizontal: 8),
                                                     minimumSize: const Size(60, 32),
@@ -293,7 +284,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 ),
                                                 TextButton.icon(
                                                   icon: const Icon(Icons.delete, size: 14, color: Colors.red),
-                                                  label: const Text('Delete', style: TextStyle(fontSize: 12, color: Colors.red)),
+                                                  label: Text(AppLocalizations.delete, style: const TextStyle(fontSize: 12, color: Colors.red)),
                                                   style: TextButton.styleFrom(
                                                     padding: const EdgeInsets.symmetric(horizontal: 8),
                                                     minimumSize: const Size(60, 32),
@@ -324,18 +315,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   color: Colors.grey.shade400,
                                 ),
                                 const SizedBox(height: 16),
-                                const Text(
-                                  'No Saved Player Groups',
-                                  style: TextStyle(
+                                Text(
+                                  AppLocalizations.noSavedGroups,
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                const Text(
-                                  'Create your first group to get started',
-                                  style: TextStyle(
+                                Text(
+                                  AppLocalizations.createFirstGroupHint,
+                                  style: const TextStyle(
                                     fontSize: 13,
                                     color: Colors.grey,
                                   ),
@@ -344,7 +335,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 const SizedBox(height: 24),
                                 ElevatedButton.icon(
                                   icon: const Icon(Icons.add),
-                                  label: const Text('Create Player Group'),
+                                  label: Text(AppLocalizations.createGroup),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green,
                                     foregroundColor: Colors.white,
@@ -496,16 +487,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: Text('Are you sure you want to delete group "$groupName"?'),
+        title: Text(AppLocalizations.confirmDeleteTitle),
+        content: Text(AppLocalizations.confirmDeleteContent(groupName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -519,7 +510,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Group "$groupName" deleted'),
+              content: Text(AppLocalizations.groupDeleted(groupName)),
               backgroundColor: Colors.green,
             ),
           );

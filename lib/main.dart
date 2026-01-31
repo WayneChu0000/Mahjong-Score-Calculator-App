@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'screens/splash_screen.dart';
 import 'services/settings_service.dart';
 import 'services/score_service.dart'; 
+import 'localization/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,7 +75,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mahjong Score Calculator',
+      onGenerateTitle: (context) => AppLocalizations.appTitle,
       themeMode: _getThemeMode(),
       theme: ThemeData(
         primarySwatch: Colors.green,

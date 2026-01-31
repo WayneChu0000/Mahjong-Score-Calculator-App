@@ -1,3 +1,5 @@
+import '../localization/app_localizations.dart';
+
 class MahjongLogic {
   // Tile types
   static const List<String> suits = ['m', 'p', 's', 'z'];
@@ -23,7 +25,7 @@ class MahjongLogic {
     int kongsNeeded = count - 14;
     
     if (kongsNeeded < 0 || kongsNeeded > 4) {
-      return {'valid': false, 'message': 'Invalid number of tiles. Must be 14, 15, 16, 17, or 18.'};
+      return {'valid': false, 'message': AppLocalizations.invalidTileCount};
     }
 
     // Frequency map
@@ -43,7 +45,7 @@ class MahjongLogic {
       };
       
       if (uniqueTiles.length == 13 && uniqueTiles.containsAll(requiredOrphans)) {
-         return {'valid': true, 'message': 'Winning Hand (Thirteen Orphans)!'};
+         return {'valid': true, 'message': AppLocalizations.winningHandThirteenOrphans};
       }
     }
 
@@ -59,12 +61,12 @@ class MahjongLogic {
         
         // Check if remaining can form sets
         if (_checkSets(currentCounts, kongsNeeded)) {
-          return {'valid': true, 'message': 'Winning Hand!'};
+          return {'valid': true, 'message': AppLocalizations.winningHand};
         }
       }
     }
 
-    return {'valid': false, 'message': 'Cannot form a winning hand (4 sets + 1 pair).'};
+    return {'valid': false, 'message': AppLocalizations.winningHandInvalid};
   }
 
   static bool _checkSets(Map<String, int> counts, int kongsNeeded, {bool allowChow = true, bool allowPong = true}) {
@@ -146,12 +148,7 @@ class MahjongLogic {
   // 1 Fan: Ping Hu (All Chows)
   static bool isPingHu(List<String> tiles) {
     // No Pongs allowed.
-    // Usually implies no Honor tiles as well (since honors can't chow).
-    // But strictly "All Chows" means 4 chows + 1 pair.
-    // If the pair is honor, it's debatable. Standard Ping Hu usually requires non-honor pair.
-    // Let's check: No Pongs, No Honors.
-    bool hasHonor = tiles.any((t) => t.substring(1) == 'z');
-    if (hasHonor) return false;
+    // Honors allowed only as Pair (enforced by allowPong: false)
     return _checkSpecificHand(tiles, allowChow: true, allowPong: false);
   }
 

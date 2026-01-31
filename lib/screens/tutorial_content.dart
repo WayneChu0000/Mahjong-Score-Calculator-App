@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/mahjong_tile.dart';
+import '../localization/app_localizations.dart';
 
 class TutorialContent extends StatelessWidget {
   final int pageIndex;
@@ -33,33 +34,33 @@ class TutorialContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Welcome to Mahjong Score Calculator',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.welcomeTitle,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Your all-in-one companion for Hong Kong Mahjong!',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+          Text(
+            AppLocalizations.appDescription,
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
           ),
           const SizedBox(height: 24),
           
-          const Text(
-            'Key Features:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.keyFeatures,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           
-          _buildFeatureItem(Icons.calculate, 'Smart Calculator', 'Instantly calculate Fan and Score. Supports special hands like Thirteen Orphans and Nine Gates.'),
-          _buildFeatureItem(Icons.history, 'Game Recording', 'Track scores round-by-round. Auto-manages Dealer rotation and Round Winds.'),
-          _buildFeatureItem(Icons.menu_book, 'Rules Reference', 'Complete guide to HK Mahjong scoring patterns with examples.'),
-          _buildFeatureItem(Icons.group, 'Player Management', 'Save player groups and keep track of total games played.'),
+          _buildFeatureItem(Icons.calculate, AppLocalizations.smartCalculatorTitle, AppLocalizations.smartCalculatorDesc),
+          _buildFeatureItem(Icons.history, AppLocalizations.gameRecordingTitle, AppLocalizations.gameRecordingDesc),
+          _buildFeatureItem(Icons.menu_book, AppLocalizations.rulesReferenceTitle, AppLocalizations.rulesReferenceDesc),
+          _buildFeatureItem(Icons.group, AppLocalizations.playerManagementTitle, AppLocalizations.playerManagementDesc),
           
           const SizedBox(height: 24),
-          const Center(
+          Center(
             child: Text(
-              'Swipe to learn the basics ->',
-              style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: Colors.green),
+              AppLocalizations.swipeToLearn,
+              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: Colors.green),
             ),
           ),
         ],
@@ -109,16 +110,16 @@ class TutorialContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Types of Mahjong Tiles',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.tileTypesTitle,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           
           // Character tiles
           _buildTileSection(
-            'Character Tiles',
-            'Numbered 1 to 9 in characters',
+            AppLocalizations.characterTiles,
+            AppLocalizations.characterTilesDesc,
             ['1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m'],
           ),
           
@@ -126,8 +127,8 @@ class TutorialContent extends StatelessWidget {
           
           // Dots tiles
           _buildTileSection(
-            'Dots Tiles',
-            'Numbered 1 to 9 in dots',
+            AppLocalizations.dotsTiles,
+            AppLocalizations.dotsTilesDesc,
             ['1p', '2p', '3p', '4p', '5p', '6p', '7p', '8p', '9p'],
           ),
           
@@ -135,8 +136,8 @@ class TutorialContent extends StatelessWidget {
           
           // Bamboo tiles
           _buildTileSection(
-            'Bamboo Tiles',
-            'Numbered 1 to 9 in bamboo',
+            AppLocalizations.bambooTiles,
+            AppLocalizations.bambooTilesDesc,
             ['1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s'],
           ),
           
@@ -144,8 +145,8 @@ class TutorialContent extends StatelessWidget {
           
           // Honor tiles
           _buildTileSection(
-            'Honor Tiles',
-            'Include Wind tiles (East/South/West/North) and Dragon tiles (Red/Green/White)',
+            AppLocalizations.honorTiles,
+            AppLocalizations.honorTilesDesc,
             ['1z', '2z', '3z', '4z', '5z', '6z', '7z'],
           ),
           
@@ -153,14 +154,12 @@ class TutorialContent extends StatelessWidget {
           
           // Flower tiles
           _buildTileSection(
-            'Flower Tiles',
-            'Flowers (Plum, Orchid, Chrysanthemum, Bamboo) and Seasons (Spring, Summer, Autumn, Winter)',
+            AppLocalizations.flowerTiles,
+            AppLocalizations.flowerTilesDesc,
             ['1f', '2f', '3f', '4f', '5f', '6f', '7f', '8f'],
           ),
 
           const SizedBox(height: 16),
-
-
         ],
       ),
     );
@@ -195,42 +194,42 @@ class TutorialContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Basic Rules',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.basicRulesTitle,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           
-          const Text(
-            '1. Game Objective',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.gameObjectiveTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('The goal of mahjong is to form a complete hand, usually consisting of:'),
-          const Text('• 4 sets (chow/pong) + 1 pair (eyes)'),
-          const Text('• Special hands (e.g., Thirteen Orphans)'),
+          Text(AppLocalizations.gameObjectiveDesc1),
+          Text(AppLocalizations.gameObjectiveDesc2),
+          Text(AppLocalizations.gameObjectiveDesc3),
           
           const SizedBox(height: 16),
           
-          const Text(
-            '2. Basic Terms',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.basicTermsTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('• Chow: Three consecutive tiles (e.g., 1m-2m-3m)'),
-          const Text('• Pong: Three identical tiles (e.g., 5p-5p-5p)'),
-          const Text('• Eyes: A pair of identical tiles'),
-          const Text('• Self-Draw: Draw your own winning tile'),
-          const Text('• Discard: Discard a tile that lets others win'),
+          Text(AppLocalizations.basicTermsChow),
+          Text(AppLocalizations.basicTermsPong),
+          Text(AppLocalizations.basicTermsEyes),
+          Text(AppLocalizations.basicTermsSelfDraw),
+          Text(AppLocalizations.basicTermsDiscard),
           
           const SizedBox(height: 16),
 
-          const Text(
-            '3. Starting the Game',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.startingGameTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('The Dealer (East) rolls 2 or 3 dice to determine which wall to break.'),
+          Text(AppLocalizations.startingGameDesc),
           const SizedBox(height: 8),
           
           // Dice Table
@@ -244,57 +243,57 @@ class TutorialContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Dice Roll & Wall Selection:', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(AppLocalizations.diceRollTableTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
-                _buildDiceRow('5, 9, 13, 17', 'Dealer (East)'),
-                _buildDiceRow('6, 10, 14, 18', 'South (Right)'),
-                _buildDiceRow('3, 7, 11, 15', 'West (Opposite)'),
-                _buildDiceRow('4, 8, 12, 16', 'North (Left)'),
+                _buildDiceRow('5, 9, 13, 17', AppLocalizations.diceDealerEast),
+                _buildDiceRow('6, 10, 14, 18', AppLocalizations.diceSouthRight),
+                _buildDiceRow('3, 7, 11, 15', AppLocalizations.diceWestOpposite),
+                _buildDiceRow('4, 8, 12, 16', AppLocalizations.diceNorthLeft),
                 const SizedBox(height: 8),
-                const Text(
-                  'Count counter-clockwise starting from Dealer as 1.',
-                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
+                Text(
+                  AppLocalizations.counterClockwiseCount,
+                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
                 ),
               ],
             ),
           ),
           
           const SizedBox(height: 12),
-          const Text('Example: Roll 8 → Count to North (Left). Break North wall.'),
-          const Text('From the chosen wall, count stacks clockwise (skipping the rolled number) to start drawing.'),
+          Text(AppLocalizations.exampleRoll8),
+          Text(AppLocalizations.drawClockwise),
           
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(8),
             color: Colors.amber.withOpacity(0.2),
-            child: const Row(
+            child: Row(
               children: [
-                Icon(Icons.warning_amber_rounded, color: Colors.amber),
-                SizedBox(width: 8),
-                Expanded(child: Text('Remember: Play Counter-Clockwise, Draw Clockwise!')),
+                const Icon(Icons.warning_amber_rounded, color: Colors.amber),
+                const SizedBox(width: 8),
+                Expanded(child: Text(AppLocalizations.rememberDirection)),
               ],
             ),
           ),
 
           const SizedBox(height: 12),
-          const Text('Dealing Procedure:', style: TextStyle(fontWeight: FontWeight.bold)),
-          const Text('1. Each player takes 4 tiles (2 stacks) in order.'),
-          const Text('2. Repeat until everyone has 12 tiles.'),
-          const Text('3. Dealer takes 1st and 3rd tile from end (14 total).'),
-          const Text('4. Others take 1 tile (13 total).'),
-          const Text('5. Replace Flower tiles from the back of the wall.'),
+          Text(AppLocalizations.dealingProcedureTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(AppLocalizations.dealStep1),
+          Text(AppLocalizations.dealStep2),
+          Text(AppLocalizations.dealStep3),
+          Text(AppLocalizations.dealStep4),
+          Text(AppLocalizations.dealStep5),
 
           const SizedBox(height: 16),
           
-          const Text(
-            '4. Gameplay Process',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.gameplayProcessTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('After dealing and flower replacement, the game proceeds counter-clockwise starting from the Dealer.'),
+          Text(AppLocalizations.gameplayProcessDesc),
           
           const SizedBox(height: 12),
-          const Text('Standard Turn:', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(AppLocalizations.standardTurnTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 8),
             padding: const EdgeInsets.all(12),
@@ -302,49 +301,49 @@ class TutorialContent extends StatelessWidget {
               border: Border.all(color: Colors.grey.shade300),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Column(children: [Icon(Icons.download), Text('Draw')]),
-                Icon(Icons.arrow_forward),
-                Column(children: [Icon(Icons.touch_app), Text('Action')]),
-                Icon(Icons.arrow_forward),
-                Column(children: [Icon(Icons.upload), Text('Discard')]),
+                Column(children: [const Icon(Icons.download), Text(AppLocalizations.drawAction)]),
+                const Icon(Icons.arrow_forward),
+                Column(children: [const Icon(Icons.touch_app), Text(AppLocalizations.actionAction)]),
+                const Icon(Icons.arrow_forward),
+                Column(children: [const Icon(Icons.upload), Text(AppLocalizations.discardAction)]),
               ],
             ),
           ),
-          const Text('1. Draw a tile from the wall (Dealer skips this on first turn).'),
-          const Text('2. If it\'s a Flower, reveal it and draw a replacement from the back.'),
-          const Text('3. Choose to Kong (Concealed/Added) or Win (Self-Draw).'),
-          const Text('4. Discard one tile to end your turn.'),
+          Text(AppLocalizations.turnStep1),
+          Text(AppLocalizations.turnStep2),
+          Text(AppLocalizations.turnStep3),
+          Text(AppLocalizations.turnStep4),
 
           const SizedBox(height: 16),
-          const Text('Interactions (Stealing):', style: TextStyle(fontWeight: FontWeight.bold)),
-          const Text('Other players can interrupt the turn by claiming a discard.'),
+          Text(AppLocalizations.interactionsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(AppLocalizations.interactionsDesc),
           
           const SizedBox(height: 8),
           _buildInteractionRow(
-            'Chow (Shang)', 
-            'Left Player Only', 
-            'Form a sequence (e.g., 1-2-3).',
+            AppLocalizations.actionChow, 
+            AppLocalizations.targetLeftPlayer, 
+            AppLocalizations.descChowInteract,
             Colors.blue.shade100,
           ),
           _buildInteractionRow(
-            'Pong (Peng)', 
-            'Any Player', 
-            'Form a triplet (e.g., 3-3-3). Interrupts turn order.',
+            AppLocalizations.actionPong, 
+            AppLocalizations.targetAnyPlayer, 
+            AppLocalizations.descPongInteract,
             Colors.green.shade100,
           ),
           _buildInteractionRow(
-            'Kong (Gang)', 
-            'Any Player', 
-            'Form a quad. Draw replacement. Interrupts turn order.',
+            AppLocalizations.actionKong, 
+            AppLocalizations.targetAnyPlayer, 
+            AppLocalizations.descKongInteract,
             Colors.purple.shade100,
           ),
           _buildInteractionRow(
-            'Win (Hu)', 
-            'Any Player', 
-            'Complete the hand. Ends the game.',
+            AppLocalizations.actionWinInteract, 
+            AppLocalizations.targetAnyPlayer, 
+            AppLocalizations.descWinInteract,
             Colors.red.shade100,
           ),
 
@@ -356,22 +355,22 @@ class TutorialContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.orange.withOpacity(0.3)),
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Priority Rule:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrange)),
-                Text('Win > Kong/Pong > Chow'),
-                SizedBox(height: 4),
-                Text('If one player wants to Chow and another wants to Pong the same tile, Pong wins.'),
+                Text(AppLocalizations.priorityRuleTitle, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrange)),
+                Text(AppLocalizations.priorityRuleDesc),
+                const SizedBox(height: 4),
+                Text(AppLocalizations.priorityPongWins),
               ],
             ),
           ),
 
           const SizedBox(height: 16),
-          const Text('Missed Win Rule (Guo Shui):', style: TextStyle(fontWeight: FontWeight.bold)),
-          const Text('If you can win on a discard but choose not to (e.g., to try for a higher score), you cannot win on that same tile from another player until you complete your next turn (draw/action).'),
+          Text(AppLocalizations.missedWinTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(AppLocalizations.missedWinDesc),
           const SizedBox(height: 4),
-          const Text('Exception: If the new tile gives you a higher Fan count (e.g., completing a specific pattern), you may be allowed to win depending on house rules.'),
+          Text(AppLocalizations.missedWinException),
         ],
       ),
     );
@@ -431,18 +430,18 @@ class TutorialContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Scoring System',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.scoringSystemTitle,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           
-          const Text(
-            'Hong Kong Mahjong Scoring Rules',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.scoringRulesTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('Mahjong scoring is determined by fan count. The table below shows the points for each fan count:'),
+          Text(AppLocalizations.scoringRulesDesc),
           const SizedBox(height: 16),
           
           // Scoring Table
@@ -457,14 +456,14 @@ class TutorialContent extends StatelessWidget {
               // Header
               TableRow(
                 decoration: BoxDecoration(color: Colors.grey.shade200),
-                children: const [
-                  Padding(padding: EdgeInsets.all(8.0), child: Text('Fan Points', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
-                  Padding(padding: EdgeInsets.all(8.0), child: Text('By Discard', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
-                  Padding(padding: EdgeInsets.all(8.0), child: Text('By Self-Draw', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
+                children: [
+                  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.fanPointsHeader, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
+                  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.byDiscardHeader, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
+                  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.bySelfDrawHeader, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
                 ],
               ),
               // Rows
-              _buildScoreRow('0 (Chicken)', '1', 'N/A (min 1)'),
+              _buildScoreRow(AppLocalizations.chickenHand, '1', AppLocalizations.naMinOne),
               _buildScoreRow('1', '2', '3 (1×3)'),
               _buildScoreRow('2', '4', '6 (2×3)'),
               _buildScoreRow('3', '8', '12 (4×3)'),
@@ -477,25 +476,25 @@ class TutorialContent extends StatelessWidget {
               _buildScoreRow('10', '128', '192 (64×3)'),
               _buildScoreRow('11', '192', '288 (96×3)'),
               _buildScoreRow('12', '256', '384 (128×3)'),
-              _buildScoreRow('13 (Limit)', '384', '576 (192×3)'),
+              _buildScoreRow(AppLocalizations.limitHand, '384', '576 (192×3)'),
             ],
           ),
           
           const SizedBox(height: 16),
 
-          const Text(
-            'Flower Tiles Scoring',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.flowerTilesScoringTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('• No Flowers: 1 Fan'),
-          const Text('• Own Flower: 1 Fan (Flower matches seat wind)'),
+          Text(AppLocalizations.noFlowersFan),
+          Text(AppLocalizations.ownFlowerFan),
           const SizedBox(height: 8),
-          const Text('Flower Mapping:'),
-          const Text('• Seat 1 (East): Spring, Plum'),
-          const Text('• Seat 2 (South): Summer, Orchid'),
-          const Text('• Seat 3 (West): Autumn, Chrysanthemum'),
-          const Text('• Seat 4 (North): Winter, Bamboo'),
+          Text(AppLocalizations.flowerMapping),
+          Text(AppLocalizations.seat1Flower),
+          Text(AppLocalizations.seat2Flower),
+          Text(AppLocalizations.seat3Flower),
+          Text(AppLocalizations.seat4Flower),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(12),
@@ -508,106 +507,106 @@ class TutorialContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Important Note:',
+                  AppLocalizations.importantNoteTitle,
                   style: TextStyle(
                     fontWeight: FontWeight.bold, 
                     color: isDark ? Colors.orange.shade200 : Colors.deepOrange,
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text('If you have flowers but none match your seat (e.g., East seat holding Summer), you get 0 Fan for flowers and lose the "No Flower" bonus.'),
+                Text(AppLocalizations.flowerNote),
               ],
             ),
           ),
           
           const SizedBox(height: 16),
 
-          const Text(
-            'Honor Tiles Scoring',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.honorTilesScoringTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('• Dragon Pong/Kong: 1 Fan (Red, Green, or White Dragon)'),
-          const Text('• Round Wind Pong/Kong: 1 Fan (Matches the current round wind)'),
-          const Text('• Seat Wind Pong/Kong: 1 Fan (Matches your seat wind)'),
+          Text(AppLocalizations.dragonPongFan),
+          Text(AppLocalizations.roundWindPongFan),
+          Text(AppLocalizations.seatWindPongFan),
           const SizedBox(height: 4),
-          const Text(
-            'Note: If your seat wind matches the round wind (e.g., East Seat in East Round), a Pong of East Wind gives 2 Fan!',
-            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+          Text(
+            AppLocalizations.dragonNote,
+            style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
           ),
 
           const SizedBox(height: 16),
 
-          const Text(
-            'Winning Patterns (Fan List)',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.winningPatternsTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('Click on a pattern name to see details and examples.'),
+          Text(AppLocalizations.winningPatternsDesc),
           const SizedBox(height: 8),
           
           // 1 Fan
-          _buildFanHeader('1 Fan'),
-          _buildClickableRuleRow(context, 'Ping Hu (All Chows)', '1 Fan'),
-          _buildClickableRuleRow(context, 'No Flowers', '1 Fan'),
-          _buildClickableRuleRow(context, 'Own Flower', '1 Fan'),
-          _buildClickableRuleRow(context, 'Self-Draw', '1 Fan'),
-          _buildClickableRuleRow(context, 'Men Qian Qing', '1 Fan'),
-          _buildClickableRuleRow(context, 'Dragon/Wind Pong', '1 Fan'),
-          _buildClickableRuleRow(context, 'Robbing the Kong', '1 Fan'),
-          _buildClickableRuleRow(context, 'Haidilao', '1 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('1 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleAllChows, AppLocalizations.fanCount('1 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleNoFlowers, AppLocalizations.fanCount('1 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleOwnSeason, AppLocalizations.fanCount('1 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleSelfDraw, AppLocalizations.fanCount('1 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleMenQianQing, AppLocalizations.fanCount('1 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleDragonWindPong, AppLocalizations.fanCount('1 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleRobbingKong, AppLocalizations.fanCount('1 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleHaidilao, AppLocalizations.fanCount('1 Fan')),
           
           // 2 Fan
-          _buildFanHeader('2 Fan'),
-          _buildClickableRuleRow(context, 'Kong on Kong/Flower', '2 Fan'),
-          _buildClickableRuleRow(context, 'Flower Platform', '2 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('2 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleKongOnKong, AppLocalizations.fanCount('2 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleFlowerPlatform, AppLocalizations.fanCount('2 Fan')),
 
           // 3 Fan
-          _buildFanHeader('3 Fan'),
-          _buildClickableRuleRow(context, 'Flower Hand', '3 Fan'),
-          _buildClickableRuleRow(context, 'All Pongs (Dui Dui Hu)', '3 Fan'),
-          _buildClickableRuleRow(context, 'Mixed One Suit', '3 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('3 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleSevenFlowers, AppLocalizations.fanCount('3 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleAllPongs, AppLocalizations.fanCount('3 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleMixedOneSuit, AppLocalizations.fanCount('3 Fan')),
 
           // 4 Fan
-          _buildFanHeader('4 Fan'),
-          _buildClickableRuleRow(context, 'Mixed Terminals', '4 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('4 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleMixedTerminals, AppLocalizations.fanCount('4 Fan')),
 
           // 5 Fan
-          _buildFanHeader('5 Fan'),
-          _buildClickableRuleRow(context, 'Small Three Dragons', '5 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('5 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleSmallThreeDragons, AppLocalizations.fanCount('5 Fan')),
 
           // 6 Fan
-          _buildFanHeader('6 Fan'),
-          _buildClickableRuleRow(context, 'Small Four Winds', '6 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('6 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleSmallFourWinds, AppLocalizations.fanCount('6 Fan')),
 
           // 7 Fan
-          _buildFanHeader('7 Fan'),
-          _buildClickableRuleRow(context, 'Pure One Suit', '7 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('7 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.rulePureOneSuit, AppLocalizations.fanCount('7 Fan')),
 
           // 8 Fan
-          _buildFanHeader('8 Fan'),
-          _buildClickableRuleRow(context, 'Big Three Dragons', '8 Fan'),
-          _buildClickableRuleRow(context, 'Eight Immortals', '8 Fan'),
-          _buildClickableRuleRow(context, 'Hidden Treasure', '8 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('8 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleBigThreeDragons, AppLocalizations.fanCount('8 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleEightImmortals, AppLocalizations.fanCount('8 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleHiddenTreasure, AppLocalizations.fanCount('8 Fan')),
 
           // 9 Fan
-          _buildFanHeader('9 Fan'),
-          _buildClickableRuleRow(context, 'Double Kong Replacement', '9 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('9 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleDoubleKong, AppLocalizations.fanCount('9 Fan')),
 
           // 10 Fan
-          _buildFanHeader('10 Fan'),
-          _buildClickableRuleRow(context, 'All Honors', '10 Fan'),
-          _buildClickableRuleRow(context, 'Pure Terminals', '10 Fan'),
-          _buildClickableRuleRow(context, 'Nine Gates', '10 Fan'),
+          _buildFanHeader(AppLocalizations.fanCount('10 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleAllHonors, AppLocalizations.fanCount('10 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.rulePureTerminals, AppLocalizations.fanCount('10 Fan')),
+          _buildClickableRuleRow(context, AppLocalizations.ruleNineGates, AppLocalizations.fanCount('10 Fan')),
 
           // 13 Fan
           _buildFanHeader('13 Fan'),
-          _buildClickableRuleRow(context, 'Thirteen Orphans', '13 Fan'),
-          _buildClickableRuleRow(context, 'Blessing of Man', '13 Fan'),
-          _buildClickableRuleRow(context, 'Earthly Hand', '13 Fan'),
-          _buildClickableRuleRow(context, 'Heavenly Hand', '13 Fan'),
-          _buildClickableRuleRow(context, 'Big Four Winds', '13 Fan'),
-          _buildClickableRuleRow(context, 'Eighteen Arhats', '13 Fan'),
+          _buildClickableRuleRow(context, AppLocalizations.ruleThirteenOrphans, '13 Fan'),
+          _buildClickableRuleRow(context, AppLocalizations.ruleBlessingOfMan, '13 Fan'),
+          _buildClickableRuleRow(context, AppLocalizations.ruleEarthlyHand, '13 Fan'),
+          _buildClickableRuleRow(context, AppLocalizations.ruleHeavenlyHand, '13 Fan'),
+          _buildClickableRuleRow(context, AppLocalizations.ruleBigFourWinds, '13 Fan'),
+          _buildClickableRuleRow(context, AppLocalizations.ruleEighteenArhats, '13 Fan'),
 
           const SizedBox(height: 16),
           
@@ -618,15 +617,15 @@ class TutorialContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: isDark ? Colors.green.shade800 : Colors.green.shade200),
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Tip:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  AppLocalizations.tipTitle,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 4),
-                Text('Use this app\'s scoring feature to automatically calculate fan and score!'),
+                const SizedBox(height: 4),
+                Text(AppLocalizations.tipDesc),
               ],
             ),
           ),

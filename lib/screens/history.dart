@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/game_record.dart';
 import '../utils/date_formatter.dart';
 import '../widgets/base_screen.dart';
+import '../localization/app_localizations.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -31,13 +32,13 @@ class HistoryScreen extends StatelessWidget {
     ];
 
     return BaseScreen(
-      title: 'Game History',
+      title: AppLocalizations.gameHistoryTitle,
       currentIndex: 1,
       body: records.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
-                'No history records',
-                style: TextStyle(fontSize: 17, color: Colors.grey),
+                AppLocalizations.noHistory,
+                style: const TextStyle(fontSize: 17, color: Colors.grey),
               ),
             )
           : ListView.builder(
@@ -50,10 +51,10 @@ class HistoryScreen extends StatelessWidget {
                     leading: const CircleAvatar(
                       child: Icon(Icons.history),
                     ),
-                    title: Text('Game #${index + 1}'),
+                    title: Text(AppLocalizations.gameIndex(index + 1)),
                     subtitle: Text(
-                      'Date: ${formatDate(record.date)}\n'
-                      'Rounds: ${record.rounds}',
+                      '${AppLocalizations.dateLabel}: ${formatDate(record.date)}\n'
+                      '${AppLocalizations.roundsLabel}: ${record.rounds}',
                     ),
                     isThreeLine: true,
                     trailing: IconButton(

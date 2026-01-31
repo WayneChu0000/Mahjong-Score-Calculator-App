@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/base_screen.dart';
 import '../models/rule.dart';
 import '../widgets/tile_group.dart';
+import '../localization/app_localizations.dart';
 import 'tutorial_content.dart';
 
 class RulesScreen extends StatefulWidget {
@@ -23,10 +24,37 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _filteredRules = rules;
+    // filteredRules will be updated in didChangeDependencies
+    _filteredRules = [];
     _tabController = TabController(length: 2, vsync: this);
     _tutorialPageController = PageController();
     _searchController = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Check if we need to update selection due to language change
+    String currentFanStr = _selectedFan.split(' ')[0];
+    int currentFan = int.tryParse(currentFanStr) ?? 0;
+    
+    String newCorrectSelection;
+    if (currentFan == 0) {
+      newCorrectSelection = AppLocalizations.allFan;
+    } else {
+      newCorrectSelection = AppLocalizations.fan(currentFan);
+    }
+    
+    // Update if changed (e.g. language switch) or if it's the initial load
+    if (_selectedFan != newCorrectSelection || _filteredRules.isEmpty) {
+      _selectedFan = newCorrectSelection;
+      _filterRules();
+    } else {
+      // Even if selection didn't change string (unlikely across langs), 
+      // rules content might need refresh for translation
+       _filterRules();
+    }
   }
 
   @override
@@ -42,10 +70,10 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
       List<Rule> tempRules = rules;
       
       // Filter by fan
-      if (_selectedFan != 'All') {
+      if (_selectedFan != AppLocalizations.allFan) {
         // Extract number from "X fan" string in rule.fan
-        // rule.fan format is "X fan"
-        // _selectedFan format is "X Fan" or "X Fans"
+        // rule.fan format is "X fan" or "X 番"
+        // _selectedFan format is "X Fan" or "X Fans" or "X 番"
         String targetFanStr = _selectedFan.split(' ')[0];
         int targetFan = int.tryParse(targetFanStr) ?? 0;
         
@@ -71,8 +99,11 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    // Ensure selected fan is valid for current language if possible, or just reset if needed?
+    // But simple approach:
+    
     return BaseScreen(
-      title: 'Rules & Tutorial',
+      title: AppLocalizations.rulesAndTutorial,
       currentIndex: 1,
       body: Column(
         children: [
@@ -88,14 +119,14 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                   : Colors.green.shade800,
               unselectedLabelColor: Colors.grey,
               indicatorColor: Colors.green,
-              tabs: const [
+              tabs: [
                 Tab(
-                  icon: Icon(Icons.menu_book),
-                  text: 'Rules Reference',
+                  icon: const Icon(Icons.menu_book),
+                  text: AppLocalizations.rulesReference,
                 ),
                 Tab(
-                  icon: Icon(Icons.school),
-                  text: 'Mahjong Tutorial',
+                  icon: const Icon(Icons.school),
+                  text: AppLocalizations.mahjongTutorial,
                 ),
               ],
             ),
@@ -122,9 +153,15 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   // Rules reference tab content
   Widget _buildRulesReferenceTab() {
     // Generate fan options
-    final List<String> fanOptions = ['All'];
+    final List<String> fanOptions = [AppLocalizations.allFan];
     for (int i = 1; i <= 13; i++) {
-      fanOptions.add('$i Fan${i > 1 ? 's' : ''}');
+      fanOptions.add(AppLocalizations.fan(i));
+    }
+    
+    // Ensure selected fan is valid
+    if (!fanOptions.contains(_selectedFan)) {
+      _selectedFan = fanOptions[0];
+       // We should ideally re-filter, but for now let's just sync the dropdown
     }
 
     return ListView(
@@ -160,10 +197,10 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                     Expanded(
                       child: TextField(
                         controller: _searchController,
-                        decoration: const InputDecoration(
-                          labelText: 'Search Rules',
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.searchRules,
+                          prefixIcon: const Icon(Icons.search),
+                          border: const OutlineInputBorder(),
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -195,7 +232,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
     setState(() {
       _searchQuery = ruleName;
       _searchController.text = ruleName;
-      _selectedFan = 'All'; // Reset fan filter to ensure rule is found
+      _selectedFan = AppLocalizations.allFan; // Reset fan filter to ensure rule is found
       _filterRules();
     });
     _tabController.animateTo(0); // Switch to Rules Reference tab
@@ -203,11 +240,11 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
   // Tutorial tab content
   Widget _buildTutorialTab() {
-    const tutorialTitles = [
-      'Welcome',
-      'Tiles',
-      'Rules',
-      'Score',
+    final tutorialTitles = [
+      AppLocalizations.tutorialWelcome,
+      AppLocalizations.tutorialTiles,
+      AppLocalizations.tutorialRules,
+      AppLocalizations.tutorialScore,
     ];
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -314,7 +351,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                       }
                     : null,
                 icon: const Icon(Icons.arrow_back),
-                label: const Text('Previous'),
+                label: Text(AppLocalizations.previous),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey.shade600,
                   foregroundColor: Colors.white,
@@ -342,7 +379,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                       }
                     : null,
                 icon: const Icon(Icons.arrow_forward),
-                label: const Text('Next'),
+                label: Text(AppLocalizations.next),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green.shade600,
                   foregroundColor: Colors.white,
@@ -464,7 +501,7 @@ class _RuleCardState extends State<RuleCard> {
                                   color: Colors.green,
                                 ),
                                 label: Text(
-                                  _showExample ? 'Hide Example' : 'View Example',
+                                  _showExample ? AppLocalizations.hideExample : AppLocalizations.viewExample,
                                   style: const TextStyle(color: Colors.green),
                                 ),
                                 onPressed: () {
@@ -498,9 +535,9 @@ class _RuleCardState extends State<RuleCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Example Explanation:',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.exampleExplanation,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),

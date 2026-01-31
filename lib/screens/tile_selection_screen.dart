@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/mahjong_logic.dart';
+import '../localization/app_localizations.dart';
 
 class TileSelectionScreen extends StatefulWidget {
   final List<String> initialTiles;
@@ -45,7 +46,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     int count = _selectedTiles.where((t) => t == tile).length;
     if (count >= 4) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cannot select more than 4 of the same tile', style: TextStyle(fontFamily: "Traditional Chinese"))),
+        SnackBar(content: Text(AppLocalizations.maxTilesAlert, style: const TextStyle(fontFamily: "Traditional Chinese"))),
       );
       return;
     }
@@ -54,7 +55,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     // Max possible is 18 (4 Kongs + Pair)
     if (_selectedTiles.length >= 18) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Maximum 18 tiles allowed', style: TextStyle(fontFamily: "Traditional Chinese"))),
+        SnackBar(content: Text(AppLocalizations.maxTotalTilesAlert, style: const TextStyle(fontFamily: "Traditional Chinese"))),
       );
       return;
     }
@@ -90,7 +91,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     if (_selectedTiles.length < 14) {
       setState(() {
         _isValid = false;
-        _validationMessage = 'Select at least 14 tiles';
+        _validationMessage = AppLocalizations.minTilesAlert;
       });
       return;
     }
@@ -98,7 +99,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     var result = MahjongLogic.checkWinningHand(_selectedTiles);
     setState(() {
       _isValid = result['valid'];
-      _validationMessage = result['message'];
+      _validationMessage = result['message']; // This message likely comes from MahjongLogic which might still be english?
     });
   }
 
@@ -118,7 +119,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Winning Hand'),
+        title: Text(AppLocalizations.selectWinningHand),
         backgroundColor: Colors.green.shade700,
         foregroundColor: Colors.white,
         bottom: TabBar(
@@ -126,11 +127,11 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
-          tabs: const [
-            Tab(text: 'Characters'),
-            Tab(text: 'Dots'),
-            Tab(text: 'Bamboo'),
-            Tab(text: 'Honors'),
+          tabs: [
+            Tab(text: AppLocalizations.charactersTab),
+            Tab(text: AppLocalizations.dotsTab),
+            Tab(text: AppLocalizations.bambooTab),
+            Tab(text: AppLocalizations.honorsTab),
           ],
         ),
         actions: [
@@ -139,7 +140,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
               Navigator.pop(context, _selectedTiles);
             } : null,
             child: Text(
-              'Confirm',
+              AppLocalizations.confirm,
               style: TextStyle(
                 color: _isValid ? Colors.white : Colors.white30,
                 fontWeight: FontWeight.bold,
@@ -231,7 +232,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Selected: ${_selectedTiles.length}',
+                      '${AppLocalizations.selectedCount} ${_selectedTiles.length}',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Expanded(
@@ -255,7 +256,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
                           _validateHand();
                         });
                       },
-                      child: const Text('Clear'),
+                      child: Text(AppLocalizations.clear),
                     ),
                   ],
                 ),

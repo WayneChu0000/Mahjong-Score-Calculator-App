@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/rules_screen.dart';
 import '../screens/settings_screen.dart';
+import '../localization/app_localizations.dart';
 
 class BaseScreen extends StatefulWidget {
   final Widget body;
@@ -55,18 +56,18 @@ class _BaseScreenState extends State<BaseScreen> {
       ),
       body: widget.body,
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Rules',
+            icon: const Icon(Icons.menu_book),
+            label: AppLocalizations.rules,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: const Icon(Icons.settings),
+            label: AppLocalizations.settings,
           ),
         ],
         currentIndex: widget.currentIndex,

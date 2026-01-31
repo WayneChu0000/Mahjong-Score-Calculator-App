@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/player.dart';
 import '../models/player_group.dart';
 import '../services/player_group_service.dart';
+import '../localization/app_localizations.dart';
 import 'score_recording_screen.dart';
 import 'group_detail_screen.dart'; // Import for DealerSelectionDialog
 
@@ -82,7 +83,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   void _initializePlayers() {
     players = List.generate(
       4,
-      (index) => Player(id: index, name: 'Player ${index + 1}', score: 0),
+      (index) => Player(id: index, name: AppLocalizations.defaultPlayerName(index + 1), score: 0),
     );
   }
   
@@ -153,7 +154,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   
   Future<void> _savePlayerGroup({bool incrementGameCount = false}) async {
     final String groupName = _groupNameController.text.trim().isEmpty
-        ? 'Group ${DateTime.now().toString().substring(0, 16)}'
+        ? AppLocalizations.defaultGroupName(DateTime.now().toString().substring(0, 16))
         : _groupNameController.text.trim();
 
     final List<String> playerNames = players
@@ -237,7 +238,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.existingPlayers != null ? 'Edit Players' : 'Setup Players'),
+          title: Text(widget.existingPlayers != null ? AppLocalizations.editPlayers : AppLocalizations.setupPlayers),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context, _hasSavedGroup),
@@ -251,10 +252,10 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             // Group name input
             TextField(
               controller: _groupNameController,
-              decoration: const InputDecoration(
-                labelText: 'Group Name',
-                border: OutlineInputBorder(),
-                hintText: 'e.g., Weekend Mahjong Group',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.groupName,
+                border: const OutlineInputBorder(),
+                hintText: AppLocalizations.enterGroupNameHint,
               ),
             ),
             
@@ -298,7 +299,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                         foregroundColor: Colors.red,
                       ),
                       onPressed: _deleteGroup,
-                      child: const Text('Delete'),
+                      child: Text(AppLocalizations.delete),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -309,7 +310,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
                     ),
                     onPressed: _saveAndExit,
-                    child: const Text('Save'),
+                    child: Text(AppLocalizations.save),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -321,7 +322,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                       foregroundColor: Colors.white,
                     ),
                     onPressed: _startGame,
-                    child: const Text('Start'),
+                    child: Text(AppLocalizations.start),
                   ),
                 ),
               ],
@@ -339,19 +340,19 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Edit Player ${index + 1}'),
+        title: Text(AppLocalizations.editPlayerTitle(index + 1)),
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(
-            labelText: 'Player Name',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: AppLocalizations.playerName,
+            border: const OutlineInputBorder(),
           ),
           autofocus: true,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -360,7 +361,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
               });
               Navigator.pop(context);
             },
-            child: const Text('OK'),
+            child: Text(AppLocalizations.ok),
           ),
         ],
       ),
@@ -372,16 +373,16 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this player group? This action cannot be undone.'),
+        title: Text(AppLocalizations.confirmDelete),
+        content: Text(AppLocalizations.deleteGroupWarning),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 
 class ScoreDisplay extends StatelessWidget {
   final int gamesPlayed;
@@ -13,7 +14,7 @@ class ScoreDisplay extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildStatColumn(context, 'Total Games', gamesPlayed.toString()),
+        _buildStatColumn(context, AppLocalizations.totalGames, gamesPlayed.toString()),
       ],
     );
   }

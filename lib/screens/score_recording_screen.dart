@@ -4,6 +4,7 @@ import '../services/score_service.dart';
 import '../services/player_group_service.dart';
 import '../models/player_group.dart';
 import '../models/player_stats.dart';
+import '../localization/app_localizations.dart';
 import 'score_calculation_screen.dart';
 import 'rules_screen.dart';
 import 'dart:async';
@@ -222,15 +223,15 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Game Over'),
+        title: Text(AppLocalizations.gameOver),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Total Wind Rounds: $_totalWindRounds'),
-            Text('Total Games Played: ${_scoreService.getCurrentRound() - 1}'),
+            Text('${AppLocalizations.totalWindRounds} $_totalWindRounds'),
+            Text('${AppLocalizations.totalRoundsPlayed} ${_scoreService.getCurrentRound() - 1}'),
             const SizedBox(height: 16),
-            const Text('Final Scores:', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.finalScores, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             ...widget.players.map((player) {
               final score = _scoreService.getPlayerScore(player.id.toString());
@@ -258,11 +259,11 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
             onPressed: () {
               Navigator.pop(context); // Close dialog
             },
-            child: const Text('Back to Game'),
+            child: Text(AppLocalizations.backToGame),
           ),
           TextButton(
             onPressed: _finishGame,
-            child: const Text('Finish Game'),
+            child: Text(AppLocalizations.finishGame),
           ),
         ],
       ),
@@ -417,7 +418,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Dealer'),
+        title: Text(AppLocalizations.selectDealer),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -453,16 +454,16 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     final bool? confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Change Position'),
-        content: Text('Swap positions of ${fromPlayer.name} and ${toPlayer.name}?'),
+        title: Text(AppLocalizations.changePosition),
+        content: Text(AppLocalizations.swapPositionsContent(fromPlayer.name, toPlayer.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Swap'),
+            child: Text(AppLocalizations.swap),
           ),
         ],
       ),
@@ -487,6 +488,9 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         }
       });
       
+      // Save the new player positions
+      await _saveGameState();
+      
       if (!mounted) return;
 
       // Show advanced reset dialog
@@ -500,19 +504,19 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
           return StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                title: const Text('Reset Game State?'),
+                title: Text(AppLocalizations.resetGameState),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                      CheckboxListTile(
-                       title: const Text("Reset Dealer Position"),
-                       subtitle: const Text("Choose a new dealer"),
+                       title: Text(AppLocalizations.resetDealer),
+                       subtitle: Text(AppLocalizations.resetDealerSubtitle),
                        value: resetDealer,
                        onChanged: (val) => setState(() => resetDealer = val!),
                      ),
                      CheckboxListTile(
-                       title: const Text("Reset Wind Round"),
-                       subtitle: const Text("Reset to East 1"),
+                       title: Text(AppLocalizations.resetWind),
+                       subtitle: Text(AppLocalizations.resetWindSubtitle),
                        value: resetWind,
                        onChanged: (val) => setState(() => resetWind = val!),
                      ),
@@ -521,7 +525,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                 actions: [
                   TextButton(
                      onPressed: () => Navigator.pop(context),
-                     child: const Text('Cancel Reset'),
+                     child: Text(AppLocalizations.cancelReset),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -538,7 +542,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                              _selectDealer();
                         }
                     },
-                    child: const Text('Apply'),
+                    child: Text(AppLocalizations.apply),
                   ),
                 ],
               );
@@ -587,6 +591,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       
       final updatedGroup = group.copyWith(
         lastPlayedAt: DateTime.now(),
+        players: _updatedPlayers.map((p) => p.name).toList(), // Save player order
         currentScores: currentScores,
         currentRound: _scoreService.getCurrentRound(),
         dealerIndex: _dealerIndex,
@@ -621,16 +626,16 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                const Text('Current Game Stats'),
+                Text(AppLocalizations.currentGameStats),
                 if (totalRounds > 0)
-                    Text('No Result Rate: ${(noResultRate * 100).toStringAsFixed(2)}%', 
+                    Text('${AppLocalizations.noResultRate} ${(noResultRate * 100).toStringAsFixed(2)}%', 
                         style: const TextStyle(fontSize: 14, color: Colors.grey)),
             ],
         ),
         content: SizedBox(
           width: double.maxFinite,
           child: totalRounds == 0 
-            ? const Text('No rounds played yet.') 
+            ? Text(AppLocalizations.noRoundsPlayed) 
             : ListView.builder(
                 shrinkWrap: true,
                 itemCount: widget.players.length,
@@ -659,14 +664,14 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Win Rate: ${(winRate * 100).toStringAsFixed(2)}%'),
+                        Text('${AppLocalizations.statsWinRate}: ${(winRate * 100).toStringAsFixed(2)}%'),
                         const SizedBox(height: 4),
                         Row(
                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                              children: [
-                                 Expanded(child: Text('Self-Draw: $tsumos', style: const TextStyle(fontSize: 12))),
-                                 Expanded(child: Text('Discard: $rons', style: const TextStyle(fontSize: 12), textAlign: TextAlign.center)),
-                                 Expanded(child: Text('Deal-in: $dealsIn', style: const TextStyle(fontSize: 12), textAlign: TextAlign.right)),
+                                 Expanded(child: Text('${AppLocalizations.statsSelfDraw}: $tsumos', style: const TextStyle(fontSize: 12))),
+                                 Expanded(child: Text('${AppLocalizations.statsRon}: $rons', style: const TextStyle(fontSize: 12), textAlign: TextAlign.center)),
+                                 Expanded(child: Text('${AppLocalizations.statsDealIn}: $dealsIn', style: const TextStyle(fontSize: 12), textAlign: TextAlign.right)),
                              ]
                         )
                       ],
@@ -678,7 +683,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(AppLocalizations.close),
           ),
         ],
       ),
@@ -696,10 +701,18 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     final totalRounds = _scoreService.getTotalRounds();
     
     // Title setting
-    String title = 'Mahjong Scoring';
-    final windName = ['East', 'South', 'West', 'North'][_prevalentWindIndex];
+    String title = AppLocalizations.mahjongScoringTitle;
+    
+    final windNames = [
+      AppLocalizations.windEast, 
+      AppLocalizations.windSouth, 
+      AppLocalizations.windWest, 
+      AppLocalizations.windNorth
+    ];
+    final windName = windNames[_prevalentWindIndex];
+    
     if (widget.groupName != null && widget.groupName!.isNotEmpty) {
-      title = '${widget.groupName} - $windName Round - Game $_currentDealerGameCount';
+      title = '${widget.groupName} - ${AppLocalizations.roundInfo(windName, _currentDealerGameCount)}';
     }
     
     return WillPopScope(
@@ -713,12 +726,12 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.bar_chart),
-            tooltip: 'Game Statistics',
+            tooltip: AppLocalizations.tooltipStats,
             onPressed: _showStatsDialog,
           ),
           IconButton(
             icon: const Icon(Icons.menu_book),
-            tooltip: 'Rules Reference',
+            tooltip: AppLocalizations.tooltipRules,
             onPressed: () {
               Navigator.push(
                 context,
@@ -728,7 +741,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.home),
-            tooltip: 'Back to Home',
+            tooltip: AppLocalizations.tooltipHome,
             onPressed: () {
               _saveGameState();
               Navigator.of(context).popUntil((route) => route.isFirst);
@@ -752,7 +765,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        '$windName Round - Game $_currentDealerGameCount',
+                        AppLocalizations.roundInfo(windName, _currentDealerGameCount),
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
@@ -857,12 +870,12 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
-                                  'Mahjong',
-                                  style: TextStyle(color: Colors.white70, fontSize: 10),
+                                Text(
+                                  AppLocalizations.mahjong,
+                                  style: const TextStyle(color: Colors.white70, fontSize: 10),
                                 ),
                                 Text(
-                                  '${['East', 'South', 'West', 'North'][_prevalentWindIndex]} Round',
+                                  '${[AppLocalizations.windEast, AppLocalizations.windSouth, AppLocalizations.windWest, AppLocalizations.windNorth][_prevalentWindIndex]} ${AppLocalizations.windCircleSuffix}',
                                   style: const TextStyle(
                                     color: Colors.white, 
                                     fontWeight: FontWeight.bold,
@@ -870,7 +883,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                                   ),
                                 ),
                                 Text(
-                                  'Game $_currentDealerGameCount',
+                                  AppLocalizations.gameCount(_currentDealerGameCount),
                                   style: const TextStyle(
                                     color: Colors.white70, 
                                     fontSize: 12,
@@ -926,7 +939,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                     Expanded(
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.calculate),
-                        label: const Text('Calculate'),
+                        label: Text(AppLocalizations.calculate),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
@@ -939,7 +952,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                     Expanded(
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.close),
-                        label: const Text('No Result'),
+                        label: Text(AppLocalizations.noResult),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Theme.of(context).brightness == Brightness.dark 
                               ? Colors.white 
@@ -961,7 +974,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.flag),
-                    label: const Text('Finish Game'),
+                    label: Text(AppLocalizations.finishGame),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -990,7 +1003,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     // 2: West (Opposite of Dealer)
     // 3: North (Left of Dealer)
     final windIndex = (index - _dealerIndex + 4) % 4;
-    final winds = ['East', 'South', 'West', 'North'];
+    final winds = [AppLocalizations.windEast, AppLocalizations.windSouth, AppLocalizations.windWest, AppLocalizations.windNorth];
     final windName = winds[windIndex];
     
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1025,7 +1038,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
-              isDealer ? 'DEALER' : windName,
+              isDealer ? AppLocalizations.dealer : windName,
               style: TextStyle(
                 color: isDealer 
                     ? Colors.white 

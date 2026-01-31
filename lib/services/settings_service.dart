@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsService extends ChangeNotifier {
   // Singleton pattern
@@ -32,11 +35,62 @@ class SettingsService extends ChangeNotifier {
     
     final prefs = await SharedPreferences.getInstance();
     
-    _language = prefs.getString(_keyLanguage) ?? _defaultLanguage;
+    String defaultLang = _defaultLanguage;
+    try {
+      final String systemLocale = Platform.localeName;
+      // Simple check for Chinese locale
+      if (systemLocale.startsWith('zh')) {
+        defaultLang = 'Traditional Chinese';
+      }
+    } catch (e) {
+      // Ignore platform errors
+    }
+    
+    _language = prefs.getString(_keyLanguage) ?? defaultLang;
     _theme = prefs.getString(_keyTheme) ?? _defaultTheme;
     
     _isInitialized = true;
+    
+    // Listen to auth state changes to sync settings
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        _syncSettingsFromFirestore(user.uid);
+      }
+    });
+
     notifyListeners();
+  }
+  
+  Future<void> _syncSettingsFromFirestore(String uid) async {
+    try {
+      final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      if (doc.exists && doc.data() != null) {
+        final data = doc.data()!;
+        if (data.containsKey('language')) {
+          final String cloudLanguage = data['language'];
+          if (cloudLanguage != _language) {
+             await setLanguage(cloudLanguage); // This will also update local prefs
+          }
+        }
+      } else {
+        // If no settings exist in cloud, save current local settings
+        await _saveSettingsToFirestore(uid);
+      }
+    } catch (e) {
+      debugPrint('Error syncing settings: $e');
+    }
+  }
+
+  Future<void> _saveSettingsToFirestore(String uid) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'language': _language,
+        'theme': _theme,
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint('Error saving settings: $e');
+    }
   }
   
   // Language settings
@@ -49,6 +103,12 @@ class SettingsService extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyLanguage, value);
     notifyListeners();
+    
+    // Sync to cloud if logged in
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      _saveSettingsToFirestore(user.uid);
+    }
   }
   
   // Theme settings

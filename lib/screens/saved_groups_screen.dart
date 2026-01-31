@@ -5,6 +5,7 @@ import '../models/player.dart';
 import 'score_recording_screen.dart';
 import 'player_setup.dart';
 import 'group_detail_screen.dart';
+import '../localization/app_localizations.dart';
 
 class SavedGroupsScreen extends StatefulWidget {
   const SavedGroupsScreen({super.key});
@@ -49,16 +50,16 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: Text('Are you sure you want to delete group "$groupName"?'),
+        title: Text(AppLocalizations.confirmDeleteTitle),
+        content: Text(AppLocalizations.confirmDeleteContent(groupName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -72,7 +73,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Group "$groupName" deleted'),
+              content: Text(AppLocalizations.groupDeleted(groupName)),
               backgroundColor: Colors.green,
             ),
           );
@@ -135,7 +136,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saved Player Groups'),
+        title: Text(AppLocalizations.savedGroupsTitle),
         backgroundColor: Colors.red.shade700,
         foregroundColor: Colors.white,
       ),
@@ -143,16 +144,16 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : _savedGroups.isEmpty
-                ? const Center(
+                ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.group_off, size: 64, color: Colors.grey),
-                        SizedBox(height: 16),
+                        const Icon(Icons.group_off, size: 64, color: Colors.grey),
+                        const SizedBox(height: 16),
                         Text(
-                          'No saved player groups',
-                          style: TextStyle(fontSize: 17, color: Colors.grey),
+                          AppLocalizations.noAnySavedGroups,
+                          style: const TextStyle(fontSize: 17, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -174,14 +175,11 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                     backgroundColor: Theme.of(context).brightness == Brightness.dark
                                         ? Colors.red.withOpacity(0.2)
                                         : Colors.red.shade100,
-                                    child: Text(
-                                      group.players.length.toString(),
-                                      style: TextStyle(
-                                        color: Theme.of(context).brightness == Brightness.dark
-                                            ? Colors.red.shade200
-                                            : Colors.red.shade700,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    child: Icon(
+                                      Icons.group,
+                                      color: Theme.of(context).brightness == Brightness.dark
+                                          ? Colors.red.shade200
+                                          : Colors.red.shade700,
                                     ),
                                   ),
                                   title: Text(
@@ -192,10 +190,10 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text('Players: ${group.players.join(', ')}'),
+                                      Text('${AppLocalizations.playersListPrefix}${group.players.join(', ')}'),
                                       const SizedBox(height: 4),
                                       Text(
-                                        'Created: ${_formatDateTime(group.createdAt)}',
+                                        '${AppLocalizations.createdPrefix}${_formatDateTime(group.createdAt)}',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Theme.of(context).brightness == Brightness.dark
@@ -206,7 +204,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                     ],
                                   ),
                                   trailing: PopupMenuButton(
-                                    itemBuilder: (context) => const [
+                                    itemBuilder: (context) => [
                                       PopupMenuItem(
                                         value: 'play',
                                         child: Row(
@@ -214,7 +212,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                           children: [
                                             Icon(Icons.play_arrow, color: Colors.green),
                                             SizedBox(width: 8),
-                                            Text('Start Game'),
+                                            Text(AppLocalizations.startGame),
                                           ],
                                         ),
                                       ),
@@ -225,7 +223,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                           children: [
                                             Icon(Icons.edit, color: Colors.blue),
                                             SizedBox(width: 8),
-                                            Text('Edit Group'),
+                                            Text(AppLocalizations.editGroup),
                                           ],
                                         ),
                                       ),
@@ -236,7 +234,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                           children: [
                                             Icon(Icons.delete, color: Colors.red),
                                             SizedBox(width: 8),
-                                            Text('Delete Group'),
+                                            Text(AppLocalizations.deleteGroup),
                                           ],
                                         ),
                                       ),

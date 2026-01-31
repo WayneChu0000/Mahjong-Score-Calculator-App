@@ -5,6 +5,7 @@ import '../models/player_stats.dart';
 import '../services/player_group_service.dart';
 import 'score_recording_screen.dart';
 import '../services/score_service.dart';
+import '../localization/app_localizations.dart';
 
 class GroupDetailScreen extends StatefulWidget {
   final PlayerGroup group;
@@ -49,19 +50,19 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Start New Game?'),
-            content: const Text('There is a game in progress. Starting a new game will assume the previous one is finished and stats will be saved.'),
+            title: Text(AppLocalizations.gameInProgressTitle),
+            content: Text(AppLocalizations.gameInProgressContent),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+                child: Text(AppLocalizations.cancel),
               ),
               TextButton(
                 onPressed: () async {
                   Navigator.pop(context);
                   await _finishCurrentGameAndStartNew();
                 },
-                child: const Text('Start New Game'),
+                child: Text(AppLocalizations.startNewGame),
               ),
             ],
           ),
@@ -255,7 +256,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                 children: [
                   _buildSummaryCard(),
                   const SizedBox(height: 20),
-                  Text('Player Statistics', style: Theme.of(context).textTheme.titleLarge),
+                  Text(AppLocalizations.playerStatsTitle, style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 10),
                   _buildPlayerStatsList(),
                   const SizedBox(height: 20),
@@ -268,7 +269,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                           child: ElevatedButton.icon(
                             onPressed: _resumeGame,
                             icon: const Icon(Icons.play_circle_fill),
-                            label: const Text('Back to Game'),
+                            label: Text(AppLocalizations.backToGame),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               backgroundColor: Colors.orange,
@@ -283,7 +284,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                     child: ElevatedButton.icon(
                       onPressed: _startNewGame,
                       icon: const Icon(Icons.play_arrow),
-                      label: const Text('Start New Game'),
+                      label: Text(AppLocalizations.startNewGame),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                       ),
@@ -402,7 +403,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Total Games (Matches):'),
+                Text(AppLocalizations.totalGamesMatches),
                 Text('${_group.totalGamesPlayedInGroup}', style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
@@ -410,7 +411,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Total Hands Played:'),
+                Text(AppLocalizations.totalHandsPlayed),
                 Text('$totalHandsPlayed', style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
@@ -418,7 +419,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('No Result Rate:'),
+                Text(AppLocalizations.noResultRate),
                 Text('${(noResultRate * 100).toStringAsFixed(2)}%', style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
@@ -473,10 +474,10 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _statItem('Win Rate', '${(stats.winningRate * 100).toStringAsFixed(2)}%'),
-                    _statItem('Self-Draw', '${stats.totalTsumo}'),
-                    _statItem('Discard', '${stats.totalRon}'),
-                    _statItem('Deal-in', '${stats.totalDealsIn}'),
+                    _statItem(AppLocalizations.statsWinRate, '${(stats.winningRate * 100).toStringAsFixed(2)}%'),
+                    _statItem(AppLocalizations.statsSelfDraw, '${stats.totalTsumo}'),
+                    _statItem(AppLocalizations.statsRon, '${stats.totalRon}'),
+                    _statItem(AppLocalizations.statsDealIn, '${stats.totalDealsIn}'),
                   ],
                 ),
               ],
@@ -527,7 +528,7 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Select Dealer'),
+      title: Text(AppLocalizations.selectDealer),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(widget.players.length, (index) {
@@ -546,7 +547,7 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
       actions: [
         TextButton(
           onPressed: () => widget.onDealerSelected(_selectedDealer),
-          child: const Text('Start Game'),
+          child: Text(AppLocalizations.startGame),
         ),
       ],
     );

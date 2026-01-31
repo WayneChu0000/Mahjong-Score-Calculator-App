@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
+import '../localization/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // ),
                 const SizedBox(height: 16),
                 Text(
-                  'Mahjong Score Calculator',
+                  AppLocalizations.appTitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -117,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: AppLocalizations.emailLabel,
                     prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -125,10 +126,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return AppLocalizations.emailRequired;
                     }
                     if (!value.contains('@')) {
-                      return 'Please enter a valid email';
+                      return AppLocalizations.emailInvalid;
                     }
                     return null;
                   },
@@ -140,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: AppLocalizations.passwordLabel,
                     prefixIcon: const Icon(Icons.lock),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -148,10 +149,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return AppLocalizations.passwordRequired;
                     }
                     if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
+                      return AppLocalizations.passwordLengthError;
                     }
                     return null;
                   },
@@ -179,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         )
                       : Text(
-                          _isLogin ? 'Login' : 'Create Account',
+                          _isLogin ? AppLocalizations.loginButton : AppLocalizations.createAccountButton,
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                 ),
@@ -195,8 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text(
                     _isLogin
-                        ? 'Don\'t have an account? Create one'
-                        : 'Already have an account? Login',
+                        ? AppLocalizations.noAccountText
+                        : AppLocalizations.hasAccountText,
                     style: TextStyle(
                       color: isDark ? Colors.green.shade300 : Colors.green.shade700,
                     ),

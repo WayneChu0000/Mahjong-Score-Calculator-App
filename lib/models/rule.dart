@@ -1,4 +1,5 @@
 import '../utils/mahjong_logic.dart';
+import '../localization/app_localizations.dart';
 
 class Rule {
   final String name;
@@ -21,13 +22,13 @@ class Rule {
 }
 
 // Predefined Hong Kong Mahjong rules list (Old Style / Qing Zhang)
-final List<Rule> rules = [
+List<Rule> get rules => [
   // 1 Fan
   Rule(
-    name: 'Ping Hu (平胡 - Ping4 Wu4)',
-    description: 'Hand with only Chows, no Pongs.',
-    fan: '1 fan',
-    explanation: 'Hand composed entirely of Chows (sequences) and a pair. No Pongs or Kongs.',
+    name: AppLocalizations.ruleAllChows,
+    description: AppLocalizations.descAllChows,
+    fan: AppLocalizations.fan(1),
+    explanation: AppLocalizations.explAllChows,
     validator: MahjongLogic.isPingHu,
     exampleTiles: [
       ['1p', '2p', '3p'],
@@ -38,77 +39,77 @@ final List<Rule> rules = [
     ],
   ),
   Rule(
-    name: 'No Flowers (無花 - Mou4 Faa1)',
-    description: 'No Flower tiles.',
-    fan: '1 fan',
-    explanation: 'Winning without any Flower tiles.',
+    name: AppLocalizations.ruleNoFlowers,
+    description: AppLocalizations.descNoFlowers,
+    fan: AppLocalizations.fan(1),
+    explanation: AppLocalizations.explNoFlowers,
     exampleTiles: [],
     // Validator handled by flower count check in UI or manually
   ),
   Rule(
-    name: 'Own Flower (正花 - Zing3 Faa1)',
-    description: 'Flower tile matches your seat wind.',
-    fan: '1 fan',
-    explanation: 'The Flower tile number corresponds to your seat wind (1=East, 2=South, 3=West, 4=North).',
+    name: AppLocalizations.ruleOwnSeason,
+    description: AppLocalizations.descOwnSeason,
+    fan: AppLocalizations.fan(1),
+    explanation: AppLocalizations.explOwnSeason,
     exampleTiles: [
       ['1f', '5f'], // Plum (1) and Spring (1) for East
     ],
     // Validator requires seat context
   ),
   Rule(
-    name: 'Self-Draw (自摸 - Zi6 Mo1)',
-    description: 'Winning by self-drawn tile.',
-    fan: '1 fan',
-    explanation: 'Drawing the winning tile yourself adds 1 fan.',
+    name: AppLocalizations.ruleSelfDraw,
+    description: AppLocalizations.descSelfDraw,
+    fan: AppLocalizations.fan(1),
+    explanation: AppLocalizations.explSelfDraw,
     exampleTiles: [],
     // Validator handled by UI state
   ),
   Rule(
-    name: 'Men Qian Qing (門前清 - Mun4 Cin4 Cing1)',
-    description: 'Winning without melding (Chow, Pong, Kong) any exposed tiles.',
-    fan: '1 fan',
-    explanation: 'Concealed hand. No exposed melds before winning.',
+    name: AppLocalizations.ruleMenQianQing,
+    description: AppLocalizations.descMenQianQing,
+    fan: AppLocalizations.fan(1),
+    explanation: AppLocalizations.explMenQianQing,
     exampleTiles: [],
     // Validator requires exposed state
   ),
   Rule(
-    name: 'Dragon/Wind Pong (番子 - Faan1 Zi2)',
-    description: 'Pong of Dragons or Seat/Round Wind.',
-    fan: '1 fan',
-    explanation: 'A Pong/Kong of Red, Green, or White Dragons, or a Pong/Kong of the Seat or Round Wind.',
+    name: AppLocalizations.ruleDragonWindPong,
+    description: AppLocalizations.descDragonWindPong,
+    fan: AppLocalizations.fan(1),
+    explanation: AppLocalizations.explDragonWindPong,
     exampleTiles: [
       ['5z', '5z', '5z'],
     ],
     // Validator requires context or specific check. 
   ),
   Rule(
-    name: 'Robbing the Kong (搶槓 - Coeng2 Gong3)',
-    description: 'Winning off a Kong.',
-    fan: '1 fan',
-    explanation: 'Winning when another player declares a Kong with a tile you need.',
+    name: AppLocalizations.ruleRobbingKong,
+    description: AppLocalizations.descRobbingKong,
+    fan: AppLocalizations.fan(1),
+    explanation: AppLocalizations.explRobbingKong,
     exampleTiles: [],
   ),
   Rule(
-    name: 'Haidilao (海底撈月 - Hoi2 Dai2 Laau4 Jyut6)',
-    description: 'Winning on the last tile.',
-    fan: '1 fan',
-    explanation: 'Winning by drawing the very last tile of the wall.',
+    name: AppLocalizations.ruleHaidilao,
+    description: AppLocalizations.descHaidilao,
+    fan: AppLocalizations.fan(1),
+    explanation: AppLocalizations.explHaidilao,
     exampleTiles: [],
   ),
 
   // 2 Fan
   Rule(
-    name: 'Kong on Kong/Flower (槓上槓/花上自摸 - Gong3 Soeng6 Gong3)',
-    description: 'Winning after a Kong or Flower replacement.',
-    fan: '2 fan',
-    explanation: 'Drawing the winning tile from the dead wall after declaring a Kong or getting a Flower.',
+    name: AppLocalizations.ruleKongOnKong,
+    description: AppLocalizations.descKongOnKong,
+    fan: AppLocalizations.fan(2),
+    explanation: AppLocalizations.explKongOnKong,
     exampleTiles: [],
   ),
   Rule(
-    name: 'Flower Platform (一台花 - Jat1 Toi4 Faa1)',
-    description: 'Complete set of Flowers.',
-    fan: '2 fan',
-    explanation: 'Collecting a full set of numbered Flowers (1-4) or Seasons (1-4).',
+    name: AppLocalizations.ruleFlowerPlatform,
+    description: AppLocalizations.descFlowerPlatform,
+    fan: AppLocalizations.fan(2),
+    explanation: AppLocalizations.explFlowerPlatform,
     exampleTiles: [
       ['1f', '2f', '3f', '4f'], // Flowers: Plum, Orchid, Chrysanthemum, Bamboo
       ['5f', '6f', '7f', '8f'], // Seasons: Spring, Summer, Autumn, Winter
@@ -117,19 +118,19 @@ final List<Rule> rules = [
 
   // 3 Fan
   Rule(
-    name: 'Flower Hand (七隻花 - Cat1 Zek3 Faa1)',
-    description: 'Seven Flowers.',
-    fan: '3 fan',
-    explanation: 'Collecting 7 Flower tiles allows for an immediate win.',
+    name: AppLocalizations.ruleSevenFlowers,
+    description: AppLocalizations.descSevenFlowers,
+    fan: AppLocalizations.fan(3),
+    explanation: AppLocalizations.explSevenFlowers,
     exampleTiles: [
       ['1f', '2f', '3f', '4f', '5f', '6f', '7f'],
     ],
   ),
   Rule(
-    name: 'All Pongs (對對胡 - Deoi3 Deoi3 Wu4)',
-    description: 'All Pongs.',
-    fan: '3 fan',
-    explanation: 'Hand composed entirely of Pongs (triplets) or Kongs and a pair.',
+    name: AppLocalizations.ruleAllPongs,
+    description: AppLocalizations.descAllPongs,
+    fan: AppLocalizations.fan(3),
+    explanation: AppLocalizations.explAllPongs,
     validator: MahjongLogic.isAllPongs,
     exampleTiles: [
       ['1p', '1p', '1p'],
@@ -140,10 +141,10 @@ final List<Rule> rules = [
     ],
   ),
   Rule(
-    name: 'Mixed One Suit (混一色 - Wan6 Jat1 Sik1)',
-    description: 'Mixed One Suit.',
-    fan: '3 fan',
-    explanation: 'Hand composed of one suit and Honor tiles.',
+    name: AppLocalizations.ruleMixedOneSuit,
+    description: AppLocalizations.descMixedOneSuit,
+    fan: AppLocalizations.fan(3),
+    explanation: AppLocalizations.explMixedOneSuit,
     validator: MahjongLogic.isMixedOneSuit,
     exampleTiles: [
       ['1p', '2p', '3p'],
@@ -156,10 +157,10 @@ final List<Rule> rules = [
 
   // 4 Fan
   Rule(
-    name: 'Mixed Terminals (混么九 - Wan6 Jiu1 Gau2)',
-    description: 'Mixed Terminals.',
-    fan: '4 fan',
-    explanation: 'All Pongs/Kongs composed of Terminals (1/9) and Honor tiles.',
+    name: AppLocalizations.ruleMixedTerminals,
+    description: AppLocalizations.descMixedTerminals,
+    fan: AppLocalizations.fan(4),
+    explanation: AppLocalizations.explMixedTerminals,
     validator: MahjongLogic.isMixedTerminals,
     exampleTiles: [
       ['1p', '1p', '1p'],
@@ -172,10 +173,10 @@ final List<Rule> rules = [
 
   // 5 Fan
   Rule(
-    name: 'Small Three Dragons (小三元 - Siu2 Saam1 Jyun4)',
-    description: 'Small Three Dragons.',
-    fan: '5 fan',
-    explanation: 'Two Pongs/Kongs of Dragons and a pair of the third Dragon.',
+    name: AppLocalizations.ruleSmallThreeDragons,
+    description: AppLocalizations.descSmallThreeDragons,
+    fan: AppLocalizations.fan(5),
+    explanation: AppLocalizations.explSmallThreeDragons,
     validator: MahjongLogic.isSmallThreeDragons,
     exampleTiles: [
       ['5z', '5z', '5z'],
@@ -188,10 +189,10 @@ final List<Rule> rules = [
 
   // 6 Fan
   Rule(
-    name: 'Small Four Winds (小四喜 - Siu2 Sei3 Hei2)',
-    description: 'Small Four Winds.',
-    fan: '6 fan',
-    explanation: 'Three Pongs/Kongs of Winds and a pair of the fourth Wind.',
+    name: AppLocalizations.ruleSmallFourWinds,
+    description: AppLocalizations.descSmallFourWinds,
+    fan: AppLocalizations.fan(6),
+    explanation: AppLocalizations.explSmallFourWinds,
     validator: MahjongLogic.isSmallFourWinds,
     exampleTiles: [
       ['1z', '1z', '1z'],
@@ -204,10 +205,10 @@ final List<Rule> rules = [
 
   // 7 Fan
   Rule(
-    name: 'Pure One Suit (清一色 - Cing1 Jat1 Sik1)',
-    description: 'Pure One Suit.',
-    fan: '7 fan',
-    explanation: 'Hand composed entirely of tiles from a single suit.',
+    name: AppLocalizations.rulePureOneSuit,
+    description: AppLocalizations.descPureOneSuit,
+    fan: AppLocalizations.fan(7),
+    explanation: AppLocalizations.explPureOneSuit,
     validator: MahjongLogic.isPureHand,
     exampleTiles: [
       ['1p', '2p', '3p'],
@@ -220,10 +221,10 @@ final List<Rule> rules = [
 
   // 8 Fan
   Rule(
-    name: 'Big Three Dragons (大三元 - Daai6 Saam1 Jyun4)',
-    description: 'Big Three Dragons.',
-    fan: '8 fan',
-    explanation: 'Three Pongs/Kongs of Red, Green, and White Dragons.',
+    name: AppLocalizations.ruleBigThreeDragons,
+    description: AppLocalizations.descBigThreeDragons,
+    fan: AppLocalizations.fan(8),
+    explanation: AppLocalizations.explBigThreeDragons,
     validator: MahjongLogic.isBigThreeDragons,
     exampleTiles: [
       ['5z', '5z', '5z'],
@@ -234,38 +235,38 @@ final List<Rule> rules = [
     ],
   ),
   Rule(
-    name: 'Eight Immortals (八仙過海 - Baat3 Sin1 Gwo3 Hoi2)',
-    description: 'Eight Flowers.',
-    fan: '8 fan',
-    explanation: 'Collecting all 8 Flower tiles allows for an immediate win.',
+    name: AppLocalizations.ruleEightImmortals,
+    description: AppLocalizations.descEightImmortals,
+    fan: AppLocalizations.fan(8),
+    explanation: AppLocalizations.explEightImmortals,
     exampleTiles: [
       ['1f', '2f', '3f', '4f', '5f', '6f', '7f', '8f'],
     ],
   ),
   Rule(
-    name: 'Hidden Treasure (坎坎胡 - Ham2 Ham2 Wu4)',
-    description: 'Four Concealed Pongs.',
-    fan: '8 fan',
-    explanation: 'Four Pongs/Kongs that were all self-drawn (concealed).',
+    name: AppLocalizations.ruleHiddenTreasure,
+    description: AppLocalizations.descHiddenTreasure,
+    fan: AppLocalizations.fan(8),
+    explanation: AppLocalizations.explHiddenTreasure,
     exampleTiles: [],
     // Validator requires concealed state
   ),
 
   // 9 Fan
   Rule(
-    name: 'Double Kong Replacement (槓上槓 - Gong3 Soeng6 Gong3)',
-    description: 'Double Kong Replacement.',
-    fan: '9 fan',
-    explanation: 'If you call a kong, call a second kong using the replacement tile, then win on the second replacement.',
+    name: AppLocalizations.ruleDoubleKong,
+    description: AppLocalizations.descDoubleKong,
+    fan: AppLocalizations.fan(9),
+    explanation: AppLocalizations.explDoubleKong,
     exampleTiles: [],
   ),
 
   // 10 Fan
   Rule(
-    name: 'All Honors (字一色 - Zi6 Jat1 Sik1)',
-    description: 'All Honors.',
-    fan: '10 fan',
-    explanation: 'Hand composed entirely of Honor tiles.',
+    name: AppLocalizations.ruleAllHonors,
+    description: AppLocalizations.descAllHonors,
+    fan: AppLocalizations.fan(10),
+    explanation: AppLocalizations.explAllHonors,
     validator: MahjongLogic.isAllHonors,
     exampleTiles: [
       ['1z', '1z', '1z'],
@@ -276,10 +277,10 @@ final List<Rule> rules = [
     ],
   ),
   Rule(
-    name: 'Pure Terminals (清么九 - Cing1 Jiu1 Gau2)',
-    description: 'Pure Terminals.',
-    fan: '10 fan',
-    explanation: 'All Pongs/Kongs composed entirely of Terminal tiles (1 and 9).',
+    name: AppLocalizations.rulePureTerminals,
+    description: AppLocalizations.descPureTerminals,
+    fan: AppLocalizations.fan(10),
+    explanation: AppLocalizations.explPureTerminals,
     validator: MahjongLogic.isPureTerminals,
     exampleTiles: [
       ['1p', '1p', '1p'],
@@ -290,10 +291,10 @@ final List<Rule> rules = [
     ],
   ),
   Rule(
-    name: 'Nine Gates (九子連環 - Gau2 Zi2 Lin4 Waan4)',
-    description: 'Nine Gates.',
-    fan: '10 fan',
-    explanation: 'Concealed hand of one suit: 1112345678999 + any tile of the same suit.',
+    name: AppLocalizations.ruleNineGates,
+    description: AppLocalizations.descNineGates,
+    fan: AppLocalizations.fan(10),
+    explanation: AppLocalizations.explNineGates,
     validator: MahjongLogic.isNineGates,
     exampleTiles: [
       ['1p', '1p', '1p'],
@@ -305,41 +306,41 @@ final List<Rule> rules = [
 
   // 13 Fan
   Rule(
-    name: 'Thirteen Orphans (十三么 - Sap6 Saam1 Jiu1)',
-    description: 'Thirteen Orphans.',
-    fan: '13 fan',
-    explanation: 'One of each Terminal and Honor tile + one pair.',
+    name: AppLocalizations.ruleThirteenOrphans,
+    description: AppLocalizations.descThirteenOrphans,
+    fan: AppLocalizations.fan(13),
+    explanation: AppLocalizations.explThirteenOrphans,
     validator: MahjongLogic.isThirteenOrphans,
     exampleTiles: [
       ['1m', '9m', '1p', '9p', '1s', '9s', '1z', '2z', '3z', '4z', '5z', '6z', '7z', '1m'],
     ],
   ),
   Rule(
-    name: 'Blessing of Man (人胡 - Jan4 Wu4)',
-    description: 'Blessing of Man.',
-    fan: '13 fan',
-    explanation: 'As non-dealer, you win on your first turn with a self-pick.',
+    name: AppLocalizations.ruleBlessingMan,
+    description: AppLocalizations.descBlessingMan,
+    fan: AppLocalizations.fan(13),
+    explanation: AppLocalizations.explBlessingMan,
     exampleTiles: [],
   ),
   Rule(
-    name: 'Earthly Hand (地胡 - Dei6 Wu4)',
-    description: 'Blessing of Earth.',
-    fan: '13 fan',
-    explanation: 'As non-dealer, you win using the dealer\'s first discard.',
+    name: AppLocalizations.ruleEarthlyHand,
+    description: AppLocalizations.descEarthlyHand,
+    fan: AppLocalizations.fan(13),
+    explanation: AppLocalizations.explEarthlyHand,
     exampleTiles: [],
   ),
   Rule(
-    name: 'Heavenly Hand (天胡 - Tin1 Wu4)',
-    description: 'Blessing of Heaven.',
-    fan: '13 fan',
-    explanation: 'As dealer, your beginning hand wins.',
+    name: AppLocalizations.ruleHeavenlyHand,
+    description: AppLocalizations.descHeavenlyHand,
+    fan: AppLocalizations.fan(13),
+    explanation: AppLocalizations.explHeavenlyHand,
     exampleTiles: [],
   ),
   Rule(
-    name: 'Big Four Winds (大四喜 - Daai6 Sei3 Hei2)',
-    description: 'Big Four Winds.',
-    fan: '13 fan',
-    explanation: 'Four Pongs/Kongs of East, South, West, and North Winds.',
+    name: AppLocalizations.ruleBigFourWinds,
+    description: AppLocalizations.descBigFourWinds,
+    fan: AppLocalizations.fan(13),
+    explanation: AppLocalizations.explBigFourWinds,
     validator: MahjongLogic.isBigFourWinds,
     exampleTiles: [
       ['1z', '1z', '1z'],
@@ -350,10 +351,10 @@ final List<Rule> rules = [
     ],
   ),
   Rule(
-    name: 'Eighteen Arhats (十八羅漢 - Sap6 Baat3 Lo4 Hon3)',
-    description: 'Eighteen Arhats.',
-    fan: '13 fan',
-    explanation: 'Winning with four Kongs (18 tiles total).',
+    name: AppLocalizations.ruleEighteenArhats,
+    description: AppLocalizations.descEighteenArhats,
+    fan: AppLocalizations.fan(13),
+    explanation: AppLocalizations.explEighteenArhats,
     validator: MahjongLogic.isEighteenArhats,
     exampleTiles: [
       ['1p', '1p', '1p', '1p'],

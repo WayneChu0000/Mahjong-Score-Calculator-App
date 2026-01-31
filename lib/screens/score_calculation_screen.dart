@@ -8,6 +8,7 @@ import '../utils/mahjong_logic.dart';
 import '../models/rule.dart'; // Import Rule model
 import 'rules_screen.dart';
 import '../services/vision_service.dart'; // Import Vision Service
+import '../localization/app_localizations.dart';
 
 class ScoreCalculationScreen extends StatefulWidget {
   final List<Player> players;
@@ -87,6 +88,16 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   // Listen to score changes
   StreamSubscription? _scoreSubscription;
 
+  String _getWindText(String wind) {
+    switch (wind) {
+      case 'East': return AppLocalizations.east;
+      case 'South': return AppLocalizations.south;
+      case 'West': return AppLocalizations.west;
+      case 'North': return AppLocalizations.north;
+      default: return wind;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -146,6 +157,29 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
        }
     }
   }
+
+  String _getLocalizedCondition(String condition) {
+    switch (condition) {
+      case 'None': return AppLocalizations.ruleNone;
+      case 'Men Qian Qing': return AppLocalizations.ruleMenQianQing;
+      case 'Robbing the Kong': return AppLocalizations.ruleRobbingKong;
+      case 'Haidilao': return AppLocalizations.ruleHaidilao;
+      case 'Kong on Kong/Flower': return AppLocalizations.ruleKongOnKong;
+      case 'Heavenly Hand': return AppLocalizations.ruleHeavenlyHand;
+      case 'Earthly Hand': return AppLocalizations.ruleEarthlyHand;
+      default: return condition;
+    }
+  }
+
+  String _getLocalizedWind(String wind) {
+    switch (wind) {
+      case 'East': return AppLocalizations.east;
+      case 'South': return AppLocalizations.south;
+      case 'West': return AppLocalizations.west;
+      case 'North': return AppLocalizations.north;
+      default: return wind;
+    }
+  }
   
   @override
   void dispose() {
@@ -200,13 +234,13 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
        
        for (var entry in counts.entries) {
          if (entry.value >= 3) {
-           String dragonName = '';
-           if (entry.key == '5z') dragonName = 'White Dragon';
-           if (entry.key == '6z') dragonName = 'Green Dragon';
-           if (entry.key == '7z') dragonName = 'Red Dragon';
+           String ruleName = '';
+           if (entry.key == '5z') ruleName = AppLocalizations.rulePongOfWhite;
+           if (entry.key == '6z') ruleName = AppLocalizations.rulePongOfGreen;
+           if (entry.key == '7z') ruleName = AppLocalizations.rulePongOfRed;
            
            calculatedFan += 1;
-           matchedRules.add({'name': 'Pong of $dragonName', 'fan': 1});
+           matchedRules.add({'name': ruleName, 'fan': 1});
          }
        }
     }
@@ -238,13 +272,13 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
       // Check Round Wind
       if ((windCounts[roundWindTile] ?? 0) >= 3) {
         calculatedFan += 1;
-        matchedRules.add({'name': 'Round Wind ($_roundWind)', 'fan': 1});
+        matchedRules.add({'name': '${AppLocalizations.ruleRoundWind} (${_getLocalizedWind(_roundWind)})', 'fan': 1});
       }
 
       // Check Seat Wind
       if ((windCounts[seatWindTile] ?? 0) >= 3) {
         calculatedFan += 1;
-        matchedRules.add({'name': 'Seat Wind ($_seatWind)', 'fan': 1});
+        matchedRules.add({'name': '${AppLocalizations.ruleSeatWind} (${_getLocalizedWind(_seatWind)})', 'fan': 1});
       }
     }
 
@@ -256,7 +290,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
       
       if (!isSpecialHand) {
         calculatedFan += 1;
-        matchedRules.add({'name': 'Self-Draw', 'fan': 1});
+        matchedRules.add({'name': AppLocalizations.ruleSelfDraw, 'fan': 1});
       }
     }
     
@@ -300,14 +334,17 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     _displayRules = List.from(_matchedRulesDetails);
 
     // Check for Hidden Treasure combination (All Pongs + Men Qian Qing)
-    bool hasAllPongs = _displayRules.any((r) => r['name'] == 'All Pongs (Dui Dui Hu)');
-    bool isMenQianQing = _selectedSpecialCondition == 'Men Qian Qing';
+    bool hasAllPongs = _displayRules.any((r) => r['name'] == AppLocalizations.ruleAllPongs);
+    bool isMenQianQing = _selectedSpecialCondition == 'Men Qian Qing'; // Selected value, check if this is localized in dropdown or internal value
+    // Actually _selectedSpecialCondition values are hardcoded English in the list definition above:
+    // final List<String> _specialConditions = ['None', 'Men Qian Qing', ...];
+    // So checking against 'Men Qian Qing' string literal is CORRECT.
 
     if (hasAllPongs && isMenQianQing) {
       // Remove All Pongs (3 fan)
-      _displayRules.removeWhere((r) => r['name'] == 'All Pongs (Dui Dui Hu)');
+      _displayRules.removeWhere((r) => r['name'] == AppLocalizations.ruleAllPongs);
       // Add Hidden Treasure (8 fan)
-      _displayRules.add({'name': 'Hidden Treasure', 'fan': 8});
+      _displayRules.add({'name': AppLocalizations.ruleHiddenTreasure, 'fan': 8});
       
       // Adjust effective fan: Remove 3 (All Pongs), Add 8 (Hidden Treasure)
       // Note: _fanCount includes All Pongs (3).
@@ -326,10 +363,10 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
         effectiveFan += 2;
       } else if (_selectedSpecialCondition == 'Heavenly Hand') {
         effectiveFan = 13;
-        _displayRules.add({'name': 'Heavenly Hand', 'fan': 13});
+        _displayRules.add({'name': AppLocalizations.ruleHeavenlyHand, 'fan': 13});
       } else if (_selectedSpecialCondition == 'Earthly Hand') {
         effectiveFan = 13;
-        _displayRules.add({'name': 'Earthly Hand', 'fan': 13});
+        _displayRules.add({'name': AppLocalizations.ruleEarthlyHand, 'fan': 13});
       }
     }
     
@@ -347,21 +384,17 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
        // Usually only valid if the hand has NO flowers at all
        flowerFan += 1;
        flowerDisplayNames.add("No Flowers");
+       effectiveFan += flowerFan;
     } else if (flowerCount == 7) {
        // Flower Hand (3 Fan / Instant Win)
        // Overrides normal flower counting
-       effectiveFan = 3; // Or add? Usually fixed or add. Assuming fixed base 3 for instant win + self draw?
        // Let's assume it sets the base.
-       // Actually user request says "Flower Hand (Cat1 Zek3 Faa1) ... 3 fan".
-       // If it's an instant win, we usually ignore other hand patterns.
-       // But if we have tiles selected, we might want to respect hand + flowers.
-       // Usually "7 Flowers" is a special win hand replacing normal hand.
-       _displayRules = [{'name': 'Flower Hand (7 Flowers)', 'fan': 3}];
+       _displayRules = [{'name': AppLocalizations.ruleSevenFlowers, 'fan': 3}];
        effectiveFan = 3;
        flowerFan = 0; // Handled
     } else if (flowerCount == 8) {
        // Eight Immortals (8 Fan / Limit)
-       _displayRules = [{'name': 'Eight Immortals', 'fan': 8}];
+       _displayRules = [{'name': AppLocalizations.ruleEightImmortals, 'fan': 8}];
        effectiveFan = 8;
        flowerFan = 0; // Handled
     } else {
@@ -471,12 +504,12 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
 
   String _getSpecialConditionFanText(String condition) {
     switch (condition) {
-      case 'Men Qian Qing': return '+1 Fan';
-      case 'Robbing the Kong': return '+1 Fan';
-      case 'Haidilao': return '+1 Fan';
-      case 'Kong on Kong/Flower': return '+2 Fan';
-      case 'Heavenly Hand': return '13 Fan (Limit)';
-      case 'Earthly Hand': return '13 Fan (Limit)';
+      case 'Men Qian Qing': return '+${AppLocalizations.fan(1)}';
+      case 'Robbing the Kong': return '+${AppLocalizations.fan(1)}';
+      case 'Haidilao': return '+${AppLocalizations.fan(1)}';
+      case 'Kong on Kong/Flower': return '+${AppLocalizations.fan(2)}';
+      case 'Heavenly Hand': return '${AppLocalizations.fan(13)} (${AppLocalizations.limit})';
+      case 'Earthly Hand': return '${AppLocalizations.fan(13)} (${AppLocalizations.limit})';
       default: return '';
     }
   }
@@ -637,7 +670,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.groupName ?? 'Mahjong Scoring'),
+        title: Text(widget.groupName ?? AppLocalizations.scoreCalculation),
         backgroundColor: Colors.green.shade700,
         foregroundColor: Colors.white,
         actions: [
@@ -665,9 +698,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Win',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.win,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -694,7 +727,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                             }
                           },
                         ),
-                        const Text('Self-Draw'),
+                        Text(AppLocalizations.selfDraw),
                         const SizedBox(width: 24),
                         Radio<bool>(
                           value: false,
@@ -714,21 +747,21 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                             }
                           },
                         ),
-                        const Text('Discard'),
+                        Text(AppLocalizations.discard),
                       ],
                     ),
                     const SizedBox(height: 16),
                     // Winning player selection
                     DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Winning Player',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.winningPlayer,
+                        border: const OutlineInputBorder(),
                       ),
                       initialValue: _winningPlayer,
                       items: widget.players.map((player) {
                         return DropdownMenuItem<String>(
                           value: player.name,
-                          child: Text('${player.name} (Current: ${_getPlayerCurrentScore(player.name)} pts)'),
+                          child: Text('${player.name} ${AppLocalizations.currentScore(_getPlayerCurrentScore(player.name))}'),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
@@ -750,16 +783,16 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                       children: [
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              labelText: 'Round Wind',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.roundWind,
+                              border: const OutlineInputBorder(),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                             ),
                             initialValue: _roundWind,
                             items: _winds.map((wind) {
                               return DropdownMenuItem<String>(
                                 value: wind,
-                                child: Text(wind),
+                                child: Text(_getWindText(wind)),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
@@ -776,16 +809,16 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              labelText: 'Seat Wind',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.seatWind,
+                              border: const OutlineInputBorder(),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                             ),
                             initialValue: _seatWind,
                             items: _winds.map((wind) {
                               return DropdownMenuItem<String>(
                                 value: wind,
-                                child: Text(wind),
+                                child: Text(_getWindText(wind)),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
@@ -808,9 +841,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     // Discard player selection (only show when discard is selected)
                     if (!_isSelfDraw)
                       DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          labelText: 'Discard Player',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.discardPlayer,
+                          border: const OutlineInputBorder(),
                         ),
                         initialValue: _discardPlayer,
                         items: widget.players
@@ -818,7 +851,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                             .map((player) {
                           return DropdownMenuItem<String>(
                             value: player.name,
-                            child: Text('${player.name} (Current: ${_getPlayerCurrentScore(player.name)} pts)'),
+                            child: Text('${player.name} ${AppLocalizations.currentScore(_getPlayerCurrentScore(player.name))}'),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
@@ -843,9 +876,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Fan',
-                      style: TextStyle(
+                     Text(
+                      AppLocalizations.fanTitle,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -853,21 +886,24 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     const SizedBox(height: 16),
                     // Fan count selection
                     DropdownButtonFormField<int>(
-                      decoration: const InputDecoration(
-                        labelText: 'Fan',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.fanTitle,
+                        border: const OutlineInputBorder(),
                       ),
-                      initialValue: _fanCount,
+                      value: _effectiveFan,
                       items: List.generate(14, (index) => index).map((fan) {
                         return DropdownMenuItem<int>(
                           value: fan,
-                          child: Text('$fan fan'),
+                          child: Text(AppLocalizations.fan(fan)),
                         );
                       }).toList(),
                       onChanged: (int? newValue) {
                         if (newValue != null) {
                           setState(() {
-                            _fanCount = newValue;
+                            // Adjust base fan to reach target total
+                            int diff = newValue - _effectiveFan;
+                            _fanCount = _fanCount + diff;
+                            if (_fanCount < 0) _fanCount = 0;
                             _calculateScore();
                           });
                         }
@@ -909,15 +945,15 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
 
                     // Special Winning Conditions Dropdown
                     DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Special Winning Condition',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.specialWinningCondition,
+                        border: const OutlineInputBorder(),
                       ),
                       initialValue: _selectedSpecialCondition,
                       items: _specialConditions.map((condition) {
                         return DropdownMenuItem<String>(
                           value: condition,
-                          child: Text(condition),
+                          child: Text(_getLocalizedCondition(condition)),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
@@ -948,7 +984,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                 Expanded(
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.camera_alt),
-                    label: const Text('Scan Tiles'),
+                    label: Text(AppLocalizations.scanTiles),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
@@ -961,7 +997,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                 Expanded(
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.grid_view),
-                    label: const Text('Select Hand'),
+                    label: Text(AppLocalizations.selectHand),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
@@ -982,9 +1018,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Hand Preview Area',
-                      style: TextStyle(
+                     Text(
+                      AppLocalizations.handPreviewArea,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -996,12 +1032,12 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         ? Container(
                             height: 120,
                             alignment: Alignment.center,
-                            child: const Column(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CircularProgressIndicator(),
-                                SizedBox(height: 16),
-                                Text('Analyzing tiles...'),
+                                const CircularProgressIndicator(),
+                                const SizedBox(height: 16),
+                                Text(AppLocalizations.analyzingTiles),
                               ],
                             ),
                           )
@@ -1056,19 +1092,19 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                                   color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Text(
-                                    'Take photo or click to select hand pattern',
-                                    style: TextStyle(color: Colors.grey),
+                                    AppLocalizations.takePhotoHint,
+                                    style: const TextStyle(color: Colors.grey),
                                   ),
                                 ),
                               ),
                     ),
 
                     const SizedBox(height: 24),
-                    const Text(
-                      'Select Flowers',
-                      style: TextStyle(
+                     Text(
+                      AppLocalizations.selectFlowers,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -1159,9 +1195,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Score Calculation',
-                      style: TextStyle(
+                     Text(
+                      AppLocalizations.scoreCalculation,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -1169,25 +1205,25 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     const SizedBox(height: 16),
                     // Score details list
                     DataTable(
-                      columns: const [
-                        DataColumn(label: Text('Item')),
-                        DataColumn(label: Text('Value')),
+                      columns: [
+                        DataColumn(label: Text(AppLocalizations.item)),
+                        DataColumn(label: Text(AppLocalizations.value)),
                       ],
                       rows: [
                         // Matched Rules (Use _displayRules instead of _matchedRulesDetails)
                         ..._displayRules.map((rule) => DataRow(cells: [
                           DataCell(Text(rule['name'])),
-                          DataCell(Text('${rule['fan']} fan')),
+                          DataCell(Text(AppLocalizations.fan(rule['fan'] as int))),
                         ])),
                         
                         // Self-Draw (Manual mode or not captured in matched rules)
                         if (_isSelfDraw && 
-                            !_displayRules.any((r) => r['name'] == 'Self-Draw') &&
+                            !_displayRules.any((r) => r['name'] == AppLocalizations.ruleSelfDraw) &&
                             _selectedFlowers.values.where((v) => v).length < 7 && // Not instant win flower hand
                             _selectedSpecialCondition != 'Heavenly Hand')
-                          const DataRow(cells: [
-                            DataCell(Text('Self-Draw')),
-                            DataCell(Text('+1 Fan')),
+                           DataRow(cells: [
+                            DataCell(Text(AppLocalizations.ruleSelfDraw)),
+                            DataCell(Text('+ ${AppLocalizations.fan(1)}')), // Use fan format? +1 Fan
                           ]),
 
                         // Flower Display Logic (New)
@@ -1215,9 +1251,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                              
                              return hasOwnFlower && !has1to4 && _selectedFlowers.values.where((v) => v).length < 7;
                          }())
-                          const DataRow(cells: [
-                            DataCell(Text('Own Flower')),
-                            DataCell(Text('+1 Fan')),
+                           DataRow(cells: [
+                            DataCell(Text(AppLocalizations.ruleOwnFlower)),
+                            DataCell(Text(AppLocalizations.fan(1))),
                           ]),
 
                          // Display Own Season (Only if not part of a platform)
@@ -1235,16 +1271,16 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                              
                              return hasOwnSeason && !has5to8 && _selectedFlowers.values.where((v) => v).length < 7;
                          }())
-                          const DataRow(cells: [
-                            DataCell(Text('Own Season')),
-                            DataCell(Text('+1 Fan')),
+                           DataRow(cells: [
+                            DataCell(Text(AppLocalizations.ruleOwnSeason)),
+                            DataCell(Text(AppLocalizations.fan(1))),
                           ]),
 
                         // Display No Flowers
                         if (_selectedFlowers.values.where((v) => v).isEmpty)
-                          const DataRow(cells: [
-                            DataCell(Text('No Flowers')),
-                            DataCell(Text('+1 Fan')),
+                           DataRow(cells: [
+                            DataCell(Text(AppLocalizations.ruleNoFlowers)),
+                            DataCell(Text(AppLocalizations.fan(1))),
                           ]),
                         
                         // Display Flower Platforms
@@ -1253,9 +1289,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                            for(int i=1;i<=4;i++) if(_selectedFlowers['${i}f']!=true) has1to4=false;
                            return has1to4 && _selectedFlowers.values.where((v) => v).length < 7;
                         }())
-                           const DataRow(cells: [
-                            DataCell(Text('Flower Platform (1-4)')),
-                            DataCell(Text('+2 Fan')),
+                            DataRow(cells: [
+                            DataCell(Text(AppLocalizations.ruleFlowerPlatform14)),
+                            DataCell(Text(AppLocalizations.fan(2))),
                           ]),
 
                         if (() {
@@ -1263,9 +1299,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                            for(int i=5;i<=8;i++) if(_selectedFlowers['${i}f']!=true) has5to8=false;
                            return has5to8 && _selectedFlowers.values.where((v) => v).length < 7;
                         }())
-                           const DataRow(cells: [
-                            DataCell(Text('Flower Platform (5-8)')),
-                            DataCell(Text('+2 Fan')),
+                            DataRow(cells: [
+                            DataCell(Text(AppLocalizations.ruleFlowerPlatform58)),
+                            DataCell(Text(AppLocalizations.fan(2))),
                           ]),
                           
                         /* Removed old Flower Option Display
@@ -1280,32 +1316,31 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         // Special Condition Display
                         // Hide Men Qian Qing if it was merged into Hidden Treasure
                         if (_selectedSpecialCondition != 'None' && 
-                            !(_selectedSpecialCondition == 'Men Qian Qing' && _displayRules.any((r) => r['name'] == 'Hidden Treasure')))
+                            !(_selectedSpecialCondition == 'Men Qian Qing' && _displayRules.any((r) => r['name'] == AppLocalizations.ruleHiddenTreasure)))
                           DataRow(cells: [
-                            DataCell(Text(_selectedSpecialCondition)),
+                            DataCell(Text(_getLocalizedCondition(_selectedSpecialCondition))),
                             DataCell(Text(_getSpecialConditionFanText(_selectedSpecialCondition))),
                           ]),
                           
                         // Total Fan
                         DataRow(cells: [
-                          const DataCell(Text('Total Fan', style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataCell(Text(AppLocalizations.totalFan, style: const TextStyle(fontWeight: FontWeight.bold))),
                           DataCell(Text(
-                            '$_effectiveFan fan${_effectiveFan >= 13 ? ' (Limit)' : ''}', 
+                            AppLocalizations.fan(_effectiveFan) + (_effectiveFan >= 13 ? ' (${AppLocalizations.limit})' : ''), 
                             style: const TextStyle(fontWeight: FontWeight.bold)
                           )),
                         ]),
                         
                         // Total Score
                         DataRow(cells: [
-                          const DataCell(Text('Total Score', style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataCell(Text(AppLocalizations.totalScore, style: const TextStyle(fontWeight: FontWeight.bold))),
                           DataCell(
                             Container(
                               constraints: const BoxConstraints(maxWidth: 180), // Constrain width to ensure it doesn't overflow screen
                               child: Text(
                                 _isSelfDraw 
-                                  // ? '$_totalPoints / person\n(Total ${_totalPoints * 3})' 
-                                  ? '$_totalPoints / person' 
-                                  : '$_totalPoints points', 
+                                  ? '$_totalPoints${AppLocalizations.perPerson} ${AppLocalizations.totalWin(_totalPoints * (widget.players.length - 1))}' 
+                                  : '$_totalPoints ${AppLocalizations.points}', 
                                 style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
                                 softWrap: true,
                                 overflow: TextOverflow.visible, 
@@ -1333,7 +1368,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     onPressed: _submitScore,
-                    child: const Text('Next Round', style: TextStyle(fontSize: 15)),
+                    child: Text(AppLocalizations.nextRound, style: const TextStyle(fontSize: 15)),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -1354,7 +1389,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                       // Cancel calculation and return to previous page
                       Navigator.pop(context);
                     },
-                    child: const Text('Cancel', style: TextStyle(fontSize: 15)),
+                    child: Text(AppLocalizations.cancel, style: const TextStyle(fontSize: 15)),
                   ),
                 ),
               ],
