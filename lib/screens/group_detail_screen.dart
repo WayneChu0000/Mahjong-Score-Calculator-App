@@ -165,9 +165,11 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       barrierDismissible: false,
       builder: (context) => DealerSelectionDialog(
         players: _group.players,
-        onDealerSelected: (dealerIndex) {
+        initialMinFan: _group.minFan,
+        initialMaxFan: _group.maxFan,
+        onDealerSelected: (dealerIndex, minFan, maxFan) {
           Navigator.pop(context); // Close dialog
-          _navigateToGame(dealerIndex, isNewGame: true);
+          _navigateToGame(dealerIndex, isNewGame: true, minFan: minFan, maxFan: maxFan);
         },
       ),
     );
@@ -179,7 +181,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     _navigateToGame(_group.dealerIndex ?? 0, isNewGame: false);
   }
 
-  void _navigateToGame(int dealerIndex, {required bool isNewGame}) async {
+  void _navigateToGame(int dealerIndex, {required bool isNewGame, int? minFan, int? maxFan}) async {
     if (isNewGame) {
         // Increment Total Match count immediately when creating a new game
         final updatedGroup = _group.copyWith(
@@ -192,6 +194,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             currentDealerGameCount: 1,
             dealerIndex: dealerIndex,
             prevalentWindIndex: 0,
+            minFan: minFan,
+            maxFan: maxFan,
         );
         await PlayerGroupService.saveGroup(updatedGroup);
         if (mounted) {
@@ -510,12 +514,16 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
 
 class DealerSelectionDialog extends StatefulWidget {
   final List<String> players;
-  final Function(int) onDealerSelected;
+  final Function(int, int, int) onDealerSelected; // Modified to accept (dealerIndex, minFan, maxFan)
+  final int initialMinFan;
+  final int initialMaxFan;
 
   const DealerSelectionDialog({
     super.key,
     required this.players,
     required this.onDealerSelected,
+    this.initialMinFan = 3,
+    this.initialMaxFan = 13,
   });
 
   @override
@@ -524,29 +532,120 @@ class DealerSelectionDialog extends StatefulWidget {
 
 class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
   int _selectedDealer = 0;
+  late int _minFan;
+  late int _maxFan;
+
+  @override
+  void initState() {
+    super.initState();
+    _minFan = widget.initialMinFan;
+    _maxFan = widget.initialMaxFan;
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(AppLocalizations.selectDealer),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(widget.players.length, (index) {
-          return RadioListTile<int>(
-            title: Text(widget.players[index]),
-            value: index,
-            groupValue: _selectedDealer,
-            onChanged: (value) {
-              setState(() {
-                _selectedDealer = value!;
-              });
-            },
-          );
-        }),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(AppLocalizations.selectDealer, style: const TextStyle(fontWeight: FontWeight.bold)),
+            ...List.generate(widget.players.length, (index) {
+              return RadioListTile<int>(
+                title: Text(widget.players[index]),
+                value: index,
+                groupValue: _selectedDealer,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedDealer = value!;
+                  });
+                },
+              );
+            }),
+            const Divider(),
+            const SizedBox(height: 8),
+             Text(AppLocalizations.gameRules, style: const TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            // Min Fan
+             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                 Text(AppLocalizations.minFan), // Ensure localization key exists or fallback
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove_circle_outline),
+                      onPressed: () {
+                        setState(() {
+                          if (_minFan > 0) _minFan--;
+                        });
+                      },
+                    ),
+                    Text('$_minFan', style: const TextStyle(fontSize: 16)),
+                    IconButton(
+                      icon: const Icon(Icons.add_circle_outline),
+                      onPressed: () {
+                        setState(() {
+                             // Ensure minFan doesn't exceed maxFan
+                             if (_maxFan != 999 && _minFan < _maxFan) {
+                                  _minFan++;
+                             } else if (_maxFan == 999) {
+                                  _minFan++;
+                             }
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            // Max Fan
+             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                 Text(AppLocalizations.maxFan), // Ensure localization key exists
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove_circle_outline),
+                      onPressed: () {
+                        setState(() {
+                          if (_maxFan == 999) {
+                            _maxFan = 13;
+                          } else if (_maxFan > _minFan) {
+                            _maxFan--;
+                          }
+                        });
+                      },
+                    ),
+                    Text(_maxFan == 999 ? AppLocalizations.noLimit : '$_maxFan', style: const TextStyle(fontSize: 16)),
+                    IconButton(
+                      icon: const Icon(Icons.add_circle_outline),
+                      onPressed: () {
+                        setState(() {
+                          if (_maxFan < 100) { // Limit manageable number before unlimited
+                             _maxFan++;
+                          } else {
+                             _maxFan = 999;
+                          }
+                          // Simplified Logic for UI:
+                          // If current is 13, next could be "No Limit" (999)
+                          if (_maxFan > 13) _maxFan = 999;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
-          onPressed: () => widget.onDealerSelected(_selectedDealer),
+          onPressed: () => widget.onDealerSelected(_selectedDealer, _minFan, _maxFan),
           child: Text(AppLocalizations.startGame),
         ),
       ],

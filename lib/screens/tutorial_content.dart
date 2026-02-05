@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/mahjong_tile.dart';
 import '../localization/app_localizations.dart';
+import '../services/settings_service.dart';
 
 class TutorialContent extends StatelessWidget {
   final int pageIndex;
@@ -444,6 +445,61 @@ class TutorialContent extends StatelessWidget {
           Text(AppLocalizations.scoringRulesDesc),
           const SizedBox(height: 16),
           
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[800] : Colors.amber.shade50,
+              border: Border.all(color: Colors.amber),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.settings, color: Colors.amber),
+                    const SizedBox(width: 8),
+                    Text(
+                      AppLocalizations.fanLimitSettings ?? 'Fan Range Settings', 
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  SettingsService.instance.language == 'Traditional Chinese' 
+                    ? '標準香港麻將通常設有「3番起胡」及「13番封頂」的限制。但在本程式中，您可以在開始新一局時（選莊家頁面）自訂這些限制：'
+                    : 'Standard Hong Kong Mahjong is played with a minimum of 3 Fan to win and a maximum of 13 Fan. However, you can customize these limits when starting a new game:',
+                ),
+                const SizedBox(height: 8),
+                Row(children: [
+                    const Icon(Icons.remove_circle_outline, size: 16), 
+                    const Text(" / "),
+                    const Icon(Icons.add_circle_outline, size: 16),
+                    Text(
+                      SettingsService.instance.language == 'Traditional Chinese' 
+                        ? ' 使用按鈕調整番數限制'
+                        : ' Use buttons to adjust limits'
+                    )
+                ]),
+                const SizedBox(height: 4),
+                Text(
+                  SettingsService.instance.language == 'Traditional Chinese' 
+                    ? '• 最少番數: 預設為 3。胡牌牌型必須達到此番數。'
+                    : '• Min Fan: Default 3. Hand must meet this threshold to win.',
+                  style: const TextStyle(fontSize: 13),
+                ),
+                Text(
+                  SettingsService.instance.language == 'Traditional Chinese' 
+                    ? '• 最大番數: 預設為 13。可設為「無上限」。'
+                    : '• Max Fan: Default 13. Can be set to "No Limit".',
+                  style: const TextStyle(fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
           // Scoring Table
           Table(
             border: TableBorder.all(color: Colors.grey.shade400),

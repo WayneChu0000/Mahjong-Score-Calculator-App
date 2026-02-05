@@ -42,6 +42,8 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   bool _isNewGroup = true;
   bool _hasSavedGroup = false;
   int _selectedDealerIndex = 0;
+  int _minFan = 3;
+  int _maxFan = 13;
 
   @override
   void initState() {
@@ -99,17 +101,19 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
       barrierDismissible: false,
       builder: (context) => DealerSelectionDialog(
         players: selectedPlayers.map((p) => p.name).toList(),
-        onDealerSelected: (dealerIndex) {
+        onDealerSelected: (dealerIndex, minFan, maxFan) {
           Navigator.pop(context);
-          _proceedToGame(dealerIndex);
+          _proceedToGame(dealerIndex, minFan, maxFan);
         },
       ),
     );
   }
 
-  Future<void> _proceedToGame(int dealerIndex) async {
+  Future<void> _proceedToGame(int dealerIndex, int minFan, int maxFan) async {
     setState(() {
       _selectedDealerIndex = dealerIndex;
+      _minFan = minFan;
+      _maxFan = maxFan;
     });
 
     // Save player group with the selected dealer and increment game count
@@ -147,6 +151,8 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
           initialPrevalentWindIndex: dealerChanged ? 0 : widget.prevalentWindIndex,
           initialDealerGameCount: dealerChanged ? 1 : widget.currentDealerGameCount,
           initialTotalWindRounds: dealerChanged ? 1 : widget.totalWindRounds,
+          minFan: _minFan,
+          maxFan: _maxFan,
         ),
       ),
     );
@@ -196,8 +202,8 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             dealerIndex: _selectedDealerIndex,
             prevalentWindIndex: dealerChanged ? 0 : existingGroup.prevalentWindIndex,
             currentDealerGameCount: dealerChanged ? 1 : existingGroup.currentDealerGameCount,
-            totalWindRounds: dealerChanged ? 1 : existingGroup.totalWindRounds,
-            totalGamesPlayedInGroup: currentGamesPlayed,
+            minFan: _minFan,
+            maxFan: _maxFan,
         );
     } else {
         newGroup = PlayerGroup(
@@ -212,6 +218,8 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
           currentRound: 1,
           currentScores: {for (var name in playerNames) name: 0},
           totalGamesPlayedInGroup: incrementGameCount ? 1 : 0,
+          minFan: _minFan,
+          maxFan: _maxFan,
         );
     }
 

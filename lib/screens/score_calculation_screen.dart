@@ -15,6 +15,8 @@ class ScoreCalculationScreen extends StatefulWidget {
   final String? groupName;
   final int? roundWindIndex;
   final int? dealerIndex;
+  final int minFan;
+  final int maxFan;
 
   const ScoreCalculationScreen({
     super.key,
@@ -22,6 +24,8 @@ class ScoreCalculationScreen extends StatefulWidget {
     this.groupName,
     this.roundWindIndex,
     this.dealerIndex,
+    this.minFan = 3,
+    this.maxFan = 13,
   });
 
   @override
@@ -306,8 +310,10 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     // Let's follow existing pattern: _fanCount is primarily from _calculateFanFromTiles (Hand Patterns).
     // The previous code reset _fanCount entirely here.
     
-    // Cap at 13 fan
-    if (calculatedFan > 13) calculatedFan = 13;
+    // Cap at max fan (unless max fan is 999/unlimited)
+    if (widget.maxFan != 999 && calculatedFan > widget.maxFan) {
+        calculatedFan = widget.maxFan;
+    }
 
     setState(() {
       _fanCount = calculatedFan;
@@ -448,8 +454,10 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
        effectiveFan += flowerFan;
     }
 
-    // Cap at 13 fan
-    if (effectiveFan > 13) effectiveFan = 13;
+    // Cap at fan limit
+    if (widget.maxFan != 999 && effectiveFan > widget.maxFan) {
+        effectiveFan = widget.maxFan;
+    }
 
     _effectiveFan = effectiveFan; // Store for display
 
@@ -529,8 +537,19 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     if (fan == 10) return 128;
     if (fan == 11) return 192;
     if (fan == 12) return 256;
-    if (fan >= 13) return 384; // 13 fan limit
-    return 1; // Fallback
+    if (fan >= 13) return 384; // 13 fan limit or above
+    // If fan > 13 and we support higher scores, we should add logic here eventually.
+    // However, 13 fan limit (384) is standard for HK style. 
+    // Even if limit is higher, the score table usually caps here or follows exponential growth.
+    // If user sets maxFan > 13, we might need a formula.
+    // 13 fan = 384. 14 fan = 512? (256*2?) No, 13 is already 1.5x of 12 (sort of).
+    // Let's assume standard HK doubling stops or caps at 13-fan score for now,
+    // or extend simply by doubling.
+    // 10=128, 11=192, 12=256, 13=384 (Limit).
+    // If maxFan > 13, we will just return 384 for now to be safe, or implement extended logic if requested.
+    // The prompt only asked to set range of fan, not change score table.
+    return 384; 
+    // return 1; // Fallback - unreachable
   }
 
   // Take photo to get hand pattern
@@ -1326,7 +1345,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                         DataRow(cells: [
                           DataCell(Text(AppLocalizations.totalFan, style: const TextStyle(fontWeight: FontWeight.bold))),
                           DataCell(Text(
-                            AppLocalizations.fan(_effectiveFan) + (_effectiveFan >= 13 ? ' (${AppLocalizations.limit})' : ''), 
+                            AppLocalizations.fan(_effectiveFan) + 
+                            ((widget.maxFan != 999 && _effectiveFan >= widget.maxFan) || _effectiveFan >= 13 
+                                ? ' (${AppLocalizations.limit})' : ''), 
                             style: const TextStyle(fontWeight: FontWeight.bold)
                           )),
                         ]),

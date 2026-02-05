@@ -14,6 +14,8 @@ class PlayerGroup {
   final int totalGamesPlayedInGroup;
   final Map<String, PlayerStats>? playerStats;
   final List<Map<String, dynamic>>? roundHistory;
+  final int minFan;
+  final int maxFan;
 
   PlayerGroup({
     required this.name,
@@ -29,6 +31,8 @@ class PlayerGroup {
     this.totalGamesPlayedInGroup = 0,
     this.playerStats,
     this.roundHistory,
+    this.minFan = 3,
+    this.maxFan = 13,
   }) : createdAt = createdAt ?? DateTime.now();
 
   // Create PlayerGroup from JSON
@@ -56,6 +60,8 @@ class PlayerGroup {
       roundHistory: json['roundHistory'] != null
           ? List<Map<String, dynamic>>.from(json['roundHistory'])
           : null,
+      minFan: json['minFan'] ?? 3,
+      maxFan: json['maxFan'] ?? 13,
     );
   }
 
@@ -75,6 +81,8 @@ class PlayerGroup {
       'totalGamesPlayedInGroup': totalGamesPlayedInGroup,
       'playerStats': playerStats?.map((key, value) => MapEntry(key, value.toJson())),
       'roundHistory': roundHistory,
+      'minFan': minFan,
+      'maxFan': maxFan,
     };
   }
 
@@ -93,6 +101,8 @@ class PlayerGroup {
     int? totalGamesPlayedInGroup,
     Map<String, PlayerStats>? playerStats,
     List<Map<String, dynamic>>? roundHistory,
+    int? minFan,
+    int? maxFan,
   }) {
     return PlayerGroup(
       name: name ?? this.name,
@@ -108,6 +118,8 @@ class PlayerGroup {
       totalGamesPlayedInGroup: totalGamesPlayedInGroup ?? this.totalGamesPlayedInGroup,
       playerStats: playerStats ?? this.playerStats,
       roundHistory: roundHistory ?? this.roundHistory,
+      minFan: minFan ?? this.minFan,
+      maxFan: maxFan ?? this.maxFan,
     );
   }
 }

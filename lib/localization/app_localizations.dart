@@ -46,6 +46,10 @@ class AppLocalizations {
   static String get playerList => _isZh ? '玩家列表' : 'Player List';
   static String get groupSaved => _isZh ? '群組儲存成功!' : 'Group saved successfully!';
   static String get groupSaveFailed => _isZh ? '儲存群組失敗' : 'Failed to save group';
+  static String get minFan => _isZh ? '最少番數' : 'Min Fan';
+  static String get maxFan => _isZh ? '最大番數' : 'Max Fan';
+  static String get noLimit => _isZh ? '無上限' : 'No Limit';
+  static String get fanLimitSettings => _isZh ? '番數限制設定' : 'Fan Range Settings';
   
   // Score Recording Screen
   static String get scoreRecording => _isZh ? '計分板' : 'Score Recording';
@@ -141,6 +145,7 @@ class AppLocalizations {
   // Common
   static String get home => _isZh ? '首頁' : 'Home';   
   static String get rules => _isZh ? '規則' : 'Rules';
+  static String get gameRules => _isZh ? '遊戲規則' : 'Game Rules';
   static String get settings => _isZh ? '設定' : 'Settings';
   static String get confirm => _isZh ? '確認' : 'Confirm';
   static String get delete => _isZh ? '刪除' : 'Delete';

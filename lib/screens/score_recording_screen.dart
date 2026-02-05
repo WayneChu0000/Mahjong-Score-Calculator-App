@@ -20,6 +20,8 @@ class ScoreRecordingScreen extends StatefulWidget {
   final int? initialPrevalentWindIndex;
   final int? initialDealerGameCount;
   final int? initialTotalWindRounds;
+  final int minFan;
+  final int maxFan;
 
   const ScoreRecordingScreen({
     super.key,
@@ -33,6 +35,8 @@ class ScoreRecordingScreen extends StatefulWidget {
     this.initialPrevalentWindIndex,
     this.initialDealerGameCount,
     this.initialTotalWindRounds,
+    this.minFan = 3,
+    this.maxFan = 13,
   });
 
   @override
@@ -280,6 +284,8 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
           players: _updatedPlayers,
           roundWindIndex: _prevalentWindIndex,
           dealerIndex: _dealerIndex,
+          minFan: widget.minFan,
+          maxFan: widget.maxFan,
         ),
       ),
     ).then((result) {
