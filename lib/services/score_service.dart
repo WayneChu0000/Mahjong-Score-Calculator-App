@@ -1,17 +1,20 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import '../models/player.dart';
 
-// Score service implemented with singleton pattern
-class ScoreService {
+/// Score service — manages player scores, rounds, and public score.
+///
+/// Extends [ChangeNotifier] so it can be provided via `Provider` /
+/// `ChangeNotifierProvider` and rebuild widgets reactively.
+///
+/// Also exposes a legacy [scoreStream] for backward-compatibility with
+/// stream-based listeners.
+class ScoreService extends ChangeNotifier {
   // Singleton instance
   static final ScoreService _instance = ScoreService._internal();
   
-  // Factory constructor
-  factory ScoreService() {
-    return _instance;
-  }
+  factory ScoreService() => _instance;
   
-  // Private constructor
   ScoreService._internal();
   
   // Player score map
@@ -94,11 +97,12 @@ class ScoreService {
     _notifyListeners();
   }
   
-  // 通知監聽器
+  // Notify both stream listeners and Provider listeners
   void _notifyListeners() {
     if (!_scoreController.isClosed) {
       _scoreController.add(getGameData());
     }
+    notifyListeners();
   }
   
   // 檢查遊戲是否結束

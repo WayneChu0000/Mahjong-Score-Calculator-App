@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import '../models/player.dart';
 import '../models/player_group.dart';
+import '../models/game_mode.dart'; // Import GameMode
 import '../services/player_group_service.dart';
 import '../localization/app_localizations.dart';
-import 'score_recording_screen.dart';
+import '../routes/app_routes.dart';
 import 'group_detail_screen.dart'; // Import for DealerSelectionDialog
+import '../theme/app_colors.dart';
+import '../theme/app_dimens.dart';
 
 class PlayerSetupScreen extends StatefulWidget {
   final List<Player>? existingPlayers;
@@ -17,6 +20,7 @@ class PlayerSetupScreen extends StatefulWidget {
   final int? prevalentWindIndex;
   final int? currentDealerGameCount;
   final int? totalWindRounds;
+  final GameMode? initialGameMode;
 
   const PlayerSetupScreen({
     super.key, 
@@ -29,6 +33,7 @@ class PlayerSetupScreen extends StatefulWidget {
     this.prevalentWindIndex,
     this.currentDealerGameCount,
     this.totalWindRounds,
+    this.initialGameMode,
   });
 
   @override
@@ -44,11 +49,14 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
   int _selectedDealerIndex = 0;
   int _minFan = 3;
   int _maxFan = 13;
+  GameMode _selectedGameMode = GameMode.hongKong;
 
   @override
   void initState() {
     super.initState();
     
+    _selectedGameMode = widget.initialGameMode ?? GameMode.hongKong;
+
     // Initialize player list
     if (widget.existingPlayers != null) {
       players = List.from(widget.existingPlayers!);
@@ -101,6 +109,9 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
       barrierDismissible: false,
       builder: (context) => DealerSelectionDialog(
         players: selectedPlayers.map((p) => p.name).toList(),
+        gameMode: _selectedGameMode,
+        initialMinFan: _selectedGameMode == GameMode.taiwan ? 10 : _minFan,
+        initialMaxFan: _selectedGameMode == GameMode.taiwan ? 5 : _maxFan,
         onDealerSelected: (dealerIndex, minFan, maxFan) {
           Navigator.pop(context);
           _proceedToGame(dealerIndex, minFan, maxFan);
@@ -135,25 +146,25 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
     }
 
     // Navigate to score recording screen
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => ScoreRecordingScreen(
-          players: selectedPlayers,
-          currentRound: widget.currentRound ?? 1,
-          totalRounds: 0, // 0 means unlimited rounds
-          onScoreSubmitted: (Map<String, int> scoreChanges) {
-             // Handle score submission
-          },
-          groupId: widget.groupId,
-          groupName: groupName,
-          initialDealerIndex: _selectedDealerIndex,
-          initialPrevalentWindIndex: dealerChanged ? 0 : widget.prevalentWindIndex,
-          initialDealerGameCount: dealerChanged ? 1 : widget.currentDealerGameCount,
-          initialTotalWindRounds: dealerChanged ? 1 : widget.totalWindRounds,
-          minFan: _minFan,
-          maxFan: _maxFan,
-        ),
+      AppRoutes.scoreRecording,
+      arguments: ScoreRecordingArgs(
+        players: selectedPlayers,
+        currentRound: widget.currentRound ?? 1,
+        totalRounds: 0, // 0 means unlimited rounds
+        onScoreSubmitted: (Map<String, int> scoreChanges) {
+           // Handle score submission
+        },
+        groupId: widget.groupId,
+        groupName: groupName,
+        initialDealerIndex: _selectedDealerIndex,
+        initialPrevalentWindIndex: dealerChanged ? 0 : widget.prevalentWindIndex,
+        initialDealerGameCount: dealerChanged ? 1 : widget.currentDealerGameCount,
+        initialTotalWindRounds: dealerChanged ? 1 : widget.totalWindRounds,
+        minFan: _minFan,
+        maxFan: _maxFan,
+        gameMode: _selectedGameMode,
       ),
     );
   }
@@ -202,8 +213,10 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             dealerIndex: _selectedDealerIndex,
             prevalentWindIndex: dealerChanged ? 0 : existingGroup.prevalentWindIndex,
             currentDealerGameCount: dealerChanged ? 1 : existingGroup.currentDealerGameCount,
+            totalGamesPlayedInGroup: currentGamesPlayed,
             minFan: _minFan,
             maxFan: _maxFan,
+            gameMode: _selectedGameMode,
         );
     } else {
         newGroup = PlayerGroup(
@@ -220,6 +233,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
           totalGamesPlayedInGroup: incrementGameCount ? 1 : 0,
           minFan: _minFan,
           maxFan: _maxFan,
+          gameMode: _selectedGameMode,
         );
     }
 
@@ -239,10 +253,11 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
         Navigator.pop(context, _hasSavedGroup);
-        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -253,7 +268,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
           ),
         ),
         body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppDimens.paddingAllLg,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -268,6 +283,39 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             ),
             
             const SizedBox(height: 20),
+
+            // Game Mode Selector
+            if (_isNewGroup) ...[
+                DropdownButtonFormField<GameMode>(
+                  initialValue: _selectedGameMode,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.gameMode,
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: GameMode.values.map((mode) {
+                    return DropdownMenuItem(
+                      value: mode,
+                      child: Text(mode == GameMode.hongKong ? AppLocalizations.hongKongMahjong : AppLocalizations.taiwaneseMahjong),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      if (value != null) {
+                         _selectedGameMode = value;
+                         // Set defaults
+                         if (_selectedGameMode == GameMode.taiwan) {
+                             _minFan = 10;
+                             _maxFan = 5;
+                         } else {
+                             _minFan = 3;
+                             _maxFan = 13;
+                         }
+                      }
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
+            ],
             
             // Player list
             Expanded(
@@ -303,8 +351,8 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                   Expanded(
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12.0),
-                        foregroundColor: Colors.red,
+                        padding: AppDimens.paddingVerticalMd,
+                        foregroundColor: AppColors.destructive,
                       ),
                       onPressed: _deleteGroup,
                       child: Text(AppLocalizations.delete),
@@ -315,7 +363,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                 Expanded(
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      padding: AppDimens.paddingVerticalMd,
                     ),
                     onPressed: _saveAndExit,
                     child: Text(AppLocalizations.save),
@@ -325,9 +373,9 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
+                      padding: AppDimens.paddingVerticalMd,
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.white,
                     ),
                     onPressed: _startGame,
                     child: Text(AppLocalizations.start),
@@ -390,7 +438,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text(AppLocalizations.delete, style: const TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.delete, style: const TextStyle(color: AppColors.destructive)),
           ),
         ],
       ),

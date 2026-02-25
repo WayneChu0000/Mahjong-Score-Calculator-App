@@ -3,9 +3,11 @@ import '../models/player.dart';
 import '../models/player_group.dart';
 import '../models/player_stats.dart';
 import '../services/player_group_service.dart';
-import 'score_recording_screen.dart';
-import '../services/score_service.dart';
+import '../routes/app_routes.dart';
 import '../localization/app_localizations.dart';
+import '../models/game_mode.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_dimens.dart';
 
 class GroupDetailScreen extends StatefulWidget {
   final PlayerGroup group;
@@ -165,6 +167,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       barrierDismissible: false,
       builder: (context) => DealerSelectionDialog(
         players: _group.players,
+        gameMode: _group.gameMode,
         initialMinFan: _group.minFan,
         initialMaxFan: _group.maxFan,
         onDealerSelected: (dealerIndex, minFan, maxFan) {
@@ -217,20 +220,23 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       ),
     );
 
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => ScoreRecordingScreen(
-          players: players,
-          currentRound: isNewGame ? 1 : (_group.currentRound ?? 1),
-          totalRounds: 16, 
-          onScoreSubmitted: (scores) {},
-          groupName: _group.name,
-          initialDealerIndex: dealerIndex,
-          initialPrevalentWindIndex: isNewGame ? 0 : (_group.prevalentWindIndex ?? 0),
-          initialDealerGameCount: isNewGame ? 1 : (_group.currentDealerGameCount ?? 1),
-          initialTotalWindRounds: isNewGame ? 1 : (_group.totalWindRounds ?? 1),
-        ),
+      AppRoutes.scoreRecording,
+      arguments: ScoreRecordingArgs(
+        players: players,
+        currentRound: isNewGame ? 1 : (_group.currentRound ?? 1),
+        totalRounds: 16,
+        onScoreSubmitted: (scores) {},
+        groupId: _group.name,
+        groupName: _group.name,
+        initialDealerIndex: dealerIndex,
+        initialPrevalentWindIndex: isNewGame ? 0 : (_group.prevalentWindIndex ?? 0),
+        initialDealerGameCount: isNewGame ? 1 : (_group.currentDealerGameCount ?? 1),
+        initialTotalWindRounds: isNewGame ? 1 : (_group.totalWindRounds ?? 1),
+        minFan: minFan ?? _group.minFan,
+        maxFan: maxFan ?? _group.maxFan,
+        gameMode: _group.gameMode,
       ),
     ).then((_) => _refreshGroup()); 
   }
@@ -254,7 +260,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              padding: AppDimens.paddingAllLg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -277,7 +283,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               backgroundColor: Colors.orange,
-                              foregroundColor: Colors.white,
+                              foregroundColor: AppColors.white,
                             ),
                           ),
                         ),
@@ -359,21 +365,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     // Calculate total hands played across all games in this group
     int totalHandsPlayed = 0;
     int totalNoResultHands = 0;
-    
-    // Iterate through rounds to count global stats if cleaner
-    // Since stats is map<Player, Stat>, it's hard to get global No Result count just from player stats unless we track it there (we don't)
-    // We should parse round history for current game + some stored global stat?
-    // Current group model doesn't store total No Results explicitly.
-    // It stores playerStats.
-    // We can iterate roundHistory if available for current game.
-    // For past games, unless we saved it, we might lose it if not in PlayerStats.
-    // But PlayerStats doesn't track "No Result".
-    // Wait, the prompt implies we should have this data.
-    // Maybe we need to count (Total Hands - Sum of One Player's Wins - Sum of Other Wins - ...)?
-    // No, multiple people can't win usually (unless double ron).
-    // Let's assume No Result = Total Hands - Total Wins (by anyone).
-    
-    // Calculate total wins by anyone
+
+    // No Result = Total Hands − Total Wins (approximation; may under-count if double-ron exists)
     int totalWinsByAnyone = 0;
     if (mergedStats.isNotEmpty) {
       for (var stat in mergedStats.values) {
@@ -385,23 +378,14 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     }
     
     totalNoResultHands = totalHandsPlayed - totalWinsByAnyone;
-    // Handled Double Ron? If double ron, totalWinsByAnyone > totalHandsPlayed potentially?
-    // If double ron is recorded as 2 wins in 1 hand... yes.
-    // But our logic increment totalGamesPlayed by 1 for everyone per round.
-    // Standard mahjong: 1 hand = 1 result.
-    // If No Result, no one wins. totalWinsByAnyone increases by 0.
-    // If 1 person wins, increases by 1.
-    // If Double Ron, increases by 2.
-    // So No Result Rate might be inaccurate if Double Ron exists.
-    // But assuming standard or "No Result" explicitly tracked would be better.
-    // Given current data structure limitations, let's use the (Total - Wins) approximation or 0 if negative.
+    // Clamp to zero in case double-ron inflated win count
     if (totalNoResultHands < 0) totalNoResultHands = 0;
 
     double noResultRate = totalHandsPlayed > 0 ? totalNoResultHands / totalHandsPlayed : 0.0;
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppDimens.paddingAllLg,
         child: Column(
           children: [
             Row(
@@ -443,33 +427,11 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       itemBuilder: (context, index) {
         final name = _group.players[index];
         final stats = mergedStats[name] ?? PlayerStats(playerName: name);
-        // Scores are game-specific usually, but here we show accumulative score from finished games?
-        // Or current score? The prompt asks for "data in group detail page".
-        // Usually stats page shows historical aggregate.
-        // Let's stick to showing historical total score, as calculating current score change requires
-        // parsing every round detail or using currentScores.
-        // If we want total score across all time, we normally sum up finished games.
-        // If we want to include current game score... it's _group.currentScores.
-        // Let's add current game score to totalScore for display?
-        
-        // Calculate No Result Rate
-        double noResultRate = 0.0;
-        if (stats.totalGamesPlayed > 0) {
-             // Assuming totalGamesPlayed = Wins + Deal-ins? No.
-             // Wins + Losses + Draws (No Result) = Total Games
-             // But we don't track Draws explicitly in stats model.
-             // We can infer or assuming sum of win rates + no result rate = 1.
-             // If we want No Result Rate of the *Player*, normally it's global.
-             // But here we are displaying per player card.
-             // Maybe user means global No Result Rate?
-             // "add a no result rate under the number of hands which is no result/total hands"
-             // This sounds like it belongs to Summary Card.
-        }
 
         return Card(
           margin: const EdgeInsets.only(bottom: 10),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: AppDimens.paddingAllLg,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -502,21 +464,12 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
   }
 }
 
-//   Widget _statItem(String label, String value) {
-//     return Column(
-//       children: [
-//         Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-//         Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-//       ],
-//     );
-//   }
-// }
-
 class DealerSelectionDialog extends StatefulWidget {
   final List<String> players;
-  final Function(int, int, int) onDealerSelected; // Modified to accept (dealerIndex, minFan, maxFan)
+  final Function(int, int, int) onDealerSelected; // (dealerIndex, minFan/baseTai, maxFan/taiValue)
   final int initialMinFan;
   final int initialMaxFan;
+  final GameMode gameMode;
 
   const DealerSelectionDialog({
     super.key,
@@ -524,6 +477,7 @@ class DealerSelectionDialog extends StatefulWidget {
     required this.onDealerSelected,
     this.initialMinFan = 3,
     this.initialMaxFan = 13,
+    this.gameMode = GameMode.hongKong,
   });
 
   @override
@@ -532,18 +486,26 @@ class DealerSelectionDialog extends StatefulWidget {
 
 class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
   int _selectedDealer = 0;
-  late int _minFan;
-  late int _maxFan;
+  late int _param1; // minFan or baseTai
+  late int _param2; // maxFan or taiValue
 
   @override
   void initState() {
     super.initState();
-    _minFan = widget.initialMinFan;
-    _maxFan = widget.initialMaxFan;
+    _param1 = widget.initialMinFan;
+    _param2 = widget.initialMaxFan;
+    
+    // Default values if switching modes or not set properly
+    if (widget.gameMode == GameMode.taiwan) {
+        if (_param1 < 5) _param1 = 10; // Default Base Tai
+        if (_param2 > 100 || _param2 < 1) _param2 = 5; // Default Tai Value
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isTaiwan = widget.gameMode == GameMode.taiwan;
+
     return AlertDialog(
       title: Text(AppLocalizations.selectDealer),
       content: SingleChildScrollView(
@@ -556,7 +518,9 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
               return RadioListTile<int>(
                 title: Text(widget.players[index]),
                 value: index,
+                // ignore: deprecated_member_use
                 groupValue: _selectedDealer,
+                // ignore: deprecated_member_use
                 onChanged: (value) {
                   setState(() {
                     _selectedDealer = value!;
@@ -566,33 +530,39 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
             }),
             const Divider(),
             const SizedBox(height: 8),
-             Text(AppLocalizations.gameRules, style: const TextStyle(fontWeight: FontWeight.bold)),
+             Text(isTaiwan ? AppLocalizations.gameMode : AppLocalizations.gameRules, style: const TextStyle(fontWeight: FontWeight.bold)), // Label Reuse? Or just Settings
             const SizedBox(height: 8),
-            // Min Fan
+            
+            // Param 1: Min Fan (HK) or Base Tai (TW)
              Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Text(AppLocalizations.minFan), // Ensure localization key exists or fallback
+                 Text(isTaiwan ? AppLocalizations.baseTai : AppLocalizations.minFan), 
                 Row(
                   children: [
                     IconButton(
                       icon: const Icon(Icons.remove_circle_outline),
                       onPressed: () {
                         setState(() {
-                          if (_minFan > 0) _minFan--;
+                          if (_param1 > 0) _param1--;
                         });
                       },
                     ),
-                    Text('$_minFan', style: const TextStyle(fontSize: 16)),
+                    Text('$_param1', style: const TextStyle(fontSize: 16)),
                     IconButton(
                       icon: const Icon(Icons.add_circle_outline),
                       onPressed: () {
                         setState(() {
-                             // Ensure minFan doesn't exceed maxFan
-                             if (_maxFan != 999 && _minFan < _maxFan) {
-                                  _minFan++;
-                             } else if (_maxFan == 999) {
-                                  _minFan++;
+                             if (!isTaiwan) {
+                               // HK Logic: minFan < maxFan unless max is unlimited
+                               if (_param2 != 999 && _param1 < _param2) {
+                                    _param1++;
+                               } else if (_param2 == 999) {
+                                    _param1++;
+                               }
+                             } else {
+                               // TW Logic: Base Tai can be anything
+                               _param1++;
                              }
                         });
                       },
@@ -601,38 +571,45 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
                 ),
               ],
             ),
-            // Max Fan
+            
+            // Param 2: Max Fan (HK) or Tai Value (TW)
              Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Text(AppLocalizations.maxFan), // Ensure localization key exists
+                 Text(isTaiwan ? AppLocalizations.taiValue : AppLocalizations.maxFan),
                 Row(
                   children: [
                     IconButton(
                       icon: const Icon(Icons.remove_circle_outline),
                       onPressed: () {
                         setState(() {
-                          if (_maxFan == 999) {
-                            _maxFan = 13;
-                          } else if (_maxFan > _minFan) {
-                            _maxFan--;
+                          if (!isTaiwan) {
+                              if (_param2 == 999) {
+                                _param2 = 13;
+                              } else if (_param2 > _param1) {
+                                _param2--;
+                              }
+                          } else {
+                              if (_param2 > 1) _param2--;
                           }
                         });
                       },
                     ),
-                    Text(_maxFan == 999 ? AppLocalizations.noLimit : '$_maxFan', style: const TextStyle(fontSize: 16)),
+                    Text(!isTaiwan && _param2 == 999 ? AppLocalizations.noLimit : '$_param2', style: const TextStyle(fontSize: 16)),
                     IconButton(
                       icon: const Icon(Icons.add_circle_outline),
                       onPressed: () {
                         setState(() {
-                          if (_maxFan < 100) { // Limit manageable number before unlimited
-                             _maxFan++;
+                          if (!isTaiwan) {
+                              if (_param2 < 100) { 
+                                 _param2++;
+                              } else {
+                                 _param2 = 999;
+                              }
+                              if (_param2 > 13) _param2 = 999;
                           } else {
-                             _maxFan = 999;
+                              _param2++;
                           }
-                          // Simplified Logic for UI:
-                          // If current is 13, next could be "No Limit" (999)
-                          if (_maxFan > 13) _maxFan = 999;
                         });
                       },
                     ),
@@ -645,7 +622,7 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => widget.onDealerSelected(_selectedDealer, _minFan, _maxFan),
+          onPressed: () => widget.onDealerSelected(_selectedDealer, _param1, _param2),
           child: Text(AppLocalizations.startGame),
         ),
       ],

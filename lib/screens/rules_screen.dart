@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/base_screen.dart';
 import '../models/rule.dart';
+import '../models/game_mode.dart';
+import '../models/tw_rules.dart';
 import '../widgets/tile_group.dart';
 import '../localization/app_localizations.dart';
 import 'tutorial_content.dart';
@@ -20,6 +22,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   late PageController _tutorialPageController;
   late TextEditingController _searchController;
   int _currentTutorialPage = 0;
+  GameMode _selectedMode = GameMode.hongKong;
 
   @override
   void initState() {
@@ -67,7 +70,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
   void _filterRules() {
     setState(() {
-      List<Rule> tempRules = rules;
+      List<Rule> tempRules = getRules(_selectedMode);
       
       // Filter by fan
       if (_selectedFan != AppLocalizations.allFan) {
@@ -152,10 +155,16 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
   // Rules reference tab content
   Widget _buildRulesReferenceTab() {
-    // Generate fan options
+    // Generate fan/tai filter options from actual rule set
+    final currentRules = getRules(_selectedMode);
+    final fanValues = currentRules.map((r) => r.fanValue).toSet().toList()..sort();
     final List<String> fanOptions = [AppLocalizations.allFan];
-    for (int i = 1; i <= 13; i++) {
-      fanOptions.add(AppLocalizations.fan(i));
+    for (final v in fanValues) {
+      if (_selectedMode == GameMode.taiwan) {
+        fanOptions.add(AppLocalizations.taiCount(v));
+      } else {
+        fanOptions.add(AppLocalizations.fan(v));
+      }
     }
     
     // Ensure selected fan is valid
@@ -164,9 +173,37 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
        // We should ideally re-filter, but for now let's just sync the dropdown
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ListView(
       padding: const EdgeInsets.all(12.0),
       children: [
+        // HK / TW mode toggle
+        Center(
+          child: SegmentedButton<GameMode>(
+            segments: [
+              ButtonSegment(
+                value: GameMode.hongKong,
+                label: Text(AppLocalizations.hkMode),
+                icon: const Icon(Icons.casino),
+              ),
+              ButtonSegment(
+                value: GameMode.taiwan,
+                label: Text(AppLocalizations.twMode),
+                icon: const Icon(Icons.grid_view),
+              ),
+            ],
+            selected: {_selectedMode},
+            onSelectionChanged: (Set<GameMode> selection) {
+              setState(() {
+                _selectedMode = selection.first;
+                _filterRules();
+              });
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+
         // Search area
         Card(
           elevation: 2,
@@ -222,9 +259,139 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
         // Rule cards list
         ..._filteredRules.map((rule) => RuleCard(rule: rule)),
 
+        // TW-specific informational sections
+        if (_selectedMode == GameMode.taiwan) ..._buildTwInfoSections(isDark),
+
         // Bottom space for good scrolling experience
         const SizedBox(height: 16),
       ],
+    );
+  }
+
+  List<Widget> _buildTwInfoSections(bool isDark) {
+    return [
+      const SizedBox(height: 24),
+      _buildInfoSection(
+        title: AppLocalizations.twInstantPayTitle,
+        subtitle: AppLocalizations.twInstantPayDesc,
+        rules: twInstantPayRules,
+        icon: Icons.payments,
+        isDark: isDark,
+      ),
+      _buildInfoSection(
+        title: AppLocalizations.twPenaltiesTitle,
+        subtitle: AppLocalizations.twPenaltiesDesc,
+        rules: twPenaltyRules,
+        icon: Icons.gavel,
+        isDark: isDark,
+      ),
+      _buildInfoSection(
+        title: AppLocalizations.twDealerBonusTitle,
+        subtitle: AppLocalizations.twDealerBonusDesc,
+        rules: twDealerBonusRules,
+        icon: Icons.star,
+        isDark: isDark,
+      ),
+      _buildInfoSection(
+        title: AppLocalizations.twLaSettlementTitle,
+        subtitle: AppLocalizations.twLaSettlementDesc,
+        rules: twLaSettlementRules,
+        icon: Icons.sync,
+        isDark: isDark,
+      ),
+      const SizedBox(height: 8),
+      Card(
+        color: isDark ? Colors.orange.withValues(alpha: 0.15) : Colors.orange.shade50,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              const Icon(Icons.warning_amber, color: Colors.orange),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  AppLocalizations.twNoStackRule,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: isDark ? Colors.orange.shade200 : Colors.orange.shade900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildInfoSection({
+    required String title,
+    required String subtitle,
+    required List<Rule> rules,
+    required IconData icon,
+    required bool isDark,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Icon(icon, color: Colors.green, size: 22),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          subtitle,
+          style: TextStyle(
+            fontSize: 13,
+            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        ...rules.map((rule) => _buildInfoCard(rule, isDark)),
+      ],
+    );
+  }
+
+  Widget _buildInfoCard(Rule rule, bool isDark) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ExpansionTile(
+        leading: Icon(
+          Icons.info_outline,
+          color: isDark ? Colors.green.shade300 : Colors.green.shade700,
+        ),
+        title: Text(
+          rule.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          rule.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 13,
+            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+          ),
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Text(
+              rule.explanation,
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
+      ),
     );
   }
   
@@ -324,10 +491,10 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
               });
             },
             children: [
-              TutorialContent(pageIndex: 0, onRuleTap: _navigateToRule),
-              TutorialContent(pageIndex: 1, onRuleTap: _navigateToRule),
-              TutorialContent(pageIndex: 2, onRuleTap: _navigateToRule),
-              TutorialContent(pageIndex: 3, onRuleTap: _navigateToRule),
+              TutorialContent(pageIndex: 0, onRuleTap: _navigateToRule, gameMode: _selectedMode),
+              TutorialContent(pageIndex: 1, onRuleTap: _navigateToRule, gameMode: _selectedMode),
+              TutorialContent(pageIndex: 2, onRuleTap: _navigateToRule, gameMode: _selectedMode),
+              TutorialContent(pageIndex: 3, onRuleTap: _navigateToRule, gameMode: _selectedMode),
             ],
           ),
         ),
@@ -449,7 +616,7 @@ class _RuleCardState extends State<RuleCard> {
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.green.withOpacity(0.2) : Colors.green.shade50,
+                        color: isDark ? Colors.green.withValues(alpha: 0.2) : Colors.green.shade50,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: widget.rule.imagePath.isNotEmpty
@@ -526,7 +693,7 @@ class _RuleCardState extends State<RuleCard> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isDark ? Colors.green.withOpacity(0.1) : Colors.green.shade50,
+                color: isDark ? Colors.green.withValues(alpha: 0.1) : Colors.green.shade50,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),

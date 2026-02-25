@@ -1,594 +1,799 @@
-import '../services/settings_service.dart';
+﻿import 'package:flutter/widgets.dart';
 
+import '../l10n/generated/app_localizations_gen.dart';
+import '../l10n/generated/app_localizations_gen_en.dart';
+import '../l10n/generated/app_localizations_gen_zh.dart';
+
+/// Thin compatibility wrapper around generated [L10n] classes.
+///
+/// Keeps the existing static API (AppLocalizations.someKey) so that the
+/// 200+ call sites across the codebase require zero changes.  Internally
+/// delegates to the ARB-generated [L10nEn] / [L10nZh] instances.
 class AppLocalizations {
-  static String get _language => SettingsService.instance.language;
-  static bool get _isZh => _language == 'Traditional Chinese';
+  AppLocalizations._();
 
-  // App Title
-  static String get appTitle => _isZh ? '麻將計分器' : 'Mahjong Score Calculator';
-  
-  // Home Screen
-  static String get homeTitle => _isZh ? '麻將計分器' : 'Mahjong Calculator';
-  static String get welcomeBack => _isZh ? '歡迎回來!' : 'Welcome Back!';
-  static String get newGroup => _isZh ? '新群組' : 'New Group';
-  static String get history => _isZh ? '歷史紀錄' : 'History';
-  static String get historyComingSoon => _isZh ? '歷史紀錄功能即將推出...' : 'History feature coming soon...';
-  static String get testFirebase => _isZh ? '測試 Firebase' : 'Test Firebase';
-  static String get firebaseSuccess => _isZh ? 'Firebase 連線成功: ' : 'Firebase connected: ';
-  static String get firebaseFailed => _isZh ? 'Firebase 連線失敗: ' : 'Firebase failed: ';
-  static String get savedGroups => _isZh ? '已儲存的群組' : 'Saved Player Groups';
-  static String get viewAll => _isZh ? '檢視全部' : 'View All';
-  static String get noSavedGroups => _isZh ? '沒有已儲存的群組' : 'No saved player groups';
-  static String get createFirstGroupHint => _isZh ? '建立您的第一個群組以開始使用' : 'Create your first group to get started'; // Added
-  static String get createGroup => _isZh ? '建立群組' : 'Create Player Group';
-  static String get players => _isZh ? '名玩家' : 'players';
-  static String get createdAt => _isZh ? '建立於: ' : 'Created: ';
-  static String get edit => _isZh ? '編輯' : 'Edit';
-  static String get start => _isZh ? '開始' : 'Start';
-  static String get allGroups => _isZh ? '所有群組' : 'All Player Groups';
-  static String get editGroupComingSoon => _isZh ? '編輯群組功能即將推出...' : 'Edit group feature coming soon...';
-  static String get scoreUpdated => _isZh ? '群組分數已更新: ' : 'Score updated for group: ';
-  
-  // Player Setup Screen
-  static String get playerSetupTitle => _isZh ? '玩家設定' : 'Player Setup';
-  static String get groupName => _isZh ? '群組名稱' : 'Group Name';
-  static String get groupNameHint => _isZh ? '輸入群組名稱' : 'Enter group name';
-  static String get groupNameError => _isZh ? '請輸入群組名稱' : 'Please enter a group name';
-  static String get playerName => _isZh ? '玩家名稱' : 'Player Name';
-  static String get playerNameHint => _isZh ? '輸入玩家名稱' : 'Enter player name';
-  static String get addPlayer => _isZh ? '新增玩家' : 'Add Player';
-  static String get minimumPlayers => _isZh ? '至少需要 2 名玩家' : 'At least 2 players required';
-  static String get duplicatePlayer => _isZh ? '玩家已存在' : 'Player already exists';
-  static String get saveGroup => _isZh ? '儲存群組' : 'Save Group';
-  static String get saveAndPlay => _isZh ? '儲存並開始' : 'Save & Play';
-  static String get cancel => _isZh ? '取消' : 'Cancel';
-  static String get remove => _isZh ? '移除' : 'Remove';
-  static String get playerList => _isZh ? '玩家列表' : 'Player List';
-  static String get groupSaved => _isZh ? '群組儲存成功!' : 'Group saved successfully!';
-  static String get groupSaveFailed => _isZh ? '儲存群組失敗' : 'Failed to save group';
-  static String get minFan => _isZh ? '最少番數' : 'Min Fan';
-  static String get maxFan => _isZh ? '最大番數' : 'Max Fan';
-  static String get noLimit => _isZh ? '無上限' : 'No Limit';
-  static String get fanLimitSettings => _isZh ? '番數限制設定' : 'Fan Range Settings';
-  
-  // Score Recording Screen
-  static String get scoreRecording => _isZh ? '計分板' : 'Score Recording';
-  static String get round => _isZh ? '局數' : 'Round';
-  static String get of => _isZh ? '/' : 'of';
-  static String get dealer => _isZh ? '莊家' : 'Dealer';
-  static String get calculateScore => _isZh ? '計算分數' : 'Calculate Score';
-  static String get endGame => _isZh ? '結束遊戲' : 'End Game';
-  static String get gameResults => _isZh ? '遊戲結果' : 'Game Results';
-  static String get finalScores => _isZh ? '最終分數' : 'Final Scores';
-  static String get winner => _isZh ? '贏家' : 'Winner';
-  static String get close => _isZh ? '關閉' : 'Close';
-  static String get nextRound => _isZh ? '下一局' : 'Next Round';
-  static String get stats => _isZh ? '統計' : 'Stats';
-  static String get roundsPlayed => _isZh ? '已進行局數' : 'Rounds Played';
-  static String get selfDrawn => _isZh ? '自摸' : 'Self-Drawn';
-  static String get winningRate => _isZh ? '勝率' : 'Winning Rate';
+  static L10n _l10n = L10nEn();
 
-  // Score Calculation Screen  
-  static String get scoreCalculation => _isZh ? '分數計算' : 'Score Calculation';
-  static String get enterScores => _isZh ? '輸入分數' : 'Enter Scores';
-  static String get specialWinningCondition => _isZh ? '特殊牌型' : 'Special Winning Condition'; // Added 
-  static String currentScore(int score) => _isZh ? '(目前: $score 分)' : '(Current: $score pts)'; // Added
-  static String totalWin(int score) => _isZh ? '(總計: $score)' : '(Total: $score)';
-  static String get submit => _isZh ? '送出' : 'Submit';
-  static String get reset => _isZh ? '重置' : 'Reset';
-  static String get totalMustBeZero => _isZh ? '總和必須為零' : 'Total must be zero';
-  static String get confirmSubmit => _isZh ? '確認非零總和?' : 'Confirm non-zero total?';
-  static String get totalIs => _isZh ? '總和為 ' : 'Total is ';
-  static String get continueAnyway => _isZh ? '強制繼續' : 'Continue Anyway';
-  static String get win => _isZh ? '胡牌' : 'Win';
-  static String get selfDraw => _isZh ? '自摸' : 'Self-Draw';
-  static String get discard => _isZh ? '出衝' : 'Discard';
-  static String get winningPlayer => _isZh ? '胡牌玩家' : 'Winning Player';
-  static String get discardPlayer => _isZh ? '放槍玩家' : 'Discard Player';
-  static String get roundWind => _isZh ? '圈風' : 'Round Wind';
-  static String get seatWind => _isZh ? '門風' : 'Seat Wind';
-  static String get flowers => _isZh ? '花牌' : 'Flowers';
-  static String get selectFlowers => _isZh ? '選擇花牌' : 'Select Flowers';
-  static String get handPreviewArea => _isZh ? '手牌預覽區域' : 'Hand Preview Area';
-  static String get scanTiles => _isZh ? '掃描牌型' : 'Scan Tiles';
-  static String get selectHand => _isZh ? '選擇牌型' : 'Select Hand';
-  static String get analyzingTiles => _isZh ? '正在分析牌型...' : 'Analyzing tiles...';
-  static String get takePhotoHint => _isZh ? '拍照或點擊以選擇牌型' : 'Take photo or click to select hand pattern';
-  static String get item => _isZh ? '項目' : 'Item';
-  static String get value => _isZh ? '數值' : 'Value';
-  static String get totalFan => _isZh ? '總番數' : 'Total Fan';
-  static String get totalScore => _isZh ? '總分數' : 'Total Score';
-  static String get fanTitle => _isZh ? '番數' : 'Fan';
-  static String get limit => _isZh ? '爆棚' : 'Limit';
-  static String get perPerson => _isZh ? ' / 人' : ' / person';
-  static String get points => _isZh ? '分' : 'points';
-  
-  // Rules
-  static String get ruleSelfDraw => _isZh ? '自摸' : 'Self-Draw';
-  static String get ruleNoFlowers => _isZh ? '無花' : 'No Flowers';
-  static String get ruleFlowerPlatform14 => _isZh ? '花台 (1-4)' : 'Flower Platform (1-4)';
-  static String get ruleFlowerPlatform58 => _isZh ? '花台 (5-8)' : 'Flower Platform (5-8)';
-  static String get ruleOwnFlower => _isZh ? '正花' : 'Own Flower';
-  static String get ruleOwnSeason => _isZh ? '正花' : 'Own Season';
-  static String get rulePongOfWhite => _isZh ? '白板刻' : 'Pong of White Dragon';
-  static String get rulePongOfGreen => _isZh ? '發財刻' : 'Pong of Green Dragon';
-  static String get rulePongOfRed => _isZh ? '紅中刻' : 'Pong of Red Dragon';
-  static String get ruleRoundWind => _isZh ? '圈風' : 'Round Wind';
-  static String get ruleSeatWind => _isZh ? '門風' : 'Seat Wind';
-  static String get ruleAllChows => _isZh ? '平胡' : 'All Chows';
-  static String get ruleAllPongs => _isZh ? '對對胡' : 'All Pongs';
-  static String get ruleMixedOneSuit => _isZh ? '混一色' : 'Mixed One Suit';
-  static String get rulePureOneSuit => _isZh ? '清一色' : 'Pure One Suit';
-  static String get ruleSmallThreeDragons => _isZh ? '小三元' : 'Small Three Dragons';
-  static String get ruleBigThreeDragons => _isZh ? '大三元' : 'Big Three Dragons';
-  static String get ruleSmallFourWinds => _isZh ? '小四喜' : 'Small Four Winds';
-  static String get ruleBigFourWinds => _isZh ? '大四喜' : 'Big Four Winds';
-  static String get ruleThirteenOrphans => _isZh ? '十三么' : 'Thirteen Orphans';
-  static String get ruleEightImmortals => _isZh ? '八仙過海' : 'Eight Immortals';
-  static String get ruleFlowerHand => _isZh ? '花胡' : 'Flower Hand';
-  static String get ruleHiddenTreasure => _isZh ? '坎坎胡' : 'Hidden Treasure';
-  static String get ruleAllHonors => _isZh ? '字一色' : 'All Honors';
-  static String get ruleNineGates => _isZh ? '九子連環' : 'Nine Gates';
-  static String get ruleEighteenArhats => _isZh ? '十八羅漢' : 'Eighteen Arhats';
-  static String get ruleHeavenlyHand => _isZh ? '天胡' : 'Heavenly Hand';
-  static String get ruleEarthlyHand => _isZh ? '地胡' : 'Earthly Hand';
-  static String get ruleKong => _isZh ? '槓' : 'Kong';
-  
-  static String get ruleNone => _isZh ? '無' : 'None';
-  
-  // Winds
-  static String get east => _isZh ? '東' : 'East';
-  static String get south => _isZh ? '南' : 'South';
-  static String get west => _isZh ? '西' : 'West';
-  static String get north => _isZh ? '北' : 'North';
+  /// Call once at startup and whenever the user switches language.
+  static void setLocale(String language) {
+    _l10n = language == 'Traditional Chinese' ? L10nZh() : L10nEn();
+  }
 
-  // Common
-  static String get home => _isZh ? '首頁' : 'Home';   
-  static String get rules => _isZh ? '規則' : 'Rules';
-  static String get gameRules => _isZh ? '遊戲規則' : 'Game Rules';
-  static String get settings => _isZh ? '設定' : 'Settings';
-  static String get confirm => _isZh ? '確認' : 'Confirm';
-  static String get delete => _isZh ? '刪除' : 'Delete';
-  static String get save => _isZh ? '儲存' : 'Save';
-  static String get yes => _isZh ? '是' : 'Yes';
-  static String get no => _isZh ? '否' : 'No';
-  static String get ok => _isZh ? '確定' : 'OK';
-  static String get error => _isZh ? '錯誤' : 'Error';
-  static String get success => _isZh ? '成功' : 'Success';
-  static String get loading => _isZh ? '載入中...' : 'Loading...';
-  static String get retry => _isZh ? '重試' : 'Retry';
-  
-  // Settings
-  static String get language => _isZh ? '語言' : 'Language';
-  static String get theme => _isZh ? '主題' : 'Theme';
-  static String get logout => _isZh ? '登出' : 'Logout';
-  static String get confirmLogout => _isZh ? '確定要登出嗎?' : 'Are you sure you want to logout?';
-  
-  static String get langEnglish => _isZh ? '英文' : 'English';
-  static String get langTraditionalChinese => _isZh ? '繁體中文' : 'Traditional Chinese';
-  
-  static String get lightMode => _isZh ? '淺色模式' : 'Light Mode';
-  static String get darkMode => _isZh ? '深色模式' : 'Dark Mode';
-  static String get themeMode => _isZh ? '主題模式' : 'Theme Mode';
-  
-  static String get about => _isZh ? '關於' : 'About';
-  static String get aboutDesc => _isZh ? '簡單易用的麻將計分器。' : 'A simple and easy-to-use Mahjong score calculator.';
-  static String get copyright => _isZh ? '© 2025 麻將計分器團隊' : '© 2025 Mahjong Calculator Team';
-  
-  static String get feedback => _isZh ? '意見回饋' : 'Feedback';
-  static String get feedbackContent => _isZh ? '請將您的意見發送至 support@example.com' : 'Please send your feedback to support@example.com';
-  
-  static String get privacyPolicy => _isZh ? '隱私權政策' : 'Privacy Policy';
-  static String get privacyPolicyContent => _isZh 
-      ? '我們尊重您的隱私。本應用程式將您的遊戲數據儲存在本地及 Firebase 用於同步。我們不會與第三方分享您的個人數據。' 
-      : 'We respect your privacy. This app stores your game data locally and on Firebase for synchronization purposes. We do not share your personal data with third parties.';
+  /// Expose the generated delegates for [MaterialApp].
+  static List<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
+      L10n.localizationsDelegates;
+  static List<Locale> get supportedLocales => L10n.supportedLocales;
 
-  // Dialogs & Messages
-  static String get confirmDeleteGroup => _isZh ? '確定要刪除此群組嗎?' : 'Are you sure you want to delete this group?';
-  static String get gameInProgressTitle => _isZh ? '開始新遊戲?' : 'Start New Game?';
-  static String get gameInProgressContent => _isZh 
-      ? '有未完成的遊戲。開始新遊戲將會把上一場視為結束並儲存紀錄。' 
-      : 'There is a game in progress. Starting a new game will assume the previous one is finished and stats will be saved.';
-  static String get startNewGame => _isZh ? '開始新遊戲' : 'Start New Game';
-  static String get resumeGame => _isZh ? '繼續遊戲' : 'Resume Game';
-  static String get backToGame => _isZh ? '回到遊戲' : 'Back to Game';
-  static String get playerStatsTitle => _isZh ? '玩家數據' : 'Player Statistics';
-  static String get recentGroups => _isZh ? '最近群組' : 'Recent Groups';
-  static String get editPlayers => _isZh ? '編輯玩家' : 'Edit Players';
-  static String get setupPlayers => _isZh ? '設定玩家' : 'Setup Players';
-  static String get enterGroupNameHint => _isZh ? '例如: 週末麻將團' : 'e.g., Weekend Mahjong Group';
-  
-  static String get confirmDelete => _isZh ? '確認刪除' : 'Confirm Delete';
-  static String get deleteGroupWarning => _isZh ? '確定要刪除此群組嗎? 此動作無法復原。' : 'Are you sure you want to delete this player group? This action cannot be undone.';
-  
-  static String editPlayerTitle(int index) => _isZh ? '編輯玩家 $index' : 'Edit Player $index';
+  // ── simple getters ─────────────────────────────────────────────
+  static String get appTitle => _l10n.appTitle;
+  static String get homeTitle => _l10n.homeTitle;
+  static String get welcomeBack => _l10n.welcomeBack;
+  static String get newGroup => _l10n.newGroup;
+  static String get history => _l10n.history;
+  static String get historyComingSoon => _l10n.historyComingSoon;
+  static String get testFirebase => _l10n.testFirebase;
+  static String get firebaseSuccess => _l10n.firebaseSuccess;
+  static String get firebaseFailed => _l10n.firebaseFailed;
+  static String get savedGroups => _l10n.savedGroups;
+  static String get viewAll => _l10n.viewAll;
+  static String get noSavedGroups => _l10n.noSavedGroups;
+  static String get createFirstGroupHint => _l10n.createFirstGroupHint;
+  static String get createGroup => _l10n.createGroup;
+  static String get players => _l10n.players;
+  static String get createdAt => _l10n.createdAt;
+  static String get edit => _l10n.edit;
+  static String get start => _l10n.start;
+  static String get allGroups => _l10n.allGroups;
+  static String get editGroupComingSoon => _l10n.editGroupComingSoon;
+  static String get scoreUpdated => _l10n.scoreUpdated;
+  static String get playerSetupTitle => _l10n.playerSetupTitle;
+  static String get groupName => _l10n.groupName;
+  static String get groupNameHint => _l10n.groupNameHint;
+  static String get groupNameError => _l10n.groupNameError;
+  static String get playerName => _l10n.playerName;
+  static String get playerNameHint => _l10n.playerNameHint;
+  static String get addPlayer => _l10n.addPlayer;
+  static String get minimumPlayers => _l10n.minimumPlayers;
+  static String get duplicatePlayer => _l10n.duplicatePlayer;
+  static String get saveGroup => _l10n.saveGroup;
+  static String get saveAndPlay => _l10n.saveAndPlay;
+  static String get cancel => _l10n.cancel;
+  static String get remove => _l10n.remove;
+  static String get playerList => _l10n.playerList;
+  static String get groupSaved => _l10n.groupSaved;
+  static String get groupSaveFailed => _l10n.groupSaveFailed;
+  static String get minFan => _l10n.minFan;
+  static String get maxFan => _l10n.maxFan;
+  static String get noLimit => _l10n.noLimit;
+  static String get fanLimitSettings => _l10n.fanLimitSettings;
+  static String get gameMode => _l10n.gameMode;
+  static String get hongKongMahjong => _l10n.hongKongMahjong;
+  static String get taiwaneseMahjong => _l10n.taiwaneseMahjong;
+  static String get baseTai => _l10n.baseTai;
+  static String get taiValue => _l10n.taiValue;
+  static String get tai => _l10n.tai;
+  static String get scoreRecording => _l10n.scoreRecording;
+  static String get round => _l10n.round;
+  static String get of => _l10n.ofSeparator;
+  static String get dealer => _l10n.dealer;
+  static String get calculateScore => _l10n.calculateScore;
+  static String get endGame => _l10n.endGame;
+  static String get gameResults => _l10n.gameResults;
+  static String get finalScores => _l10n.finalScores;
+  static String get winner => _l10n.winner;
+  static String get close => _l10n.close;
+  static String get nextRound => _l10n.nextRound;
+  static String get stats => _l10n.stats;
+  static String get roundsPlayed => _l10n.roundsPlayed;
+  static String get selfDrawn => _l10n.selfDrawn;
+  static String get winningRate => _l10n.winningRate;
+  static String get totalFan => _l10n.totalFan;
+  static String get totalTai => _l10n.totalTai;
+  static String get scoreCalculation => _l10n.scoreCalculation;
+  static String get enterScores => _l10n.enterScores;
+  static String get specialWinningCondition => _l10n.specialWinningCondition;
+  static String get submit => _l10n.submit;
+  static String get reset => _l10n.reset;
+  static String get totalMustBeZero => _l10n.totalMustBeZero;
+  static String get confirmSubmit => _l10n.confirmSubmit;
+  static String get totalIs => _l10n.totalIs;
+  static String get continueAnyway => _l10n.continueAnyway;
+  static String get win => _l10n.win;
+  static String get selfDraw => _l10n.selfDraw;
+  static String get discard => _l10n.discard;
+  static String get winningPlayer => _l10n.winningPlayer;
+  static String get discardPlayer => _l10n.discardPlayer;
+  static String get roundWind => _l10n.roundWind;
+  static String get seatWind => _l10n.seatWind;
+  static String get flowers => _l10n.flowers;
+  static String get selectFlowers => _l10n.selectFlowers;
+  static String get handPreviewArea => _l10n.handPreviewArea;
+  static String get scanTiles => _l10n.scanTiles;
+  static String get selectHand => _l10n.selectHand;
+  static String get analyzingTiles => _l10n.analyzingTiles;
+  static String get takePhotoHint => _l10n.takePhotoHint;
+  static String get item => _l10n.item;
+  static String get value => _l10n.value;
+  static String get totalScore => _l10n.totalScore;
+  static String get fanTitle => _l10n.fanTitle;
+  static String get limit => _l10n.limit;
+  static String get perPerson => _l10n.perPerson;
+  static String get points => _l10n.points;
+  static String get twConcealedSelfDraw => _l10n.twConcealedSelfDraw;
+  static String get descConcealedSelfDraw => _l10n.descConcealedSelfDraw;
+  static String get explConcealedSelfDraw => _l10n.explConcealedSelfDraw;
+  static String get twProperWind => _l10n.twProperWind;
+  static String get descProperWind => _l10n.descProperWind;
+  static String get explProperWind => _l10n.explProperWind;
+  static String get twOrdinaryWind => _l10n.twOrdinaryWind;
+  static String get descOrdinaryWind => _l10n.descOrdinaryWind;
+  static String get explOrdinaryWind => _l10n.explOrdinaryWind;
+  static String get twDragonPong => _l10n.twDragonPong;
+  static String get descTwDragonPong => _l10n.descTwDragonPong;
+  static String get explTwDragonPong => _l10n.explTwDragonPong;
+  static String get twEyeOf258 => _l10n.twEyeOf258;
+  static String get descEyeOf258 => _l10n.descEyeOf258;
+  static String get explEyeOf258 => _l10n.explEyeOf258;
+  static String get twAllSimples => _l10n.twAllSimples;
+  static String get descAllSimples => _l10n.descAllSimples;
+  static String get explAllSimples => _l10n.explAllSimples;
+  static String get twConcealedDragon => _l10n.twConcealedDragon;
+  static String get descConcealedDragon => _l10n.descConcealedDragon;
+  static String get explConcealedDragon => _l10n.explConcealedDragon;
+  static String get twFiveConcealedPongs => _l10n.twFiveConcealedPongs;
+  static String get descFiveConcealedPongs => _l10n.descFiveConcealedPongs;
+  static String get explFiveConcealedPongs => _l10n.explFiveConcealedPongs;
+  static String get twDeclaredReady => _l10n.twDeclaredReady;
+  static String get descDeclaredReady => _l10n.descDeclaredReady;
+  static String get explDeclaredReady => _l10n.explDeclaredReady;
+  static String get twUnderTheSea => _l10n.twUnderTheSea;
+  static String get descUnderTheSea => _l10n.descUnderTheSea;
+  static String get explUnderTheSea => _l10n.explUnderTheSea;
+  static String get twWrongFlower => _l10n.twWrongFlower;
+  static String get descWrongFlower => _l10n.descWrongFlower;
+  static String get explWrongFlower => _l10n.explWrongFlower;
+  static String get twProperFlower => _l10n.twProperFlower;
+  static String get descProperFlower => _l10n.descProperFlower;
+  static String get explProperFlower => _l10n.explProperFlower;
+  static String get twDealerBonus => _l10n.twDealerBonus;
+  static String get twConsecutiveDealer => _l10n.twConsecutiveDealer;
+  static String get twDeclaredReadyCondition => _l10n.twDeclaredReadyCondition;
+  static String get ruleSelfDraw => _l10n.ruleSelfDraw;
+  static String get ruleNoFlowers => _l10n.ruleNoFlowers;
+  static String get ruleFlowerPlatform14 => _l10n.ruleFlowerPlatform14;
+  static String get ruleFlowerPlatform58 => _l10n.ruleFlowerPlatform58;
+  static String get ruleOwnFlower => _l10n.ruleOwnFlower;
+  static String get ruleOwnSeason => _l10n.ruleOwnSeason;
+  static String get rulePongOfWhite => _l10n.rulePongOfWhite;
+  static String get rulePongOfGreen => _l10n.rulePongOfGreen;
+  static String get rulePongOfRed => _l10n.rulePongOfRed;
+  static String get ruleRoundWind => _l10n.ruleRoundWind;
+  static String get ruleSeatWind => _l10n.ruleSeatWind;
+  static String get ruleAllChows => _l10n.ruleAllChows;
+  static String get ruleAllPongs => _l10n.ruleAllPongs;
+  static String get ruleMixedOneSuit => _l10n.ruleMixedOneSuit;
+  static String get rulePureOneSuit => _l10n.rulePureOneSuit;
+  static String get ruleSmallThreeDragons => _l10n.ruleSmallThreeDragons;
+  static String get ruleBigThreeDragons => _l10n.ruleBigThreeDragons;
+  static String get ruleSmallFourWinds => _l10n.ruleSmallFourWinds;
+  static String get ruleBigFourWinds => _l10n.ruleBigFourWinds;
+  static String get ruleThirteenOrphans => _l10n.ruleThirteenOrphans;
+  static String get ruleEightImmortals => _l10n.ruleEightImmortals;
+  static String get ruleFlowerHand => _l10n.ruleFlowerHand;
+  static String get ruleHiddenTreasure => _l10n.ruleHiddenTreasure;
+  static String get ruleAllHonors => _l10n.ruleAllHonors;
+  static String get ruleNineGates => _l10n.ruleNineGates;
+  static String get ruleEighteenArhats => _l10n.ruleEighteenArhats;
+  static String get ruleSevenPairs => _l10n.ruleSevenPairs;
+  static String get ruleMigui => _l10n.ruleMigui;
+  static String get descSevenPairs => _l10n.descSevenPairs;
+  static String get descMigui => _l10n.descMigui;
+  static String get explSevenPairs => _l10n.explSevenPairs;
+  static String get explMigui => _l10n.explMigui;
+  static String get ruleHeavenlyHand => _l10n.ruleHeavenlyHand;
+  static String get ruleEarthlyHand => _l10n.ruleEarthlyHand;
+  static String get ruleKong => _l10n.ruleKong;
+  static String get ruleNone => _l10n.ruleNone;
+  static String get east => _l10n.east;
+  static String get south => _l10n.south;
+  static String get west => _l10n.west;
+  static String get north => _l10n.north;
+  static String get home => _l10n.home;
+  static String get rules => _l10n.rules;
+  static String get gameRules => _l10n.gameRules;
+  static String get settings => _l10n.settings;
+  static String get confirm => _l10n.confirm;
+  static String get delete => _l10n.delete;
+  static String get save => _l10n.save;
+  static String get yes => _l10n.yes;
+  static String get no => _l10n.no;
+  static String get ok => _l10n.ok;
+  static String get error => _l10n.error;
+  static String get success => _l10n.success;
+  static String get loading => _l10n.loading;
+  static String get retry => _l10n.retry;
+  static String get language => _l10n.language;
+  static String get theme => _l10n.theme;
+  static String get logout => _l10n.logout;
+  static String get confirmLogout => _l10n.confirmLogout;
+  static String get langEnglish => _l10n.langEnglish;
+  static String get langTraditionalChinese => _l10n.langTraditionalChinese;
+  static String get lightMode => _l10n.lightMode;
+  static String get darkMode => _l10n.darkMode;
+  static String get themeMode => _l10n.themeMode;
+  static String get about => _l10n.about;
+  static String get aboutDesc => _l10n.aboutDesc;
+  static String get copyright => _l10n.copyright;
+  static String get feedback => _l10n.feedback;
+  static String get feedbackContent => _l10n.feedbackContent;
+  static String get privacyPolicy => _l10n.privacyPolicy;
+  static String get privacyPolicyContent => _l10n.privacyPolicyContent;
+  static String get confirmDeleteGroup => _l10n.confirmDeleteGroup;
+  static String get gameInProgressTitle => _l10n.gameInProgressTitle;
+  static String get gameInProgressContent => _l10n.gameInProgressContent;
+  static String get startNewGame => _l10n.startNewGame;
+  static String get resumeGame => _l10n.resumeGame;
+  static String get backToGame => _l10n.backToGame;
+  static String get playerStatsTitle => _l10n.playerStatsTitle;
+  static String get recentGroups => _l10n.recentGroups;
+  static String get editPlayers => _l10n.editPlayers;
+  static String get setupPlayers => _l10n.setupPlayers;
+  static String get enterGroupNameHint => _l10n.enterGroupNameHint;
+  static String get confirmDelete => _l10n.confirmDelete;
+  static String get deleteGroupWarning => _l10n.deleteGroupWarning;
+  static String get totalGamesMatches => _l10n.totalGamesMatches;
+  static String get descAllChows => _l10n.descAllChows;
+  static String get explAllChows => _l10n.explAllChows;
+  static String get descNoFlowers => _l10n.descNoFlowers;
+  static String get explNoFlowers => _l10n.explNoFlowers;
+  static String get descOwnSeason => _l10n.descOwnSeason;
+  static String get explOwnSeason => _l10n.explOwnSeason;
+  static String get descSelfDraw => _l10n.descSelfDraw;
+  static String get explSelfDraw => _l10n.explSelfDraw;
+  static String get ruleMenQianQing => _l10n.ruleMenQianQing;
+  static String get descMenQianQing => _l10n.descMenQianQing;
+  static String get explMenQianQing => _l10n.explMenQianQing;
+  static String get ruleDragonWindPong => _l10n.ruleDragonWindPong;
+  static String get descDragonWindPong => _l10n.descDragonWindPong;
+  static String get explDragonWindPong => _l10n.explDragonWindPong;
+  static String get ruleRobbingKong => _l10n.ruleRobbingKong;
+  static String get descRobbingKong => _l10n.descRobbingKong;
+  static String get explRobbingKong => _l10n.explRobbingKong;
+  static String get ruleHaidilao => _l10n.ruleHaidilao;
+  static String get descHaidilao => _l10n.descHaidilao;
+  static String get explHaidilao => _l10n.explHaidilao;
+  static String get ruleKongOnKong => _l10n.ruleKongOnKong;
+  static String get descKongOnKong => _l10n.descKongOnKong;
+  static String get explKongOnKong => _l10n.explKongOnKong;
+  static String get ruleFlowerPlatform => _l10n.ruleFlowerPlatform;
+  static String get descFlowerPlatform => _l10n.descFlowerPlatform;
+  static String get explFlowerPlatform => _l10n.explFlowerPlatform;
+  static String get ruleSevenFlowers => _l10n.ruleSevenFlowers;
+  static String get descSevenFlowers => _l10n.descSevenFlowers;
+  static String get explSevenFlowers => _l10n.explSevenFlowers;
+  static String get descAllPongs => _l10n.descAllPongs;
+  static String get explAllPongs => _l10n.explAllPongs;
+  static String get descMixedOneSuit => _l10n.descMixedOneSuit;
+  static String get explMixedOneSuit => _l10n.explMixedOneSuit;
+  static String get ruleMixedTerminals => _l10n.ruleMixedTerminals;
+  static String get descMixedTerminals => _l10n.descMixedTerminals;
+  static String get explMixedTerminals => _l10n.explMixedTerminals;
+  static String get descSmallThreeDragons => _l10n.descSmallThreeDragons;
+  static String get explSmallThreeDragons => _l10n.explSmallThreeDragons;
+  static String get descSmallFourWinds => _l10n.descSmallFourWinds;
+  static String get explSmallFourWinds => _l10n.explSmallFourWinds;
+  static String get descThirteenOrphans => _l10n.descThirteenOrphans;
+  static String get explThirteenOrphans => _l10n.explThirteenOrphans;
+  static String get ruleBlessingMan => _l10n.ruleBlessingMan;
+  static String get ruleBlessingOfMan => _l10n.ruleBlessingOfMan;
+  static String get descBlessingMan => _l10n.descBlessingMan;
+  static String get explBlessingMan => _l10n.explBlessingMan;
+  static String get descEarthlyHand => _l10n.descEarthlyHand;
+  static String get explEarthlyHand => _l10n.explEarthlyHand;
+  static String get descHeavenlyHand => _l10n.descHeavenlyHand;
+  static String get explHeavenlyHand => _l10n.explHeavenlyHand;
+  static String get descEighteenArhats => _l10n.descEighteenArhats;
+  static String get explEighteenArhats => _l10n.explEighteenArhats;
+  static String get descBigFourWinds => _l10n.descBigFourWinds;
+  static String get explBigFourWinds => _l10n.explBigFourWinds;
+  static String get descEightImmortals => _l10n.descEightImmortals;
+  static String get explEightImmortals => _l10n.explEightImmortals;
+  static String get descHiddenTreasure => _l10n.descHiddenTreasure;
+  static String get explHiddenTreasure => _l10n.explHiddenTreasure;
+  static String get ruleDoubleKong => _l10n.ruleDoubleKong;
+  static String get descDoubleKong => _l10n.descDoubleKong;
+  static String get explDoubleKong => _l10n.explDoubleKong;
+  static String get descAllHonors => _l10n.descAllHonors;
+  static String get explAllHonors => _l10n.explAllHonors;
+  static String get rulePureTerminals => _l10n.rulePureTerminals;
+  static String get descPureTerminals => _l10n.descPureTerminals;
+  static String get explPureTerminals => _l10n.explPureTerminals;
+  static String get descNineGates => _l10n.descNineGates;
+  static String get explNineGates => _l10n.explNineGates;
+  static String get descPureOneSuit => _l10n.descPureOneSuit;
+  static String get explPureOneSuit => _l10n.explPureOneSuit;
+  static String get descBigThreeDragons => _l10n.descBigThreeDragons;
+  static String get explBigThreeDragons => _l10n.explBigThreeDragons;
+  static String get totalHandsPlayed => _l10n.totalHandsPlayed;
+  static String get noResultRate => _l10n.noResultRate;
+  static String get statsWinRate => _l10n.statsWinRate;
+  static String get statsSelfDraw => _l10n.statsSelfDraw;
+  static String get statsRon => _l10n.statsRon;
+  static String get statsDealIn => _l10n.statsDealIn;
+  static String get selectDealer => _l10n.selectDealer;
+  static String get startGame => _l10n.startGame;
+  static String get gameOver => _l10n.gameOver;
+  static String get totalWindRounds => _l10n.totalWindRounds;
+  static String get totalRoundsPlayed => _l10n.totalRoundsPlayed;
+  static String get totalGames => _l10n.totalGames;
+  static String get finishGame => _l10n.finishGame;
+  static String get changePosition => _l10n.changePosition;
+  static String get swap => _l10n.swap;
+  static String get resetGameState => _l10n.resetGameState;
+  static String get resetDealer => _l10n.resetDealer;
+  static String get resetDealerSubtitle => _l10n.resetDealerSubtitle;
+  static String get resetWind => _l10n.resetWind;
+  static String get resetWindSubtitle => _l10n.resetWindSubtitle;
+  static String get cancelReset => _l10n.cancelReset;
+  static String get apply => _l10n.apply;
+  static String get currentGameStats => _l10n.currentGameStats;
+  static String get noRoundsPlayed => _l10n.noRoundsPlayed;
+  static String get mahjongScoringTitle => _l10n.mahjongScoringTitle;
+  static String get windEast => _l10n.windEast;
+  static String get windSouth => _l10n.windSouth;
+  static String get windWest => _l10n.windWest;
+  static String get windNorth => _l10n.windNorth;
+  static String get calculate => _l10n.calculate;
+  static String get noResult => _l10n.noResult;
+  static String get mahjong => _l10n.mahjong;
+  static String get windCircleSuffix => _l10n.windCircleSuffix;
+  static String get tooltipStats => _l10n.tooltipStats;
+  static String get tooltipRules => _l10n.tooltipRules;
+  static String get tooltipHome => _l10n.tooltipHome;
+  static String get loadFailed => _l10n.loadFailed;
+  static String get saveFailed => _l10n.saveFailed;
+  static String get deleteFailed => _l10n.deleteFailed;
+  static String get noInternet => _l10n.noInternet;
+  static String get tryAgain => _l10n.tryAgain;
+  static String get selectLanguage => _l10n.selectLanguage;
+  static String get moreLanguagesComingSoon => _l10n.moreLanguagesComingSoon;
+  static String get rulesAndTutorial => _l10n.rulesAndTutorial;
+  static String get rulesReference => _l10n.rulesReference;
+  static String get mahjongTutorial => _l10n.mahjongTutorial;
+  static String get allFan => _l10n.allFan;
+  static String get searchRules => _l10n.searchRules;
+  static String get tutorialWelcome => _l10n.tutorialWelcome;
+  static String get tutorialTiles => _l10n.tutorialTiles;
+  static String get tutorialRules => _l10n.tutorialRules;
+  static String get rulesTitle => _l10n.rulesTitle;
+  static String get tutorialScore => _l10n.tutorialScore;
+  static String get previous => _l10n.previous;
+  static String get next => _l10n.next;
+  static String get viewExample => _l10n.viewExample;
+  static String get hideExample => _l10n.hideExample;
+  static String get exampleExplanation => _l10n.exampleExplanation;
+  static String get welcomeTitle => _l10n.welcomeTitle;
+  static String get appDescription => _l10n.appDescription;
+  static String get keyFeatures => _l10n.keyFeatures;
+  static String get smartCalculatorTitle => _l10n.smartCalculatorTitle;
+  static String get smartCalculatorDesc => _l10n.smartCalculatorDesc;
+  static String get gameRecordingTitle => _l10n.gameRecordingTitle;
+  static String get gameRecordingDesc => _l10n.gameRecordingDesc;
+  static String get rulesReferenceTitle => _l10n.rulesReferenceTitle;
+  static String get rulesReferenceDesc => _l10n.rulesReferenceDesc;
+  static String get playerManagementTitle => _l10n.playerManagementTitle;
+  static String get playerManagementDesc => _l10n.playerManagementDesc;
+  static String get swipeToLearn => _l10n.swipeToLearn;
+  static String get tileTypesTitle => _l10n.tileTypesTitle;
+  static String get characterTiles => _l10n.characterTiles;
+  static String get characterTilesDesc => _l10n.characterTilesDesc;
+  static String get dotsTiles => _l10n.dotsTiles;
+  static String get dotsTilesDesc => _l10n.dotsTilesDesc;
+  static String get bambooTiles => _l10n.bambooTiles;
+  static String get bambooTilesDesc => _l10n.bambooTilesDesc;
+  static String get honorTiles => _l10n.honorTiles;
+  static String get honorTilesDesc => _l10n.honorTilesDesc;
+  static String get flowerTiles => _l10n.flowerTiles;
+  static String get flowerTilesDesc => _l10n.flowerTilesDesc;
+  static String get basicRulesTitle => _l10n.basicRulesTitle;
+  static String get gameObjectiveTitle => _l10n.gameObjectiveTitle;
+  static String get gameObjectiveDesc1 => _l10n.gameObjectiveDesc1;
+  static String get gameObjectiveDesc2 => _l10n.gameObjectiveDesc2;
+  static String get gameObjectiveDesc3 => _l10n.gameObjectiveDesc3;
+  static String get basicTermsTitle => _l10n.basicTermsTitle;
+  static String get basicTermsChow => _l10n.basicTermsChow;
+  static String get basicTermsPong => _l10n.basicTermsPong;
+  static String get basicTermsEyes => _l10n.basicTermsEyes;
+  static String get basicTermsSelfDraw => _l10n.basicTermsSelfDraw;
+  static String get basicTermsDiscard => _l10n.basicTermsDiscard;
+  static String get startingGameTitle => _l10n.startingGameTitle;
+  static String get startingGameDesc => _l10n.startingGameDesc;
+  static String get diceRollTableTitle => _l10n.diceRollTableTitle;
+  static String get counterClockwiseCount => _l10n.counterClockwiseCount;
+  static String get exampleRoll8 => _l10n.exampleRoll8;
+  static String get drawClockwise => _l10n.drawClockwise;
+  static String get rememberDirection => _l10n.rememberDirection;
+  static String get dealingProcedureTitle => _l10n.dealingProcedureTitle;
+  static String get dealStep1 => _l10n.dealStep1;
+  static String get dealStep2 => _l10n.dealStep2;
+  static String get dealStep3 => _l10n.dealStep3;
+  static String get dealStep4 => _l10n.dealStep4;
+  static String get dealStep5 => _l10n.dealStep5;
+  static String get gameplayProcessTitle => _l10n.gameplayProcessTitle;
+  static String get gameplayProcessDesc => _l10n.gameplayProcessDesc;
+  static String get standardTurnTitle => _l10n.standardTurnTitle;
+  static String get drawAction => _l10n.drawAction;
+  static String get actionAction => _l10n.actionAction;
+  static String get discardAction => _l10n.discardAction;
+  static String get turnStep1 => _l10n.turnStep1;
+  static String get turnStep2 => _l10n.turnStep2;
+  static String get turnStep3 => _l10n.turnStep3;
+  static String get turnStep4 => _l10n.turnStep4;
+  static String get interactionsTitle => _l10n.interactionsTitle;
+  static String get interactionsDesc => _l10n.interactionsDesc;
+  static String get priorityRuleTitle => _l10n.priorityRuleTitle;
+  static String get priorityRuleDesc => _l10n.priorityRuleDesc;
+  static String get priorityPongWins => _l10n.priorityPongWins;
+  static String get missedWinTitle => _l10n.missedWinTitle;
+  static String get missedWinDesc => _l10n.missedWinDesc;
+  static String get missedWinException => _l10n.missedWinException;
+  static String get actionChow => _l10n.actionChow;
+  static String get targetLeftPlayer => _l10n.targetLeftPlayer;
+  static String get descChowInteract => _l10n.descChowInteract;
+  static String get actionPong => _l10n.actionPong;
+  static String get targetAnyPlayer => _l10n.targetAnyPlayer;
+  static String get descPongInteract => _l10n.descPongInteract;
+  static String get actionKong => _l10n.actionKong;
+  static String get descKongInteract => _l10n.descKongInteract;
+  static String get actionWinInteract => _l10n.actionWinInteract;
+  static String get descWinInteract => _l10n.descWinInteract;
+  static String get scoringSystemTitle => _l10n.scoringSystemTitle;
+  static String get scoringRulesTitle => _l10n.scoringRulesTitle;
+  static String get scoringRulesDesc => _l10n.scoringRulesDesc;
+  static String get fanPointsHeader => _l10n.fanPointsHeader;
+  static String get byDiscardHeader => _l10n.byDiscardHeader;
+  static String get bySelfDrawHeader => _l10n.bySelfDrawHeader;
+  static String get flowerTilesScoringTitle => _l10n.flowerTilesScoringTitle;
+  static String get noFlowersFan => _l10n.noFlowersFan;
+  static String get ownFlowerFan => _l10n.ownFlowerFan;
+  static String get flowerMapping => _l10n.flowerMapping;
+  static String get seat1Flower => _l10n.seat1Flower;
+  static String get seat2Flower => _l10n.seat2Flower;
+  static String get seat3Flower => _l10n.seat3Flower;
+  static String get seat4Flower => _l10n.seat4Flower;
+  static String get honorTilesScoringTitle => _l10n.honorTilesScoringTitle;
+  static String get dragonPongFan => _l10n.dragonPongFan;
+  static String get roundWindPongFan => _l10n.roundWindPongFan;
+  static String get seatWindPongFan => _l10n.seatWindPongFan;
+  static String get winningPatternsTitle => _l10n.winningPatternsTitle;
+  static String get winningPatternsDesc => _l10n.winningPatternsDesc;
+  static String get chickenHand => _l10n.chickenHand;
+  static String get naMinOne => _l10n.naMinOne;
+  static String get limitHand => _l10n.limitHand;
+  static String get selectWinningHand => _l10n.selectWinningHand;
+  static String get maxTilesAlert => _l10n.maxTilesAlert;
+  static String get maxTotalTilesAlert => _l10n.maxTotalTilesAlert;
+  static String get minTilesAlert => _l10n.minTilesAlert;
+  static String get selectedCount => _l10n.selectedCount;
+  static String get clear => _l10n.clear;
+  static String get charactersTab => _l10n.charactersTab;
+  static String get dotsTab => _l10n.dotsTab;
+  static String get bambooTab => _l10n.bambooTab;
+  static String get honorsTab => _l10n.honorsTab;
+  static String get invalidTileCount => _l10n.invalidTileCount;
+  static String get winningHandThirteenOrphans => _l10n.winningHandThirteenOrphans;
+  static String get winningHand => _l10n.winningHand;
+  static String get winningHandInvalid => _l10n.winningHandInvalid;
+  static String get gameHistoryTitle => _l10n.gameHistoryTitle;
+  static String get noHistory => _l10n.noHistory;
+  static String get dateLabel => _l10n.dateLabel;
+  static String get roundsLabel => _l10n.roundsLabel;
+  static String get tipTitle => _l10n.tipTitle;
+  static String get splashTitle => _l10n.splashTitle;
+  static String get splashSubtitle => _l10n.splashSubtitle;
+  static String get tipDesc => _l10n.tipDesc;
+  static String get importantNoteTitle => _l10n.importantNoteTitle;
+  static String get flowerNote => _l10n.flowerNote;
+  static String get dragonNote => _l10n.dragonNote;
+  static String get diceDealerEast => _l10n.diceDealerEast;
+  static String get diceSouthRight => _l10n.diceSouthRight;
+  static String get diceWestOpposite => _l10n.diceWestOpposite;
+  static String get diceNorthLeft => _l10n.diceNorthLeft;
+  static String get loginTitle => _l10n.loginTitle;
+  static String get createAccountTitle => _l10n.createAccountTitle;
+  static String get emailLabel => _l10n.emailLabel;
+  static String get passwordLabel => _l10n.passwordLabel;
+  static String get loginButton => _l10n.loginButton;
+  static String get createAccountButton => _l10n.createAccountButton;
+  static String get noAccountText => _l10n.noAccountText;
+  static String get hasAccountText => _l10n.hasAccountText;
+  static String get emailRequired => _l10n.emailRequired;
+  static String get emailInvalid => _l10n.emailInvalid;
+  static String get passwordRequired => _l10n.passwordRequired;
+  static String get passwordLengthError => _l10n.passwordLengthError;
+  static String get genericError => _l10n.genericError;
+  static String get confirmDeleteTitle => _l10n.confirmDeleteTitle;
+  static String get savedGroupsTitle => _l10n.savedGroupsTitle;
+  static String get noAnySavedGroups => _l10n.noAnySavedGroups;
+  static String get editGroup => _l10n.editGroup;
+  static String get deleteGroup => _l10n.deleteGroup;
+  static String get createdPrefix => _l10n.createdPrefix;
+  static String get playersListPrefix => _l10n.playersListPrefix;
 
-  static String get totalGamesMatches => _isZh ? '總局數 (場):' : 'Total Games (Matches):';
+  // ── parameterised methods ──────────────────────────────────────
+  static String fan(int f) => _l10n.fan(f);
+  static String taiCount(int t) => _l10n.taiCount(t);
+  static String currentScore(int score) => _l10n.currentScore(score);
+  static String totalWin(int score) => _l10n.totalWin(score);
+  static String consecutiveDealerCount(int count) => _l10n.consecutiveDealerCount(count);
+  static String editPlayerTitle(int index) => _l10n.editPlayerTitle(index);
+  static String swapPositionsContent(String p1, String p2) => _l10n.swapPositionsContent(p1, p2);
+  static String roundInfo(String wind, int game) => _l10n.roundInfo(wind, game);
+  static String gameCount(int count) => _l10n.gameCount(count);
+  static String playerCount(int count) => _l10n.playerCount(count);
+  static String roundOf(int current, int total) => _l10n.roundOf(current, total);
+  static String gameIndex(int index) => _l10n.gameIndex(index);
+  static String defaultPlayerName(int index) => _l10n.defaultPlayerName(index);
+  static String confirmDeleteContent(String name) => _l10n.confirmDeleteContent(name);
+  static String groupDeleted(String name) => _l10n.groupDeleted(name);
+  static String defaultGroupName(String timestamp) => _l10n.defaultGroupName(timestamp);
 
-  // Rule Descriptions & Explanations
-  static String get descAllChows => _isZh ? '只有順子, 無刻子' : 'Hand with only Chows, no Pongs.';
-  static String get explAllChows => _isZh ? '全副牌由順子和一對組成，沒刻子或槓' : 'Hand composed entirely of Chows (sequences) and a pair. No Pongs or Kongs.';
-  
-  static String get descNoFlowers => _isZh ? '沒有花牌' : 'No Flower tiles.';
-  static String get explNoFlowers => _isZh ? '沒有持有任何花牌而胡牌' : 'Winning without any Flower tiles.';
-  
-  static String get descOwnSeason => _isZh ? '花牌對應門風' : 'Flower tile matches your seat wind.';
-  static String get explOwnSeason => _isZh ? '花牌號碼對應你的座位 (1東 2南 3西 4北)' : 'The Flower tile number corresponds to your seat wind (1=East, 2=South, 3=West, 4=North).';
-  
-  static String get descSelfDraw => _isZh ? '自摸胡牌' : 'Winning by self-drawn tile.';
-  static String get explSelfDraw => _isZh ? '自己摸到獲勝的牌' : 'Drawing the winning tile yourself adds 1 fan.';
+  // ── TW / HK mode labels ──
+  static String get twRulesTitle => _l10n.twRulesTitle;
+  static String get hkRulesTitle => _l10n.hkRulesTitle;
+  static String get hkMode => _l10n.hkMode;
+  static String get twMode => _l10n.twMode;
 
-  static String get ruleMenQianQing => _isZh ? '門前清' : 'Men Qian Qing';
-  static String get descMenQianQing => _isZh ? '沒有鳴牌' : 'Winning without melding exposed tiles.';
-  static String get explMenQianQing => _isZh ? '整副牌皆為門前清（沒有吃、碰、明槓）。' : 'Concealed hand. No exposed melds before winning.';
+  // ── TW scoring rules ──
+  static String get twScoringRulesTitle => _l10n.twScoringRulesTitle;
+  static String get twScoringRulesDesc => _l10n.twScoringRulesDesc;
+  static String get twTaiHeader => _l10n.twTaiHeader;
+  static String get twScoreHeader => _l10n.twScoreHeader;
 
-  static String get ruleDragonWindPong => _isZh ? '番子' : 'Dragon/Wind Pong';
-  static String get descDragonWindPong => _isZh ? '三元牌或風牌刻子' : 'Pong of Dragons or Seat/Round Wind.';
-  static String get explDragonWindPong => _isZh ? '擁有中、發、白或圈風、門風的刻子/槓。' : 'A Pong/Kong of Dragons or Seat/Round Wind.';
+  // ── TW instant payment rules ──
+  static String get twInstantPayTitle => _l10n.twInstantPayTitle;
+  static String get twInstantPayDesc => _l10n.twInstantPayDesc;
+  static String get twChaseRule => _l10n.twChaseRule;
+  static String get twChaseDesc => _l10n.twChaseDesc;
+  static String get twConcealedKongPay => _l10n.twConcealedKongPay;
+  static String get twConcealedKongPayDesc => _l10n.twConcealedKongPayDesc;
+  static String get twFlowerSetPay => _l10n.twFlowerSetPay;
+  static String get twFlowerSetPayDesc => _l10n.twFlowerSetPayDesc;
+  static String get twFalseWinPay => _l10n.twFalseWinPay;
+  static String get twFalseWinPayDesc => _l10n.twFalseWinPayDesc;
+  static String get twCalledPongPenalty => _l10n.twCalledPongPenalty;
+  static String get twCalledPongPenaltyDesc => _l10n.twCalledPongPenaltyDesc;
 
-  static String get ruleRobbingKong => _isZh ? '搶槓' : 'Robbing the Kong';
-  static String get descRobbingKong => _isZh ? '胡別人加槓的牌' : 'Winning off a Kong.';
-  static String get explRobbingKong => _isZh ? '當別人進行加槓（小明槓）時，那張牌剛好是你胡的牌。' : 'Winning when another player declares a Kong with a tile you need.';
+  // ── TW penalties ──
+  static String get twPenaltiesTitle => _l10n.twPenaltiesTitle;
+  static String get twPenaltiesDesc => _l10n.twPenaltiesDesc;
+  static String get twWinPlacementRule => _l10n.twWinPlacementRule;
+  static String get twWinPlacementDesc => _l10n.twWinPlacementDesc;
+  static String get twMissedWinRule => _l10n.twMissedWinRule;
+  static String get twMissedWinDesc => _l10n.twMissedWinDesc;
+  static String get twKongRevealRule => _l10n.twKongRevealRule;
+  static String get twKongRevealDesc => _l10n.twKongRevealDesc;
+  static String get twDealerMarkerRule => _l10n.twDealerMarkerRule;
+  static String get twDealerMarkerDesc => _l10n.twDealerMarkerDesc;
+  static String get twFlowerOrderRule => _l10n.twFlowerOrderRule;
+  static String get twFlowerOrderDesc => _l10n.twFlowerOrderDesc;
 
-  static String get ruleHaidilao => _isZh ? '海底撈月' : 'Haidilao';
-  static String get descHaidilao => _isZh ? '自摸最後一張牌' : 'Winning on the last tile.';
-  static String get explHaidilao => _isZh ? '摸到牌牆的最後一張牌而胡牌。' : 'Winning by drawing the very last tile of the wall.';
+  // ── TW La settlement ──
+  static String get twLaSettlementTitle => _l10n.twLaSettlementTitle;
+  static String get twLaSettlementDesc => _l10n.twLaSettlementDesc;
+  static String get twLaMultiplier => _l10n.twLaMultiplier;
+  static String get twLaMultiplierDesc => _l10n.twLaMultiplierDesc;
+  static String get twLaReduction => _l10n.twLaReduction;
+  static String get twLaReductionDesc => _l10n.twLaReductionDesc;
+  static String get twLaApplied => _l10n.twLaApplied;
+  static String get twLaMultiplierApplied => _l10n.twLaMultiplierApplied;
+  static String get twLaReductionApplied => _l10n.twLaReductionApplied;
+  static String get twLaCarryDebt => _l10n.twLaCarryDebt;
 
-  static String get ruleKongOnKong => _isZh ? '槓上槓/花上自摸' : 'Kong on Kong/Flower';
-  static String get descKongOnKong => _isZh ? '槓牌或補花後自摸' : 'Winning after a Kong or Flower replacement.';
-  static String get explKongOnKong => _isZh ? '槓牌或補花後，摸到的補牌胡牌。' : 'Drawing the winning tile from the dead wall after declaring a Kong or getting a Flower.';
-  
-  static String get ruleFlowerPlatform => _isZh ? '一台花' : 'Flower Platform';
-  static String get descFlowerPlatform => _isZh ? '集齊一種花色(1-4)' : 'Complete set of Flowers.';
-  static String get explFlowerPlatform => _isZh ? '集齊一副完整的花牌(春夏秋冬 或 梅蘭菊竹)。' : 'Collecting a full set of numbered Flowers (1-4) or Seasons (1-4).';
+  // ── TW dealer bonus ──
+  static String get twDealerBonusTitle => _l10n.twDealerBonusTitle;
+  static String get twDealerBonusDesc => _l10n.twDealerBonusDesc;
+  static String get twDealerBonusBase => _l10n.twDealerBonusBase;
+  static String get twDealerBonusFormula => _l10n.twDealerBonusFormula;
+  static String get twDealerBonusExample1 => _l10n.twDealerBonusExample1;
+  static String get twDealerBonusExample2 => _l10n.twDealerBonusExample2;
+  static String get twDealerBonusExample3 => _l10n.twDealerBonusExample3;
+  static String get twDealerBonusResponsibility => _l10n.twDealerBonusResponsibility;
 
-  static String get ruleSevenFlowers => _isZh ? '七隻花' : 'Flower Hand (7 Flowers)';
-  static String get descSevenFlowers => _isZh ? '集齊七張花' : 'Seven Flowers.';
-  static String get explSevenFlowers => _isZh ? '拿到七張花牌可立即胡牌(計3番)。' : 'Collecting 7 Flower tiles allows for an immediate win.';
-  
-  static String get descAllPongs => _isZh ? '全為刻子/對子' : '4 Pongs/Kongs & Pair.';
-  static String get explAllPongs => _isZh ? '全副牌由刻子(或槓)和一對將眼組成。' : 'Hand composed entirely of Pongs (triplets) or Kongs and a pair.';
+  static String get twNoStackRule => _l10n.twNoStackRule;
 
-  static String get descMixedOneSuit => _isZh ? '單一花色 + 字牌' : 'One suit & Honors.';
-  static String get explMixedOneSuit => _isZh ? '由同一花色牌及字牌組成。' : 'Hand composed of one suit and Honor tiles.';
-  
-  static String get ruleMixedTerminals => _isZh ? '混么九' : 'Mixed Terminals';
-  static String get descMixedTerminals => _isZh ? '么九 + 字牌刻子' : 'Terminals & Honors.';
-  static String get explMixedTerminals => _isZh ? '全副牌由么九牌(1,9)及字牌的刻子/將眼組成。' : 'All Pongs/Kongs composed of Terminals (1/9) and Honor tiles.';
+  // ── TW scoring formula ──
+  static String get twScoringFormulaTitle => _l10n.twScoringFormulaTitle;
+  static String get twScoringFormulaDesc => _l10n.twScoringFormulaDesc;
+  static String get twScoringExample => _l10n.twScoringExample;
+  static String get twScoringDefault => _l10n.twScoringDefault;
 
-  static String get descSmallThreeDragons => _isZh ? '兩副三元刻 + 一對眼' : '2 Dragon Pongs + Pair.';
-  static String get explSmallThreeDragons => _isZh ? '兩副三元牌刻子及一副三元牌將眼。' : 'Two Pongs/Kongs of Dragons and a pair of the third Dragon.';
-  
-  static String get descSmallFourWinds => _isZh ? '三副風刻 + 一對眼' : '3 Wind Pongs + Pair.';
-  static String get explSmallFourWinds => _isZh ? '三副風牌刻子及一副風牌將眼。' : 'Three Pongs/Kongs of Winds and a pair of the fourth Wind.';
-  
-  static String get descThirteenOrphans => _isZh ? '十三種么九字牌' : '13 Unique Terminals.';
-  static String get explThirteenOrphans => _isZh ? '集齊所有么九牌及字牌各一張，加其中一張做眼。' : 'One of each Terminal and Honor tile + one pair.';
-  
-  static String get ruleBlessingMan => _isZh ? '人胡' : 'Blessing of Man';
-  static String get ruleBlessingOfMan => _isZh ? '人胡' : 'Blessing of Man';
-  static String get descBlessingMan => _isZh ? '閒家第一輪自摸' : 'Non-Dealer 1st Turn Win.';
-  static String get explBlessingMan => _isZh ? '閒家第一輪自摸。' : 'As non-dealer, you win on your first turn with a self-pick.';
-  
-  static String get descEarthlyHand => _isZh ? '閒家食莊家首打' : 'Win on Dealer\'s Discard.';
-  static String get explEarthlyHand => _isZh ? '閒家食和莊家打出的第一張牌。' : 'As non-dealer, you win using the dealer\'s first discard.';
-  
-  static String get descHeavenlyHand => _isZh ? '莊家起手即胡' : 'Dealer Initial Win.';
-  static String get explHeavenlyHand => _isZh ? '莊家起手配牌即胡牌。' : 'As dealer, your beginning hand wins.';
-  
-  static String get descEighteenArhats => _isZh ? '四個槓 (18張)' : '4 Kongs + Pair.';
-  static String get explEighteenArhats => _isZh ? '四個槓(共18張牌)胡牌。' : 'Winning with four Kongs (18 tiles total).';
-  
-  static String get descBigFourWinds => _isZh ? '四副風刻' : '4 Wind Pongs.';
-  static String get explBigFourWinds => _isZh ? '四副風牌刻子/槓。' : 'Four Pongs/Kongs of East, South, West, and North Winds.';
-  
-  static String get descEightImmortals => _isZh ? '集齊八張花牌' : 'All 8 Flowers.';
-  static String get explEightImmortals => _isZh ? '拿到八張花牌可立即胡牌(計8番)。' : 'Collecting all 8 Flower tiles allows for an immediate win.';
+  // ── TW concealed kong rule ──
+  static String get twConcealedKongRule => _l10n.twConcealedKongRule;
+  static String get twConcealedKongDesc => _l10n.twConcealedKongDesc;
+  static String get twConcealedKongExpl => _l10n.twConcealedKongExpl;
 
-  static String get descHiddenTreasure => _isZh ? '四副暗刻 (門前清)' : '4 Concealed Pongs.';
-  static String get explHiddenTreasure => _isZh ? '四副刻子皆為自摸/門前清(四暗刻)。' : 'Four Pongs/Kongs that were all self-drawn (concealed).';
+  // ── TW new scoring rules ──
+  static String get twNoHonors => _l10n.twNoHonors;
+  static String get twDescNoHonors => _l10n.twDescNoHonors;
+  static String get twExplNoHonors => _l10n.twExplNoHonors;
+  static String get twNoHonorsNoFlowers => _l10n.twNoHonorsNoFlowers;
+  static String get twDescNoHonorsNoFlowers => _l10n.twDescNoHonorsNoFlowers;
+  static String get twExplNoHonorsNoFlowers => _l10n.twExplNoHonorsNoFlowers;
+  static String get twNoHonorsNoFlowersPingHu => _l10n.twNoHonorsNoFlowersPingHu;
+  static String get twDescNoHonorsNoFlowersPingHu => _l10n.twDescNoHonorsNoFlowersPingHu;
+  static String get twExplNoHonorsNoFlowersPingHu => _l10n.twExplNoHonorsNoFlowersPingHu;
+  static String get twChickenHand => _l10n.twChickenHand;
+  static String get twDescChickenHand => _l10n.twDescChickenHand;
+  static String get twExplChickenHand => _l10n.twExplChickenHand;
+  static String get twDoublePong => _l10n.twDoublePong;
+  static String get twDescDoublePong => _l10n.twDescDoublePong;
+  static String get twExplDoublePong => _l10n.twExplDoublePong;
+  static String get twFakeSingle => _l10n.twFakeSingle;
+  static String get twDescFakeSingle => _l10n.twDescFakeSingle;
+  static String get twExplFakeSingle => _l10n.twExplFakeSingle;
+  static String get twTrueSingle => _l10n.twTrueSingle;
+  static String get twDescTrueSingle => _l10n.twDescTrueSingle;
+  static String get twExplTrueSingle => _l10n.twExplTrueSingle;
+  static String get twOldYoung => _l10n.twOldYoung;
+  static String get twDescOldYoung => _l10n.twDescOldYoung;
+  static String get twExplOldYoung => _l10n.twExplOldYoung;
+  static String get twExposedKong => _l10n.twExposedKong;
+  static String get twDescExposedKong => _l10n.twDescExposedKong;
+  static String get twExplExposedKong => _l10n.twExplExposedKong;
+  static String get twConcealedKongTai => _l10n.twConcealedKongTai;
+  static String get twDescConcealedKongTai => _l10n.twDescConcealedKongTai;
+  static String get twExplConcealedKongTai => _l10n.twExplConcealedKongTai;
+  static String get twFlowerWin => _l10n.twFlowerWin;
+  static String get twDescFlowerWin => _l10n.twDescFlowerWin;
+  static String get twExplFlowerWin => _l10n.twExplFlowerWin;
+  static String get twKongWin => _l10n.twKongWin;
+  static String get twDescKongWin => _l10n.twDescKongWin;
+  static String get twExplKongWin => _l10n.twExplKongWin;
+  static String get twRobbingKong => _l10n.twRobbingKong;
+  static String get twDescRobbingKong => _l10n.twDescRobbingKong;
+  static String get twExplRobbingKong => _l10n.twExplRobbingKong;
+  static String get twDoubleKongWin => _l10n.twDoubleKongWin;
+  static String get twDescDoubleKongWin => _l10n.twDescDoubleKongWin;
+  static String get twExplDoubleKongWin => _l10n.twExplDoubleKongWin;
+  static String get twRobbingDoubleKong => _l10n.twRobbingDoubleKong;
+  static String get twDescRobbingDoubleKong => _l10n.twDescRobbingDoubleKong;
+  static String get twExplRobbingDoubleKong => _l10n.twExplRobbingDoubleKong;
+  static String get twTwoConcealedPongs => _l10n.twTwoConcealedPongs;
+  static String get twDescTwoConcealedPongs => _l10n.twDescTwoConcealedPongs;
+  static String get twExplTwoConcealedPongs => _l10n.twExplTwoConcealedPongs;
+  static String get twThreeConcealedPongs => _l10n.twThreeConcealedPongs;
+  static String get twDescThreeConcealedPongs => _l10n.twDescThreeConcealedPongs;
+  static String get twExplThreeConcealedPongs => _l10n.twExplThreeConcealedPongs;
+  static String get twFourConcealedPongs => _l10n.twFourConcealedPongs;
+  static String get twDescFourConcealedPongs => _l10n.twDescFourConcealedPongs;
+  static String get twExplFourConcealedPongs => _l10n.twExplFourConcealedPongs;
+  static String get twIdenticalSequenceTwo => _l10n.twIdenticalSequenceTwo;
+  static String get twDescIdenticalSequenceTwo => _l10n.twDescIdenticalSequenceTwo;
+  static String get twExplIdenticalSequenceTwo => _l10n.twExplIdenticalSequenceTwo;
+  static String get twIdenticalSequenceThree => _l10n.twIdenticalSequenceThree;
+  static String get twDescIdenticalSequenceThree => _l10n.twDescIdenticalSequenceThree;
+  static String get twExplIdenticalSequenceThree => _l10n.twExplIdenticalSequenceThree;
+  static String get twIdenticalSequenceFour => _l10n.twIdenticalSequenceFour;
+  static String get twDescIdenticalSequenceFour => _l10n.twDescIdenticalSequenceFour;
+  static String get twExplIdenticalSequenceFour => _l10n.twExplIdenticalSequenceFour;
+  static String get twMixedDoubleSeq => _l10n.twMixedDoubleSeq;
+  static String get twDescMixedDoubleSeq => _l10n.twDescMixedDoubleSeq;
+  static String get twExplMixedDoubleSeq => _l10n.twExplMixedDoubleSeq;
+  static String get twMixedTripleSeq => _l10n.twMixedTripleSeq;
+  static String get twDescMixedTripleSeq => _l10n.twDescMixedTripleSeq;
+  static String get twExplMixedTripleSeq => _l10n.twExplMixedTripleSeq;
+  static String get twFiveIdenticalSeq => _l10n.twFiveIdenticalSeq;
+  static String get twDescFiveIdenticalSeq => _l10n.twDescFiveIdenticalSeq;
+  static String get twExplFiveIdenticalSeq => _l10n.twExplFiveIdenticalSeq;
+  static String get twTwoBrothers => _l10n.twTwoBrothers;
+  static String get twDescTwoBrothers => _l10n.twDescTwoBrothers;
+  static String get twExplTwoBrothers => _l10n.twExplTwoBrothers;
+  static String get twSmallThreeBrothers => _l10n.twSmallThreeBrothers;
+  static String get twDescSmallThreeBrothers => _l10n.twDescSmallThreeBrothers;
+  static String get twExplSmallThreeBrothers => _l10n.twExplSmallThreeBrothers;
+  static String get twBigThreeBrothers => _l10n.twBigThreeBrothers;
+  static String get twDescBigThreeBrothers => _l10n.twDescBigThreeBrothers;
+  static String get twExplBigThreeBrothers => _l10n.twExplBigThreeBrothers;
+  static String get twSmallThreeSisters => _l10n.twSmallThreeSisters;
+  static String get twDescSmallThreeSisters => _l10n.twDescSmallThreeSisters;
+  static String get twExplSmallThreeSisters => _l10n.twExplSmallThreeSisters;
+  static String get twBigThreeSisters => _l10n.twBigThreeSisters;
+  static String get twDescBigThreeSisters => _l10n.twDescBigThreeSisters;
+  static String get twExplBigThreeSisters => _l10n.twExplBigThreeSisters;
+  static String get twFourToOne => _l10n.twFourToOne;
+  static String get twDescFourToOne => _l10n.twDescFourToOne;
+  static String get twExplFourToOne => _l10n.twExplFourToOne;
+  static String get twFourToTwo => _l10n.twFourToTwo;
+  static String get twDescFourToTwo => _l10n.twDescFourToTwo;
+  static String get twExplFourToTwo => _l10n.twExplFourToTwo;
+  static String get twFourToFour => _l10n.twFourToFour;
+  static String get twDescFourToFour => _l10n.twDescFourToFour;
+  static String get twExplFourToFour => _l10n.twExplFourToFour;
+  static String get twExposedDragon => _l10n.twExposedDragon;
+  static String get twDescExposedDragon => _l10n.twDescExposedDragon;
+  static String get twExplExposedDragon => _l10n.twExplExposedDragon;
+  static String get twExposedMixedDragon => _l10n.twExposedMixedDragon;
+  static String get twDescExposedMixedDragon => _l10n.twDescExposedMixedDragon;
+  static String get twExplExposedMixedDragon => _l10n.twExplExposedMixedDragon;
+  static String get twConcealedMixedDragon => _l10n.twConcealedMixedDragon;
+  static String get twDescConcealedMixedDragon => _l10n.twDescConcealedMixedDragon;
+  static String get twExplConcealedMixedDragon => _l10n.twExplConcealedMixedDragon;
+  static String get twFiveGates => _l10n.twFiveGates;
+  static String get twDescFiveGates => _l10n.twDescFiveGates;
+  static String get twExplFiveGates => _l10n.twExplFiveGates;
+  static String get twMissingOneSuit => _l10n.twMissingOneSuit;
+  static String get twDescMissingOneSuit => _l10n.twDescMissingOneSuit;
+  static String get twExplMissingOneSuit => _l10n.twExplMissingOneSuit;
+  static String get twAllRevealed => _l10n.twAllRevealed;
+  static String get twDescAllRevealed => _l10n.twDescAllRevealed;
+  static String get twExplAllRevealed => _l10n.twExplAllRevealed;
+  static String get twHalfRevealed => _l10n.twHalfRevealed;
+  static String get twDescHalfRevealed => _l10n.twDescHalfRevealed;
+  static String get twExplHalfRevealed => _l10n.twExplHalfRevealed;
+  static String get twLastSevenTiles => _l10n.twLastSevenTiles;
+  static String get twDescLastSevenTiles => _l10n.twDescLastSevenTiles;
+  static String get twExplLastSevenTiles => _l10n.twExplLastSevenTiles;
+  static String get twLastTenTiles => _l10n.twLastTenTiles;
+  static String get twDescLastTenTiles => _l10n.twDescLastTenTiles;
+  static String get twExplLastTenTiles => _l10n.twExplLastTenTiles;
+  static String get twSmallThreeWinds => _l10n.twSmallThreeWinds;
+  static String get twDescSmallThreeWinds => _l10n.twDescSmallThreeWinds;
+  static String get twExplSmallThreeWinds => _l10n.twExplSmallThreeWinds;
+  static String get twBigThreeWinds => _l10n.twBigThreeWinds;
+  static String get twDescBigThreeWinds => _l10n.twDescBigThreeWinds;
+  static String get twExplBigThreeWinds => _l10n.twExplBigThreeWinds;
+  static String get twSixteenNonMatching => _l10n.twSixteenNonMatching;
+  static String get twDescSixteenNonMatching => _l10n.twDescSixteenNonMatching;
+  static String get twExplSixteenNonMatching => _l10n.twExplSixteenNonMatching;
+  static String get twOneFlowerSet => _l10n.twOneFlowerSet;
+  static String get twDescOneFlowerSet => _l10n.twDescOneFlowerSet;
+  static String get twExplOneFlowerSet => _l10n.twExplOneFlowerSet;
+  static String get twTwoFlowerSets => _l10n.twTwoFlowerSets;
+  static String get twDescTwoFlowerSets => _l10n.twDescTwoFlowerSets;
+  static String get twExplTwoFlowerSets => _l10n.twExplTwoFlowerSets;
+  static String get twMixedTerminalsPongs => _l10n.twMixedTerminalsPongs;
+  static String get twDescMixedTerminalsPongs => _l10n.twDescMixedTerminalsPongs;
+  static String get twExplMixedTerminalsPongs => _l10n.twExplMixedTerminalsPongs;
+  static String get twPureTerminalsTw => _l10n.twPureTerminalsTw;
+  static String get twDescPureTerminalsTw => _l10n.twDescPureTerminalsTw;
+  static String get twExplPureTerminalsTw => _l10n.twExplPureTerminalsTw;
+  static String get twMixedTerminalChows => _l10n.twMixedTerminalChows;
+  static String get twDescMixedTerminalChows => _l10n.twDescMixedTerminalChows;
+  static String get twExplMixedTerminalChows => _l10n.twExplMixedTerminalChows;
+  static String get twPureTerminalChows => _l10n.twPureTerminalChows;
+  static String get twDescPureTerminalChows => _l10n.twDescPureTerminalChows;
+  static String get twExplPureTerminalChows => _l10n.twExplPureTerminalChows;
+  static String get twHumanWin => _l10n.twHumanWin;
+  static String get twDescHumanWin => _l10n.twDescHumanWin;
+  static String get twExplHumanWin => _l10n.twExplHumanWin;
+  static String get twSevenRobOne => _l10n.twSevenRobOne;
+  static String get twDescSevenRobOne => _l10n.twDescSevenRobOne;
+  static String get twExplSevenRobOne => _l10n.twExplSevenRobOne;
+  static String get twHeavenlyReady => _l10n.twHeavenlyReady;
+  static String get twDescHeavenlyReady => _l10n.twDescHeavenlyReady;
+  static String get twExplHeavenlyReady => _l10n.twExplHeavenlyReady;
+  static String get twEarthlyReady => _l10n.twEarthlyReady;
+  static String get twDescEarthlyReady => _l10n.twDescEarthlyReady;
+  static String get twExplEarthlyReady => _l10n.twExplEarthlyReady;
+  static String get twMiguiTw => _l10n.twMiguiTw;
+  static String get twDescMiguiTw => _l10n.twDescMiguiTw;
+  static String get twExplMiguiTw => _l10n.twExplMiguiTw;
 
-  static String get ruleDoubleKong => _isZh ? '槓上槓' : 'Double Kong Replacement';
-  static String get descDoubleKong => _isZh ? '連續兩次槓後胡' : 'Win on 2nd Kong.';
-  static String get explDoubleKong => _isZh ? '連開兩次槓後，補充得來的牌胡牌。' : 'If you call a kong, call a second kong using the replacement tile, then win on the second replacement.';
+  // ── TW stacking rules ──
+  static String get twStackRulesTitle => _l10n.twStackRulesTitle;
+  static String get twStackRulesDesc => _l10n.twStackRulesDesc;
+  static String get twStackRule1 => _l10n.twStackRule1;
+  static String get twStackRule2 => _l10n.twStackRule2;
+  static String get twStackRule3 => _l10n.twStackRule3;
+  static String get twStackRule4 => _l10n.twStackRule4;
+  static String get twStackRule5 => _l10n.twStackRule5;
+  static String get twStackRule6 => _l10n.twStackRule6;
+  static String get twStackRule7 => _l10n.twStackRule7;
 
-  static String get descAllHonors => _isZh ? '全副字牌' : 'All Honors.';
-  static String get explAllHonors => _isZh ? '全副牌由字牌組成。' : 'Hand composed entirely of Honor tiles.';
-
-  static String get rulePureTerminals => _isZh ? '清么九' : 'Pure Terminals';
-  static String get descPureTerminals => _isZh ? '全副么九刻子' : 'All 1s and 9s.';
-  static String get explPureTerminals => _isZh ? '全副牌由么九牌(1,9)的刻子/將眼組成。' : 'All Pongs/Kongs composed entirely of Terminal tiles (1 and 9).';
-
-  static String get descNineGates => _isZh ? '同花色 111...999' : '1-9 of one suit hand.';
-  static String get explNineGates => _isZh ? '門前清同一花色：1112345678999 再加任何一張同花色的牌。' : 'Concealed hand of one suit: 1112345678999 + any tile of the same suit.';
-  
-  static String get descPureOneSuit => _isZh ? '單一花色' : 'All one suit.';
-  static String get explPureOneSuit => _isZh ? '由同一花色牌組成。' : 'Hand composed entirely of tiles from a single suit.';
-  
-  static String get descBigThreeDragons => _isZh ? '三副三元刻' : '3 Dragon Pongs.';
-  static String get explBigThreeDragons => _isZh ? '三副三元牌刻子/槓。' : 'Three Pongs/Kongs of Red, Green, and White Dragons.';
-  static String get totalHandsPlayed => _isZh ? '總手数:' : 'Total Hands Played:';
-  static String get noResultRate => _isZh ? '流局率:' : 'No Result Rate:';
-  static String get statsWinRate => _isZh ? '勝率' : 'Win Rate';
-  static String get statsSelfDraw => _isZh ? '自摸' : 'Self-Draw';
-  static String get statsRon => _isZh ? '食糊' : 'Discard';
-  static String get statsDealIn => _isZh ? '放銃' : 'Deal-in';
-  static String get selectDealer => _isZh ? '選擇莊家' : 'Select Dealer';
-  static String get startGame => _isZh ? '開始遊戲' : 'Start Game';
-  
-  static String get gameOver => _isZh ? '遊戲結束' : 'Game Over';
-  static String get totalWindRounds => _isZh ? '總圈數:' : 'Total Wind Rounds:';
-  static String get totalRoundsPlayed => _isZh ? '總局數:' : 'Total Games Played:';
-
-  static String get totalGames => _isZh ? '總局數' : 'Total Games';
-  
-  static String get finishGame => _isZh ? '結束遊戲' : 'Finish Game';
-  static String get changePosition => _isZh ? '交換位置' : 'Change Position';
-  static String swapPositionsContent(String p1, String p2) => _isZh ? '交換 $p1 和 $p2 的位置?' : 'Swap positions of $p1 and $p2?';
-  static String get swap => _isZh ? '交換' : 'Swap';
-  static String get resetGameState => _isZh ? '重置遊戲狀態?' : 'Reset Game State?';
-  static String get resetDealer => _isZh ? '重置莊家位置' : 'Reset Dealer Position';
-  static String get resetDealerSubtitle => _isZh ? '重新選擇莊家' : 'Choose a new dealer';
-  static String get resetWind => _isZh ? '重置圈風' : 'Reset Wind Round';
-  static String get resetWindSubtitle => _isZh ? '重置為東一局' : 'Reset to East 1';
-  static String get cancelReset => _isZh ? '取消重置' : 'Cancel Reset';
-  static String get apply => _isZh ? '套用' : 'Apply';
-  static String get currentGameStats => _isZh ? '目前戰況' : 'Current Game Stats';
-  static String get noRoundsPlayed => _isZh ? '尚未進行任何局數。' : 'No rounds played yet.';
-  
-  static String get mahjongScoringTitle => _isZh ? '麻將計分' : 'Mahjong Scoring';
-  
-  static String get windEast => _isZh ? '東' : 'East';
-  static String get windSouth => _isZh ? '南' : 'South';
-  static String get windWest => _isZh ? '西' : 'West';
-  static String get windNorth => _isZh ? '北' : 'North';
-  static String roundInfo(String wind, int game) => _isZh ? '$wind風圈 - 第 $game 局' : '$wind Round - Game $game';
-  
-  static String get calculate => _isZh ? '計算' : 'Calculate';
-  static String get noResult => _isZh ? '流局' : 'No Result';
-
-  static String gameCount(int count) => _isZh ? '第 $count 局' : 'Game $count';
-  static String get mahjong => _isZh ? '麻將' : 'Mahjong';
-
-  static String get windCircleSuffix => _isZh ? '風圈' : ' Round';
-  static String get tooltipStats => _isZh ? '遊戲統計' : 'Game Statistics';
-  static String get tooltipRules => _isZh ? '規則參考' : 'Rules Reference';
-  static String get tooltipHome => _isZh ? '回到首頁' : 'Back to Home';
-
-
-  // Messages
-  static String get loadFailed => _isZh ? '載入群組失敗: ' : 'Failed to load player groups: ';
-  static String get saveFailed => _isZh ? '儲存失敗: ' : 'Failed to save: ';
-  static String get deleteFailed => _isZh ? '刪除失敗: ' : 'Failed to delete: ';
-  static String get noInternet => _isZh ? '無網路連線' : 'No internet connection';
-  static String get tryAgain => _isZh ? '請再試一次' : 'Please try again';
-  static String get selectLanguage => _isZh ? '選擇語言' : 'Select Language';
-  static String get moreLanguagesComingSoon => _isZh ? '更多語言即將推出...' : 'More languages coming soon...';
-  
-  static String get rulesAndTutorial => _isZh ? '規則與教學' : 'Rules & Tutorial';
-  static String get rulesReference => _isZh ? '規則參考' : 'Rules Reference';
-  static String get mahjongTutorial => _isZh ? '麻將教學' : 'Mahjong Tutorial';
-  static String get allFan => _isZh ? '全部' : 'All';
-  static String get searchRules => _isZh ? '搜尋規則' : 'Search Rules';
-
-  static String get tutorialWelcome => _isZh ? '歡迎' : 'Welcome';
-  static String get tutorialTiles => _isZh ? '牌型' : 'Tiles';
-  static String get tutorialRules => _isZh ? '規則' : 'Rules';
-  static String get rulesTitle => _isZh ? '規則' : 'Rules';
-  static String get tutorialScore => _isZh ? '計分' : 'Score';
-  static String get previous => _isZh ? '上一頁' : 'Previous';
-  static String get next => _isZh ? '下一頁' : 'Next';
-  static String get viewExample => _isZh ? '查看範例' : 'View Example';
-  static String get hideExample => _isZh ? '隱藏範例' : 'Hide Example';
-  static String get exampleExplanation => _isZh ? '範例說明:' : 'Example Explanation:';
-
-  // Format strings
-  static String playerCount(int count) => _isZh ? '$count 名玩家' : '$count $players';
-  static String roundOf(int current, int total) => _isZh ? '第 $current / $total 局' : 'Round $current of $total';
-  static String fan(int count) => _isZh ? '$count 番' : '$count fan';
-
-  // Tutorial - Introduction
-  static String get welcomeTitle => _isZh ? '歡迎使用麻將計分器' : 'Welcome to Mahjong Score Calculator';
-  static String get appDescription => _isZh ? '您的香港麻將全方位助手！' : 'Your all-in-one companion for Hong Kong Mahjong!';
-  static String get keyFeatures => _isZh ? '主要功能：' : 'Key Features:';
-  
-  static String get smartCalculatorTitle => _isZh ? '智能計分' : 'Smart Calculator';
-  static String get smartCalculatorDesc => _isZh ? '即時計算番數與分數。支援十三么、九子連環等特殊牌型。' : 'Instantly calculate Fan and Score. Supports special hands like Thirteen Orphans and Nine Gates.';
-  
-  static String get gameRecordingTitle => _isZh ? '對局記錄' : 'Game Recording';
-  static String get gameRecordingDesc => _isZh ? '逐局記錄分數。自動管理莊家輪替與圈風。' : 'Track scores round-by-round. Auto-manages Dealer rotation and Round Winds.';
-  
-  static String get rulesReferenceTitle => _isZh ? '規則參考' : 'Rules Reference';
-  static String get rulesReferenceDesc => _isZh ? '完整的香港麻將計分規則指南，附帶範例。' : 'Complete guide to HK Mahjong scoring patterns with examples.';
-  
-  static String get playerManagementTitle => _isZh ? '玩家管理' : 'Player Management';
-  static String get playerManagementDesc => _isZh ? '儲存玩家群組並追蹤總對局數。' : 'Save player groups and keep track of total games played.';
-  
-  static String get swipeToLearn => _isZh ? '滑動以學習基礎知識 ->' : 'Swipe to learn the basics ->';
-
-  // Tutorial - Tile Types
-  static String get tileTypesTitle => _isZh ? '麻將牌種類' : 'Types of Mahjong Tiles';
-  static String get characterTiles => _isZh ? '萬子' : 'Character Tiles';
-  static String get characterTilesDesc => _isZh ? '漢字數字一至九' : 'Numbered 1 to 9 in characters';
-  static String get dotsTiles => _isZh ? '筒子' : 'Dots Tiles';
-  static String get dotsTilesDesc => _isZh ? '圓點數量一至九' : 'Numbered 1 to 9 in dots';
-  static String get bambooTiles => _isZh ? '索子' : 'Bamboo Tiles';
-  static String get bambooTilesDesc => _isZh ? '竹條數量一至九' : 'Numbered 1 to 9 in bamboo';
-  static String get honorTiles => _isZh ? '字牌' : 'Honor Tiles';
-  static String get honorTilesDesc => _isZh ? '包含風牌 (東南西北) 與三元牌 (中發白)' : 'Include Wind tiles (East/South/West/North) and Dragon tiles (Red/Green/White)';
-  static String get flowerTiles => _isZh ? '花牌' : 'Flower Tiles';
-  static String get flowerTilesDesc => _isZh ? '花 (梅蘭菊竹) 與 季 (春夏秋冬)' : 'Flowers (Plum, Orchid, Chrysanthemum, Bamboo) and Seasons (Spring, Summer, Autumn, Winter)';
-
-  // Tutorial - Basic Rules
-  static String get basicRulesTitle => _isZh ? '基本規則' : 'Basic Rules';
-  static String get gameObjectiveTitle => _isZh ? '1. 遊戲目標' : '1. Game Objective';
-  static String get gameObjectiveDesc1 => _isZh ? '麻將的目標是組成一副完整的牌，通常包含：' : 'The goal of mahjong is to form a complete hand, usually consisting of:';
-  static String get gameObjectiveDesc2 => _isZh ? '• 4 組 (順子/刻子) + 1 對眼' : '• 4 sets (chow/pong) + 1 pair (eyes)';
-  static String get gameObjectiveDesc3 => _isZh ? '• 特殊牌型 (例如：十三么)' : '• Special hands (e.g., Thirteen Orphans)';
-  
-  static String get basicTermsTitle => _isZh ? '2. 基本術語' : '2. Basic Terms';
-  static String get basicTermsChow => _isZh ? '• 上 ：三張連續的牌 (例如：123萬)' : '• Chow: Three consecutive tiles (e.g., 1m-2m-3m)';
-  static String get basicTermsPong => _isZh ? '• 碰 ：三張相同的牌 (例如：333筒)' : '• Pong: Three identical tiles (e.g., 5p-5p-5p)';
-  static String get basicTermsEyes => _isZh ? '• 眼 ：一對相同的牌' : '• Eyes: A pair of identical tiles';
-  static String get basicTermsSelfDraw => _isZh ? '• 自摸 ：自己摸到獲勝的牌' : '• Self-Draw: Draw your own winning tile';
-  static String get basicTermsDiscard => _isZh ? '• 出衝 ：打出的牌讓別人胡牌' : '• Discard: Discard a tile that lets others win';
-  
-  static String get startingGameTitle => _isZh ? '3. 遊戲開始' : '3. Starting the Game';
-  static String get startingGameDesc => _isZh ? '莊家 (東) 擲 2 或 3 顆骰子決定開門位置。' : 'The Dealer (East) rolls 2 or 3 dice to determine which wall to break.';
-  static String get diceRollTableTitle => _isZh ? '擲骰與開門：' : 'Dice Roll & Wall Selection:';
-
-  // Tutorial - Basic Rules Continued
-  static String get counterClockwiseCount => _isZh ? '從莊家開始逆時針數。' : 'Count counter-clockwise starting from Dealer as 1.';
-  static String get exampleRoll8 => _isZh ? '範例: 擲出 8 → 數到北位 (左家)。在北牆開門。' : 'Example: Roll 8 → Count to North (Left). Break North wall.';
-  static String get drawClockwise => _isZh ? '從開門處，順時針數墩數開始抓牌。' : 'From the chosen wall, count stacks clockwise (skipping the rolled number) to start drawing.';
-  static String get rememberDirection => _isZh ? '口訣：逆時針打牌，順時針抓牌！' : 'Remember: Play Counter-Clockwise, Draw Clockwise!';
-  
-  static String get dealingProcedureTitle => _isZh ? '配牌流程：' : 'Dealing Procedure:';
-  static String get dealStep1 => _isZh ? '1. 每位玩家輪流抓 4 張牌 (2 墩)。' : '1. Each player takes 4 tiles (2 stacks) in order.';
-  static String get dealStep2 => _isZh ? '2. 重複直到每人有 12 張牌。' : '2. Repeat until everyone has 12 tiles.';
-  static String get dealStep3 => _isZh ? '3. 莊家跳牌抓第 1 和第 3 張 (共 14 張)。' : '3. Dealer takes 1st and 3rd tile from end (14 total).';
-  static String get dealStep4 => _isZh ? '4. 閒家各抓 1 張 (共 13 張)。' : '4. Others take 1 tile (13 total).';
-  static String get dealStep5 => _isZh ? '5. 補花。' : '5. Replace Flower tiles from the back of the wall.';
-  
-  static String get gameplayProcessTitle => _isZh ? '4. 行牌流程' : '4. Gameplay Process';
-  static String get gameplayProcessDesc => _isZh ? '配牌補花後，從莊家開始逆時針進行。' : 'After dealing and flower replacement, the game proceeds counter-clockwise starting from the Dealer.';
-  static String get standardTurnTitle => _isZh ? '標準回合：' : 'Standard Turn:';
-  static String get drawAction => _isZh ? '摸牌' : 'Draw';
-  static String get actionAction => _isZh ? '動作' : 'Action';
-  static String get discardAction => _isZh ? '打牌' : 'Discard';
-  
-  static String get turnStep1 => _isZh ? '1. 從牌牆摸一張牌 (莊家首輪跳過)。' : '1. Draw a tile from the wall (Dealer skips this on first turn).';
-  static String get turnStep2 => _isZh ? '2. 若是花牌，補花。' : '2. If it\'s a Flower, reveal it and draw a replacement from the back.';
-  static String get turnStep3 => _isZh ? '3. 選擇是否暗槓、加槓或自摸胡牌。' : '3. Choose to Kong (Concealed/Added) or Win (Self-Draw).';
-  static String get turnStep4 => _isZh ? '4. 打出一張牌結束回合。' : '4. Discard one tile to end your turn.';
-  
-  static String get interactionsTitle => _isZh ? '鳴牌 (偷牌)：' : 'Interactions (Stealing):';
-  static String get interactionsDesc => _isZh ? '其他玩家可以喊出宣告來中斷回合。' : 'Other players can interrupt the turn by claiming a discard.';
-  
-  static String get priorityRuleTitle => _isZh ? '優先權規則：' : 'Priority Rule:';
-  static String get priorityRuleDesc => _isZh ? '胡 > 槓/碰 > 上' : 'Win > Kong/Pong > Chow';
-  static String get priorityPongWins => _isZh ? '若一家想上，另一家想碰同一張牌，碰優先。' : 'If one player wants to Chow and another wants to Pong the same tile, Pong wins.';
-  
-  static String get missedWinTitle => _isZh ? '過水規則：' : 'Missed Win Rule :';
-  static String get missedWinDesc => _isZh ? '若你放棄胡別人打出的牌，在自己下次摸牌/動作前，不能胡同一張牌。' : 'If you can win on a discard but choose not to (e.g., to try for a higher score), you cannot win on that same tile from another player until you complete your next turn (draw/action).';
-  static String get missedWinException => _isZh ? '例外：如果新摸到的牌讓你番數增加 (例如：湊成特殊牌型)，視乎家規可能允許胡牌。' : 'Exception: If the new tile gives you a higher Fan count (e.g., completing a specific pattern), you may be allowed to win depending on house rules.';
-  
-  static String get actionChow => _isZh ? '上 ' : 'Chow ';
-  static String get targetLeftPlayer => _isZh ? '只限上家 (左家)' : 'Left Player Only';
-  static String get descChowInteract => _isZh ? '組成順子 (例如：1-2-3)' : 'Form a sequence (e.g., 1-2-3).';
-  
-  static String get actionPong => _isZh ? '碰 ' : 'Pong ';
-  static String get targetAnyPlayer => _isZh ? '任何一家' : 'Any Player';
-  static String get descPongInteract => _isZh ? '組成刻子 (例如：3-3-3) -  中斷順序' : 'Form a triplet (e.g., 3-3-3). Interrupts turn order.';
-
-  static String get actionKong => _isZh ? '槓 ' : 'Kong ';
-  static String get descKongInteract => _isZh ? '組成槓子 - 補牌 - 中斷順序' : 'Form a quad. Draw replacement. Interrupts turn order.';
-  
-  static String get actionWinInteract => _isZh ? '胡 ' : 'Win ';
-  static String get descWinInteract => _isZh ? '完成牌型 - 遊戲結束' : 'Complete the hand. Ends the game.';
-  
-  // Tutorial - Scoring
-  static String get scoringSystemTitle => _isZh ? '計分系統' : 'Scoring System';
-  static String get scoringRulesTitle => _isZh ? '香港麻將計分表' : 'Hong Kong Mahjong Scoring Rules';
-  static String get scoringRulesDesc => _isZh ? '麻將分數由番數決定。下表顯示各番數對應的分數：' : 'Mahjong scoring is determined by fan count. The table below shows the points for each fan count:';
-  
-  static String get fanPointsHeader => _isZh ? '番數' : 'Fan Points';
-  static String get byDiscardHeader => _isZh ? '出衝 (放槍)' : 'By Discard';
-  static String get bySelfDrawHeader => _isZh ? '自摸' : 'By Self-Draw';
-  
-  static String get flowerTilesScoringTitle => _isZh ? '花牌計分' : 'Flower Tiles Scoring';
-  static String get noFlowersFan => _isZh ? '• 無花 ：1 番' : '• No Flowers: 1 Fan';
-  static String get ownFlowerFan => _isZh ? '• 正花 ：1 番 (花牌對應門風)' : '• Own Flower: 1 Fan (Flower matches seat wind)';
-  static String get flowerMapping => _isZh ? '花牌對應：' : 'Flower Mapping:';
-  static String get seat1Flower => _isZh ? '• 1號位 (東)：春、梅' : '• Seat 1 (East): Spring, Plum';
-  static String get seat2Flower => _isZh ? '• 2號位 (南)：夏、蘭' : '• Seat 2 (South): Summer, Orchid';
-  static String get seat3Flower => _isZh ? '• 3號位 (西)：秋、菊' : '• Seat 3 (West): Autumn, Chrysanthemum';
-  static String get seat4Flower => _isZh ? '• 4號位 (北)：冬、竹' : '• Seat 4 (North): Winter, Bamboo';
-  
-  static String get honorTilesScoringTitle => _isZh ? '字牌計分' : 'Honor Tiles Scoring';
-  static String get dragonPongFan => _isZh ? '• 三元牌刻/槓 (中發白)：1 番' : '• Dragon Pong/Kong: 1 Fan (Red, Green, or White Dragon)';
-  static String get roundWindPongFan => _isZh ? '• 圈風刻/槓：1 番' : '• Round Wind Pong/Kong: 1 Fan (Matches the current round wind)';
-  static String get seatWindPongFan => _isZh ? '• 門風刻/槓：1 番' : '• Seat Wind Pong/Kong: 1 Fan (Matches your seat wind)';
-  
-  static String get winningPatternsTitle => _isZh ? '胡牌牌型一覧' : 'Winning Patterns (Fan List)';
-  static String get winningPatternsDesc => _isZh ? '點擊牌型名稱查看詳情與範例。' : 'Click on a pattern name to see details and examples.';
-  
-  static String get chickenHand => _isZh ? '雞胡' : '0 (Chicken)';
-  static String get naMinOne => _isZh ? '不適用 (最少 1)' : 'N/A (min 1)';
-  static String get limitHand => _isZh ? '爆棚 (上限)' : '13 (Limit)';
-  
-  // Tile Selection
-  static String get selectWinningHand => _isZh ? '選擇胡牌' : 'Select Winning Hand';
-  static String get maxTilesAlert => _isZh ? '同一張牌不能超過 4 張' : 'Cannot select more than 4 of the same tile';
-  static String get maxTotalTilesAlert => _isZh ? '最多選擇 18 張牌' : 'Maximum 18 tiles allowed';
-  static String get minTilesAlert => _isZh ? '請至少選擇 14 張牌' : 'Select at least 14 tiles';
-  static String get selectedCount => _isZh ? '已選：' : 'Selected:';
-  static String get clear => _isZh ? '清除' : 'Clear';
-  static String get charactersTab => _isZh ? '萬子' : 'Characters';
-  static String get dotsTab => _isZh ? '筒子' : 'Dots';
-  static String get bambooTab => _isZh ? '索子' : 'Bamboo';
-  static String get honorsTab => _isZh ? '字牌' : 'Honors';
-
-  // Mahjong Logic Messages
-  static String get invalidTileCount => _isZh ? '牌數錯誤。必須為 14、15、16、17 或 18 張。' : 'Invalid number of tiles. Must be 14, 15, 16, 17, or 18.';
-  static String get winningHandThirteenOrphans => _isZh ? '胡牌 (十三么)！' : 'Winning Hand (Thirteen Orphans)!';
-  static String get winningHand => _isZh ? '胡牌！' : 'Winning Hand!';
-  static String get winningHandInvalid => _isZh ? '無法胡牌 (需要 4 組 + 1 對眼)。' : 'Cannot form a winning hand (4 sets + 1 pair).';
-
-  // History
-  static String get gameHistoryTitle => _isZh ? '對局記錄' : 'Game History';
-  static String get noHistory => _isZh ? '沒有對局記錄' : 'No history records';
-  static String gameIndex(int index) => _isZh ? '對局 #$index' : 'Game #$index';
-  static String get dateLabel => _isZh ? '日期' : 'Date';
-  static String get roundsLabel => _isZh ? '局數' : 'Rounds';
-
-  static String get tipTitle => _isZh ? '提示：' : 'Tip:';
-
-  static String get splashTitle => _isZh ? '香港麻將計分器' : 'Mahjong Calculator';
-  static String get splashSubtitle => _isZh ? '讓計分變得更簡單' : 'Making Scoring Easier';
-
-  static String get tipDesc => _isZh ? '使用本應用程式的計分功能可自動計算番數與分數！' : 'Use this app\'s scoring feature to automatically calculate fan and score!';
-
-  static String get importantNoteTitle => _isZh ? '重要提示：' : 'Important Note:';
-  static String get flowerNote => _isZh ? '如果您持有的花牌與座位不符 (例如：東位持有夏)，該花牌不計番數，並且失去「無花」獎勵。' : 'If you have flowers but none match your seat (e.g., East seat holding Summer), you get 0 Fan for flowers and lose the "No Flower" bonus.';
-  static String get dragonNote => _isZh ? '註：若門風與圈風相同 (例如：東圈東位)，碰出該風牌可得 2 番！' : 'Note: If your seat wind matches the round wind (e.g., East Seat in East Round), a Pong of East Wind gives 2 Fan!';
-
-  static String get diceDealerEast => _isZh ? '莊家 (東)' : 'Dealer (East)';
-  static String get diceSouthRight => _isZh ? '南 (下家)' : 'South (Right)';
-  static String get diceWestOpposite => _isZh ? '西 (對家)' : 'West (Opposite)';
-  static String get diceNorthLeft => _isZh ? '北 (上家)' : 'North (Left)';
-  
-  static String defaultPlayerName(int index) => _isZh ? '玩家 $index' : 'Player $index';
-
-  // Tutorial - Scoring
-  static String fanCount(String count) => _isZh ? count.replaceAll("Fan", "番") : count;
-  
-  // Login Screen
-  static String get loginTitle => _isZh ? '登入' : 'Login';
-  static String get createAccountTitle => _isZh ? '建立帳戶' : 'Create Account';
-  static String get emailLabel => _isZh ? '電子郵件' : 'Email';
-  static String get passwordLabel => _isZh ? '密碼' : 'Password';
-  static String get loginButton => _isZh ? '登入' : 'Login';
-  static String get createAccountButton => _isZh ? '建立帳戶' : 'Create Account';
-  static String get noAccountText => _isZh ? '沒有帳戶？建立一個' : 'Don\'t have an account? Create one';
-  static String get hasAccountText => _isZh ? '已經有帳戶？登入' : 'Already have an account? Login';
-  static String get emailRequired => _isZh ? '請輸入電子郵件' : 'Please enter your email';
-  static String get emailInvalid => _isZh ? '請輸入有效的電子郵件' : 'Please enter a valid email';
-  static String get passwordRequired => _isZh ? '請輸入密碼' : 'Please enter your password';
-  static String get passwordLengthError => _isZh ? '密碼至少需要 6 個字元' : 'Password must be at least 6 characters';
-  static String get genericError => _isZh ? '發生未知錯誤' : 'An unexpected error occurred';
-  
-  // Saved Groups Screen
-  static String get confirmDeleteTitle => _isZh ? '確認刪除' : 'Confirm Delete';
-  static String confirmDeleteContent(String name) => _isZh ? '確定要刪除群組 "$name" 嗎？' : 'Are you sure you want to delete group "$name"?';
-  static String groupDeleted(String name) => _isZh ? '群組 "$name" 已刪除' : 'Group "$name" deleted';
-  static String get savedGroupsTitle => _isZh ? '已儲存的群組' : 'Saved Player Groups';
-  
-  static String get noAnySavedGroups => _isZh ? '尚未儲存任何群組' : 'No saved player groups yet';
-  static String get editGroup => _isZh ? '編輯群組' : 'Edit Group';
-  static String get deleteGroup => _isZh ? '刪除群組' : 'Delete Group';
-  static String get createdPrefix => _isZh ? '建立時間: ' : 'Created: ';
-  static String get playersListPrefix => _isZh ? '玩家: ' : 'Players: ';
-  
-  static String defaultGroupName(String timestamp) => _isZh ? '群組 $timestamp' : 'Group $timestamp';
+  // ── manual: fanCount uses string replacement (not ARB-compatible) ──
+  static String fanCount(String count) {
+    if (_l10n is L10nZh) return count.replaceAll('Fan', '番');
+    return count;
+  }
 }

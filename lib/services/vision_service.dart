@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../config/env_config.dart';
 
 class VisionService {
-  static const String _url = "https://predict.ultralytics.com";
-  static const String _apiKey = "89be37a7b87901a2f629a614a5bf1338c8e40bce2a";
-  static const String _modelUrl = "https://hub.ultralytics.com/models/eQp6JSf1LNBFABrg8Keh";
+  static String get _url => EnvConfig.visionApiUrl;
+  static String get _apiKey => EnvConfig.visionApiKey;
+  static String get _modelUrl => EnvConfig.visionModelUrl;
 
   // Map model class names to app tile codes if necessary.
   // Assuming the model returns standard codes like '1m', '1s', '1z'.

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../screens/home_screen.dart';
-import '../screens/rules_screen.dart';
-import '../screens/settings_screen.dart';
+import '../routes/app_routes.dart';
 import '../localization/app_localizations.dart';
+import '../theme/app_colors.dart';
 
 class BaseScreen extends StatefulWidget {
   final Widget body;
@@ -24,26 +23,21 @@ class _BaseScreenState extends State<BaseScreen> {
   void _onItemTapped(int index, BuildContext context) {
     if (index == widget.currentIndex) return;
 
-    // Switch pages based on selected navigation item
-    Widget? nextScreen;
+    String? route;
     switch (index) {
       case 0:
-        nextScreen = const HomePage();
+        route = AppRoutes.home;
         break;
       case 1:
-        nextScreen = const RulesScreen();
+        route = AppRoutes.rules;
         break;
       case 2:
-        nextScreen = const SettingsScreen();
+        route = AppRoutes.settings;
         break;
     }
 
-    if (nextScreen != null) {
-      // Use replacement instead of push to avoid excessive page stack
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => nextScreen!),
-      );
+    if (route != null) {
+      Navigator.pushReplacementNamed(context, route);
     }
   }
 
@@ -71,7 +65,7 @@ class _BaseScreenState extends State<BaseScreen> {
           ),
         ],
         currentIndex: widget.currentIndex,
-        selectedItemColor: Colors.green,
+        selectedItemColor: AppColors.primary,
         unselectedItemColor: Colors.grey,
         onTap: (index) => _onItemTapped(index, context),
         type: BottomNavigationBarType.fixed, // Fixed display for all items

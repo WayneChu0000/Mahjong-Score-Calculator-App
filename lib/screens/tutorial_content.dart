@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/mahjong_tile.dart';
 import '../localization/app_localizations.dart';
 import '../services/settings_service.dart';
+import '../models/game_mode.dart';
+import '../models/tw_rules.dart';
+import '../models/rule.dart';
 
 class TutorialContent extends StatelessWidget {
   final int pageIndex;
   final Function(String)? onRuleTap;
+  final GameMode gameMode;
 
   const TutorialContent({
     super.key, 
     required this.pageIndex,
     this.onRuleTap,
+    this.gameMode = GameMode.hongKong,
   });
 
   @override
@@ -23,7 +29,7 @@ class TutorialContent extends StatelessWidget {
       case 2:
         return _buildBasicRulesPage();
       case 3:
-        return _buildScoringPage(context);
+        return _buildScoringPage(context, gameMode);
       default:
         return _buildIntroductionPage();
     }
@@ -78,7 +84,7 @@ class TutorialContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
+              color: Colors.green.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: Colors.green),
@@ -237,9 +243,9 @@ class TutorialContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.withOpacity(0.3)),
+              border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,7 +272,7 @@ class TutorialContent extends StatelessWidget {
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(8),
-            color: Colors.amber.withOpacity(0.2),
+            color: Colors.amber.withValues(alpha: 0.2),
             child: Row(
               children: [
                 const Icon(Icons.warning_amber_rounded, color: Colors.amber),
@@ -352,9 +358,9 @@ class TutorialContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
+              color: Colors.orange.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.orange.withOpacity(0.3)),
+              border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,7 +388,7 @@ class TutorialContent extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.3),
+        color: color.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -423,9 +429,230 @@ class TutorialContent extends StatelessWidget {
     );
   }
 
-  Widget _buildScoringPage(BuildContext context) {
+  Widget _buildScoringPage(BuildContext context, GameMode mode) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final language = context.read<SettingsService>().language;
+
+    if (mode == GameMode.taiwan) {
+      return _buildTwScoringPage(context, isDark);
+    }
     
+    return _buildHkScoringPage(context, isDark, language);
+  }
+
+  // ── Taiwan Scoring Tutorial ──
+  Widget _buildTwScoringPage(BuildContext context, bool isDark) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppLocalizations.twScoringRulesTitle,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            AppLocalizations.twScoringRulesDesc,
+            style: const TextStyle(fontSize: 15),
+          ),
+          const SizedBox(height: 20),
+
+          // ── Scoring formula ──
+          _buildTwSectionHeader(AppLocalizations.twScoringFormulaTitle, Icons.calculate),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[800] : Colors.amber.shade50,
+              border: Border.all(color: Colors.amber),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.twScoringFormulaDesc,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+                const SizedBox(height: 8),
+                Text(AppLocalizations.twScoringExample),
+                const SizedBox(height: 4),
+                Text(
+                  AppLocalizations.twScoringDefault,
+                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // ── Dealer bonus ──
+          _buildTwSectionHeader(AppLocalizations.twDealerBonusTitle, Icons.star),
+          const SizedBox(height: 8),
+          Text(AppLocalizations.twDealerBonusDesc),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.blue.withValues(alpha: 0.15) : Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.blue.shade200),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(AppLocalizations.twDealerBonusBase, style: const TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text(AppLocalizations.twDealerBonusFormula, style: const TextStyle(fontWeight: FontWeight.bold)),
+                const Divider(),
+                Text(AppLocalizations.twDealerBonusExample1),
+                Text(AppLocalizations.twDealerBonusExample2),
+                Text(AppLocalizations.twDealerBonusExample3),
+                const Divider(),
+                Text(
+                  AppLocalizations.twDealerBonusResponsibility,
+                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // ── Instant payment ──
+          _buildTwSectionHeader(AppLocalizations.twInstantPayTitle, Icons.payments),
+          const SizedBox(height: 4),
+          Text(
+            AppLocalizations.twInstantPayDesc,
+            style: TextStyle(fontSize: 13, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+          ),
+          const SizedBox(height: 8),
+          ...twInstantPayRules.map((r) => _buildTwInfoRow(context, r, isDark)),
+
+          const SizedBox(height: 24),
+
+          // ── Penalties ──
+          _buildTwSectionHeader(AppLocalizations.twPenaltiesTitle, Icons.gavel),
+          const SizedBox(height: 4),
+          Text(
+            AppLocalizations.twPenaltiesDesc,
+            style: TextStyle(fontSize: 13, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+          ),
+          const SizedBox(height: 8),
+          ...twPenaltyRules.map((r) => _buildTwInfoRow(context, r, isDark)),
+
+          const SizedBox(height: 24),
+
+          // ── 拉 settlement ──
+          _buildTwSectionHeader(AppLocalizations.twLaSettlementTitle, Icons.sync),
+          const SizedBox(height: 4),
+          Text(
+            AppLocalizations.twLaSettlementDesc,
+            style: TextStyle(fontSize: 13, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+          ),
+          const SizedBox(height: 8),
+          ...twLaSettlementRules.map((r) => _buildTwInfoRow(context, r, isDark)),
+
+          const SizedBox(height: 24),
+
+          // ── Winning patterns (TW scoring) ──
+          Text(
+            AppLocalizations.winningPatternsTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          ...getRules(GameMode.taiwan).map((r) => _buildClickableRuleRow(
+            context,
+            r.name,
+            r.fan,
+          )),
+
+          const SizedBox(height: 16),
+
+          // ── Stacking / exclusion rules ──
+          _buildTwSectionHeader(AppLocalizations.twStackRulesTitle, Icons.warning_amber),
+          const SizedBox(height: 4),
+          Text(
+            AppLocalizations.twStackRulesDesc,
+            style: TextStyle(fontSize: 13, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.orange.withValues(alpha: 0.15) : Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.orange.shade200),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildStackRuleItem('1', AppLocalizations.twStackRule1),
+                _buildStackRuleItem('2', AppLocalizations.twStackRule2),
+                _buildStackRuleItem('3', AppLocalizations.twStackRule3),
+                _buildStackRuleItem('4', AppLocalizations.twStackRule4),
+                _buildStackRuleItem('5', AppLocalizations.twStackRule5),
+                _buildStackRuleItem('6', AppLocalizations.twStackRule6),
+                _buildStackRuleItem('7', AppLocalizations.twStackRule7),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTwSectionHeader(String title, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.green, size: 22),
+        const SizedBox(width: 8),
+        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      ],
+    );
+  }
+
+  Widget _buildStackRuleItem(String number, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 10,
+            backgroundColor: Colors.orange.shade300,
+            child: Text(number, style: const TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: 13))),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTwInfoRow(BuildContext context, Rule rule, bool isDark) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(8),
+        color: isDark ? Colors.grey.shade800.withValues(alpha: 0.5) : Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(rule.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          Text(rule.description, style: const TextStyle(fontSize: 13)),
+        ],
+      ),
+    );
+  }
+
+  // ── Hong Kong Scoring Tutorial (original) ──
+  Widget _buildHkScoringPage(BuildContext context, bool isDark, String language) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -460,14 +687,14 @@ class TutorialContent extends StatelessWidget {
                     const Icon(Icons.settings, color: Colors.amber),
                     const SizedBox(width: 8),
                     Text(
-                      AppLocalizations.fanLimitSettings ?? 'Fan Range Settings', 
+                      AppLocalizations.fanLimitSettings, 
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  SettingsService.instance.language == 'Traditional Chinese' 
+                  language == 'Traditional Chinese' 
                     ? '標準香港麻將通常設有「3番起胡」及「13番封頂」的限制。但在本程式中，您可以在開始新一局時（選莊家頁面）自訂這些限制：'
                     : 'Standard Hong Kong Mahjong is played with a minimum of 3 Fan to win and a maximum of 13 Fan. However, you can customize these limits when starting a new game:',
                 ),
@@ -477,20 +704,20 @@ class TutorialContent extends StatelessWidget {
                     const Text(" / "),
                     const Icon(Icons.add_circle_outline, size: 16),
                     Text(
-                      SettingsService.instance.language == 'Traditional Chinese' 
+                      language == 'Traditional Chinese' 
                         ? ' 使用按鈕調整番數限制'
                         : ' Use buttons to adjust limits'
                     )
                 ]),
                 const SizedBox(height: 4),
                 Text(
-                  SettingsService.instance.language == 'Traditional Chinese' 
+                  language == 'Traditional Chinese' 
                     ? '• 最少番數: 預設為 3。胡牌牌型必須達到此番數。'
                     : '• Min Fan: Default 3. Hand must meet this threshold to win.',
                   style: const TextStyle(fontSize: 13),
                 ),
                 Text(
-                  SettingsService.instance.language == 'Traditional Chinese' 
+                  language == 'Traditional Chinese' 
                     ? '• 最大番數: 預設為 13。可設為「無上限」。'
                     : '• Max Fan: Default 13. Can be set to "No Limit".',
                   style: const TextStyle(fontSize: 13),
@@ -555,7 +782,7 @@ class TutorialContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isDark ? Colors.orange.withOpacity(0.2) : Colors.orange.shade50,
+              color: isDark ? Colors.orange.withValues(alpha: 0.2) : Colors.orange.shade50,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: isDark ? Colors.orange.shade800 : Colors.orange.shade200),
             ),
@@ -669,7 +896,7 @@ class TutorialContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isDark ? Colors.green.withOpacity(0.2) : Colors.green.shade50,
+              color: isDark ? Colors.green.withValues(alpha: 0.2) : Colors.green.shade50,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: isDark ? Colors.green.shade800 : Colors.green.shade200),
             ),
@@ -732,7 +959,7 @@ class TutorialContent extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
               borderRadius: BorderRadius.circular(8),
-              color: isDark ? Colors.grey.shade800.withOpacity(0.5) : Colors.white,
+              color: isDark ? Colors.grey.shade800.withValues(alpha: 0.5) : Colors.white,
             ),
             child: Row(
               children: [
@@ -749,7 +976,7 @@ class TutorialContent extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
+                    color: Colors.green.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(

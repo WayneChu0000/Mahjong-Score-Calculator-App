@@ -4,11 +4,11 @@ import '../widgets/base_screen.dart';
 import '../models/player.dart';
 import '../models/player_group.dart';
 import '../services/player_group_service.dart';
-import 'player_setup.dart';
-import 'score_recording_screen.dart';
-import 'saved_groups_screen.dart';
-import 'group_detail_screen.dart';
+import '../routes/app_routes.dart';
 import '../localization/app_localizations.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
+import '../theme/app_dimens.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               children: [
                 // Fixed header content
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppDimens.paddingAllLg,
                   child: Column(
                     children: [
                       // Welcome card
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           child: Card(
                             elevation: 4,
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: AppDimens.paddingAllLg,
                               child: Column(
                                 children: [
                                   Text(
@@ -133,16 +133,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               icon: const Icon(Icons.add, size: 20),
                               label: Text(AppLocalizations.newGroup),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: AppColors.white,
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                               ),
                               onPressed: () async {
-                                final result = await Navigator.push(
+                                final result = await Navigator.pushNamed(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const PlayerSetupScreen(),
-                                  ),
+                                  AppRoutes.playerSetup,
                                 );
                                 
                                 // Reload list if new group was created
@@ -159,15 +157,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               label: Text(AppLocalizations.history),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
-                                foregroundColor: Colors.white,
+                                foregroundColor: AppColors.white,
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                               ),
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.pushNamed(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const SavedGroupsScreen(),
-                                  ),
+                                  AppRoutes.savedGroups,
                                 ).then((_) => _loadPlayerGroups());
                               },
                             ),
@@ -183,16 +179,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             Text(
                               AppLocalizations.recentGroups,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: AppTextStyles.heading3,
                             ),
                             const Spacer(),
                             TextButton(
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.pushNamed(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const SavedGroupsScreen(),
-                                  ),
+                                  AppRoutes.savedGroups,
                                 ).then((_) => _loadPlayerGroups());
                               },
                               child: Text(AppLocalizations.viewAll),
@@ -219,9 +213,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 margin: const EdgeInsets.only(bottom: 12),
                                 child: InkWell(
                                   onTap: () => _startGameWithGroup(group),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: AppDimens.borderRadiusMd,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
+                                    padding: AppDimens.paddingAllLg,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -230,10 +224,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             Expanded(
                                               child: Text(
                                                 group.name,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                                style: AppTextStyles.heading3,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
@@ -249,9 +240,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 player,
                                                 style: const TextStyle(fontSize: 11),
                                               ),
-                                              backgroundColor: Theme.of(context).brightness == Brightness.dark
-                                                  ? Colors.green.withOpacity(0.2)
-                                                  : Colors.green.shade50,
+                                              backgroundColor: AppColors.primaryCardBackground(Theme.of(context).brightness == Brightness.dark),
                                               padding: const EdgeInsets.symmetric(horizontal: 4),
                                               visualDensity: VisualDensity.compact,
                                             );
@@ -264,9 +253,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             Text(
                                               '${AppLocalizations.createdPrefix}${_formatDateTime(group.createdAt)}',
                                               style: TextStyle(
-                                                color: Theme.of(context).brightness == Brightness.dark
-                                                    ? Colors.grey.shade400
-                                                    : Colors.grey.shade600,
+                                                color: AppColors.subtitleColor(Theme.of(context).brightness == Brightness.dark),
                                                 fontSize: 11,
                                               ),
                                             ),
@@ -275,18 +262,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               children: [
                                                 TextButton.icon(
                                                   icon: const Icon(Icons.edit, size: 14),
-                                                  label: Text(AppLocalizations.edit, style: const TextStyle(fontSize: 12)),
+                                                  label: Text(AppLocalizations.edit, style: AppTextStyles.footnote),
                                                   style: TextButton.styleFrom(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                    padding: AppDimens.paddingHorizontalSm,
                                                     minimumSize: const Size(60, 32),
                                                   ),
                                                   onPressed: () => _editPlayerGroup(group),
                                                 ),
                                                 TextButton.icon(
-                                                  icon: const Icon(Icons.delete, size: 14, color: Colors.red),
-                                                  label: Text(AppLocalizations.delete, style: const TextStyle(fontSize: 12, color: Colors.red)),
+                                                  icon: const Icon(Icons.delete, size: 14, color: AppColors.destructive),
+                                                  label: Text(AppLocalizations.delete, style: const TextStyle(fontSize: 12, color: AppColors.destructive)),
                                                   style: TextButton.styleFrom(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                    padding: AppDimens.paddingHorizontalSm,
                                                     minimumSize: const Size(60, 32),
                                                   ),
                                                   onPressed: () => _deleteGroup(group.name),
@@ -312,7 +299,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 Icon(
                                   Icons.group_add,
                                   size: 64,
-                                  color: Colors.grey.shade400,
+                                  color: AppColors.grey400,
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
@@ -337,16 +324,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   icon: const Icon(Icons.add),
                                   label: Text(AppLocalizations.createGroup),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                    foregroundColor: Colors.white,
+                                    backgroundColor: AppColors.primary,
+                                    foregroundColor: AppColors.white,
                                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                                   ),
                                   onPressed: () async {
-                                    final result = await Navigator.push(
+                                    final result = await Navigator.pushNamed(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const PlayerSetupScreen(),
-                                      ),
+                                      AppRoutes.playerSetup,
                                     );
                                     
                                     if (result == true) {
@@ -373,6 +358,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
   
   // Show all player groups
+  // ignore: unused_element
   void _showAllPlayerGroups() {
     showModalBottomSheet(
       context: context,
@@ -383,7 +369,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       builder: (context) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.7,
-          padding: const EdgeInsets.all(16),
+          padding: AppDimens.paddingAllLg,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -391,7 +377,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 children: [
                   const Text(
                     'All Player Groups',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: AppTextStyles.heading2,
                   ),
                   const Spacer(),
                   IconButton(
@@ -461,19 +447,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       return Player(id: entry.key, name: entry.value, score: score);
     }).toList();
 
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => PlayerSetupScreen(
-          existingPlayers: playersWithScores,
-          groupName: group.name,
-          groupId: group.name, // Use name as ID for now
-          currentRound: group.currentRound,
-          dealerIndex: group.dealerIndex,
-          prevalentWindIndex: group.prevalentWindIndex,
-          currentDealerGameCount: group.currentDealerGameCount,
-          totalWindRounds: group.totalWindRounds,
-        ),
+      AppRoutes.playerSetup,
+      arguments: PlayerSetupArgs(
+        existingPlayers: playersWithScores,
+        groupName: group.name,
+        groupId: group.name,
+        currentRound: group.currentRound,
+        dealerIndex: group.dealerIndex,
+        prevalentWindIndex: group.prevalentWindIndex,
+        currentDealerGameCount: group.currentDealerGameCount,
+        totalWindRounds: group.totalWindRounds,
       ),
     ).then((hasSaved) {
       if (hasSaved == true) {
@@ -496,7 +481,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(AppLocalizations.delete, style: const TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.delete, style: AppTextStyles.destructive),
           ),
         ],
       ),
@@ -511,7 +496,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.groupDeleted(groupName)),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.primary,
             ),
           );
         }
@@ -521,11 +506,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   
   // Start game with selected player group
   void _startGameWithGroup(PlayerGroup group) {
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => GroupDetailScreen(group: group),
-      ),
+      AppRoutes.groupDetail,
+      arguments: GroupDetailArgs(group: group),
     ).then((_) {
       // Reload groups list after returning from detail
       _loadPlayerGroups();

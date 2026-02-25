@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../localization/app_localizations.dart';
 
 class SettingsService extends ChangeNotifier {
   // Singleton pattern
@@ -100,6 +101,7 @@ class SettingsService extends ChangeNotifier {
   
   Future<void> setLanguage(String value) async {
     _language = value;
+    AppLocalizations.setLocale(value);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyLanguage, value);
     notifyListeners();

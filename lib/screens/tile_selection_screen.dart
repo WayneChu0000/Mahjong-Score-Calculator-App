@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import '../utils/mahjong_logic.dart';
+import '../logic/hand_validator.dart';
 import '../localization/app_localizations.dart';
+import '../models/game_mode.dart';
 
 class TileSelectionScreen extends StatefulWidget {
   final List<String> initialTiles;
+  final GameMode gameMode;
 
   const TileSelectionScreen({
     super.key,
     this.initialTiles = const [],
+    this.gameMode = GameMode.hongKong,
   });
 
   @override
@@ -52,8 +55,10 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     }
 
     // Check total limit
-    // Max possible is 18 (4 Kongs + Pair)
-    if (_selectedTiles.length >= 18) {
+    // HK: 14 base + 4 kongs = 18
+    // TW: 17 base + 4 kongs = 21
+    int maxTiles = widget.gameMode == GameMode.taiwan ? 21 : 18;
+    if (_selectedTiles.length >= maxTiles) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.maxTotalTilesAlert, style: const TextStyle(fontFamily: "Traditional Chinese"))),
       );
@@ -88,7 +93,8 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
   }
 
   void _validateHand() {
-    if (_selectedTiles.length < 14) {
+    int minTiles = widget.gameMode == GameMode.taiwan ? 17 : 14;
+    if (_selectedTiles.length < minTiles) {
       setState(() {
         _isValid = false;
         _validationMessage = AppLocalizations.minTilesAlert;
@@ -96,10 +102,10 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
       return;
     }
 
-    var result = MahjongLogic.checkWinningHand(_selectedTiles);
+    var result = HandValidator.checkWinningHand(_selectedTiles, gameMode: widget.gameMode);
     setState(() {
       _isValid = result['valid'];
-      _validationMessage = result['message']; // This message likely comes from MahjongLogic which might still be english?
+      _validationMessage = result['message'];
     });
   }
 
@@ -219,7 +225,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
               color: Theme.of(context).cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, -2),
                 ),

@@ -1,67 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/splash_screen.dart';
+import 'package:provider/provider.dart';
+import 'config/env_config.dart';
+import 'routes/app_routes.dart';
+import 'routes/app_router.dart';
 import 'services/settings_service.dart';
 import 'services/score_service.dart'; 
 import 'localization/app_localizations.dart';
+import 'theme/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Load environment variables from .env file
+  await EnvConfig.init();
+  
   // Initialize Firebase first to avoid "No Firebase App" errors
   await Firebase.initializeApp();
   
-  // Initialize other services
-  _initializeOtherServices();
+  // Initialize settings
+  await SettingsService.instance.init();
   
-  runApp(const MyApp());
-}
-
-// Initialize other services in background
-void _initializeOtherServices() async {
-  try {
-    await Future.wait([
-      SettingsService.instance.init(),
-      _initializeScoreService(),
-    ]);
-  } catch (e) {
-    debugPrint('Service initialization warning: $e');
-  }
-}
-
-Future<void> _initializeScoreService() async {
-  // Lazy initialize ScoreService
+  // Sync l10n with persisted language preference
+  AppLocalizations.setLocale(SettingsService.instance.language);
+  
+  // Initialize score service
   ScoreService();
+  
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SettingsService>.value(
+          value: SettingsService.instance,
+        ),
+        ChangeNotifierProvider<ScoreService>.value(
+          value: ScoreService(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  final SettingsService _settings = SettingsService.instance;
-
-  @override
-  void initState() {
-    super.initState();
-    _settings.addListener(_onSettingsChanged);
-  }
-
-  @override
-  void dispose() {
-    _settings.removeListener(_onSettingsChanged);
-    super.dispose();
-  }
-
-  void _onSettingsChanged() {
-    setState(() {});
-  }
-
-  ThemeMode _getThemeMode() {
-    switch (_settings.theme) {
+  ThemeMode _getThemeMode(SettingsService settings) {
+    switch (settings.theme) {
       case 'Dark Mode':
         return ThemeMode.dark;
       case 'Light Mode':
@@ -74,42 +59,47 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // Reactively rebuild when SettingsService changes (language, theme).
+    final settings = context.watch<SettingsService>();
+
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.appTitle,
-      themeMode: _getThemeMode(),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: settings.language == 'Traditional Chinese'
+          ? const Locale('zh')
+          : const Locale('en'),
+      themeMode: _getThemeMode(settings),
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: AppColors.primarySwatch,
         brightness: Brightness.light,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.green,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.onPrimary,
         ),
       ),
       darkTheme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: AppColors.primarySwatch,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        // cardTheme: const CardTheme(
-        //   color: Color(0xFF2C2C2C),
-        //   elevation: 4,
-        // ),
+        scaffoldBackgroundColor: AppColors.darkScaffold,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1F1F1F),
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.darkAppBar,
+          foregroundColor: AppColors.onPrimary,
         ),
         chipTheme: ChipThemeData(
-          backgroundColor: Colors.green.withOpacity(0.2),
-          labelStyle: const TextStyle(color: Colors.white),
+          backgroundColor: AppColors.primarySurfaceDark,
+          labelStyle: const TextStyle(color: AppColors.white),
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         colorScheme: ColorScheme.dark(
-          primary: Colors.green,
-          secondary: Colors.amber,
+          primary: AppColors.primary,
+          secondary: AppColors.accent,
           surface: Colors.grey.shade900,
         ),
       ),
-      home: const SplashScreen(),
+      initialRoute: AppRoutes.splash,
+      onGenerateRoute: AppRouter.generateRoute,
     );
   }
 }

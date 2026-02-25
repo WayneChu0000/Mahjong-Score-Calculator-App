@@ -1,4 +1,5 @@
 import 'player_stats.dart';
+import 'game_mode.dart';
 
 class PlayerGroup {
   final String name;
@@ -14,8 +15,11 @@ class PlayerGroup {
   final int totalGamesPlayedInGroup;
   final Map<String, PlayerStats>? playerStats;
   final List<Map<String, dynamic>>? roundHistory;
+  /// For HK mode: minimum fan required to win, maximum fan cap.
+  /// For TW mode: minFan = baseTai (底, e.g. 10), maxFan = taiValue (每台金額, e.g. 5).
   final int minFan;
   final int maxFan;
+  final GameMode gameMode;
 
   PlayerGroup({
     required this.name,
@@ -33,6 +37,7 @@ class PlayerGroup {
     this.roundHistory,
     this.minFan = 3,
     this.maxFan = 13,
+    this.gameMode = GameMode.hongKong,
   }) : createdAt = createdAt ?? DateTime.now();
 
   // Create PlayerGroup from JSON
@@ -62,6 +67,12 @@ class PlayerGroup {
           : null,
       minFan: json['minFan'] ?? 3,
       maxFan: json['maxFan'] ?? 13,
+      gameMode: json['gameMode'] != null 
+          ? GameMode.values.firstWhere(
+              (e) => e.toString() == json['gameMode'], 
+              orElse: () => GameMode.hongKong
+            )
+          : GameMode.hongKong,
     );
   }
 
@@ -83,6 +94,7 @@ class PlayerGroup {
       'roundHistory': roundHistory,
       'minFan': minFan,
       'maxFan': maxFan,
+      'gameMode': gameMode.toString(),
     };
   }
 
@@ -103,6 +115,7 @@ class PlayerGroup {
     List<Map<String, dynamic>>? roundHistory,
     int? minFan,
     int? maxFan,
+    GameMode? gameMode,
   }) {
     return PlayerGroup(
       name: name ?? this.name,
@@ -120,6 +133,7 @@ class PlayerGroup {
       roundHistory: roundHistory ?? this.roundHistory,
       minFan: minFan ?? this.minFan,
       maxFan: maxFan ?? this.maxFan,
+      gameMode: gameMode ?? this.gameMode,
     );
   }
 }

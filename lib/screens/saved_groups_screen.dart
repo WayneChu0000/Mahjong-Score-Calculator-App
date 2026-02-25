@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../services/player_group_service.dart';
 import '../models/player_group.dart';
 import '../models/player.dart';
-import 'score_recording_screen.dart';
-import 'player_setup.dart';
-import 'group_detail_screen.dart';
+import '../routes/app_routes.dart';
 import '../localization/app_localizations.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_dimens.dart';
 
 class SavedGroupsScreen extends StatefulWidget {
   const SavedGroupsScreen({super.key});
@@ -59,7 +59,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(AppLocalizations.delete, style: const TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.delete, style: const TextStyle(color: AppColors.destructive)),
           ),
         ],
       ),
@@ -74,7 +74,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.groupDeleted(groupName)),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.primary,
             ),
           );
         }
@@ -93,19 +93,18 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
       return Player(id: entry.key, name: entry.value, score: score);
     }).toList();
 
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => PlayerSetupScreen(
-          existingPlayers: playersWithScores,
-          groupName: group.name,
-          groupId: group.name, // Use name as ID for now
-          currentRound: group.currentRound,
-          dealerIndex: group.dealerIndex,
-          prevalentWindIndex: group.prevalentWindIndex,
-          currentDealerGameCount: group.currentDealerGameCount,
-          totalWindRounds: group.totalWindRounds,
-        ),
+      AppRoutes.playerSetup,
+      arguments: PlayerSetupArgs(
+        existingPlayers: playersWithScores,
+        groupName: group.name,
+        groupId: group.name,
+        currentRound: group.currentRound,
+        dealerIndex: group.dealerIndex,
+        prevalentWindIndex: group.prevalentWindIndex,
+        currentDealerGameCount: group.currentDealerGameCount,
+        totalWindRounds: group.totalWindRounds,
       ),
     ).then((hasSaved) {
       if (hasSaved == true) {
@@ -115,11 +114,10 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
   }
 
   void _startGameWithGroup(PlayerGroup group) {
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => GroupDetailScreen(group: group),
-      ),
+      AppRoutes.groupDetail,
+      arguments: GroupDetailArgs(group: group),
     ).then((_) {
       _loadSavedGroups();
     });
@@ -137,8 +135,8 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.savedGroupsTitle),
-        backgroundColor: Colors.red.shade700,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.destructiveDark,
+        foregroundColor: AppColors.white,
       ),
       body: SafeArea(
         child: _isLoading
@@ -164,7 +162,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                         child: RefreshIndicator(
                           onRefresh: _loadSavedGroups,
                           child: ListView.builder(
-                            padding: const EdgeInsets.all(8),
+                            padding: AppDimens.paddingAllSm,
                             itemCount: currentGroups.length,
                             itemBuilder: (context, index) {
                               final group = currentGroups[index];
@@ -173,13 +171,13 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                 child: ListTile(
                                   leading: CircleAvatar(
                                     backgroundColor: Theme.of(context).brightness == Brightness.dark
-                                        ? Colors.red.withOpacity(0.2)
-                                        : Colors.red.shade100,
+                                        ? Colors.red.withValues(alpha: 0.2)
+                                        : AppColors.destructiveLight,
                                     child: Icon(
                                       Icons.group,
                                       color: Theme.of(context).brightness == Brightness.dark
                                           ? Colors.red.shade200
-                                          : Colors.red.shade700,
+                                          : AppColors.destructiveDark,
                                     ),
                                   ),
                                   title: Text(
@@ -197,7 +195,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Theme.of(context).brightness == Brightness.dark
-                                              ? Colors.grey.shade400
+                                              ? AppColors.grey400
                                               : Colors.grey,
                                         ),
                                       ),
@@ -210,7 +208,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Icon(Icons.play_arrow, color: Colors.green),
+                                            Icon(Icons.play_arrow, color: AppColors.primary),
                                             SizedBox(width: 8),
                                             Text(AppLocalizations.startGame),
                                           ],
@@ -232,7 +230,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Icon(Icons.delete, color: Colors.red),
+                                            Icon(Icons.delete, color: AppColors.destructive),
                                             SizedBox(width: 8),
                                             Text(AppLocalizations.deleteGroup),
                                           ],
@@ -263,7 +261,7 @@ class _SavedGroupsScreenState extends State<SavedGroupsScreen> {
                             color: Theme.of(context).cardColor,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 4,
                                 offset: const Offset(0, -2),
                               ),

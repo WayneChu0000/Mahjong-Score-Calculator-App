@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import '../models/player_group.dart';
 
 class PlayerGroupService {
@@ -25,7 +26,7 @@ class PlayerGroupService {
         return PlayerGroup.fromJson(data);
       }).toList();
     } catch (e) {
-      print('Error reading player groups from Firebase: $e');
+      debugPrint('Error reading player groups from Firebase: $e');
       return [];
     }
   }
@@ -40,7 +41,7 @@ class PlayerGroupService {
       await collection.doc(group.name).set(group.toJson());
       return true;
     } catch (e) {
-      print('Error saving player group to Firebase: $e');
+      debugPrint('Error saving player group to Firebase: $e');
       return false;
     }
   }
@@ -54,7 +55,7 @@ class PlayerGroupService {
       await collection.doc(groupName).delete();
       return true;
     } catch (e) {
-      print('Error deleting player group from Firebase: $e');
+      debugPrint('Error deleting player group from Firebase: $e');
       return false;
     }
   }
@@ -72,7 +73,7 @@ class PlayerGroupService {
       }
       return null;
     } catch (e) {
-      print('Error loading player group from Firebase: $e');
+      debugPrint('Error loading player group from Firebase: $e');
       return null;
     }
   }
