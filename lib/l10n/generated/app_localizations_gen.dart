@@ -1393,6 +1393,12 @@ abstract class L10n {
   /// **'Recent Groups'**
   String get recentGroups;
 
+  /// No description provided for @mostPlayedGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Most Played Groups'**
+  String get mostPlayedGroups;
+
   /// No description provided for @editPlayers.
   ///
   /// In en, this message translates to:
@@ -4548,6 +4554,768 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Chicken Hand (10) only applies when hand is worth exactly 1 Tai before dealer bonus.'**
   String get twStackRule7;
+
+  /// No description provided for @achvTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get achvTitle;
+
+  /// No description provided for @achvUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked'**
+  String get achvUnlocked;
+
+  /// No description provided for @achvLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get achvLocked;
+
+  /// No description provided for @achvProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current}/{target}'**
+  String achvProgress(String current, String target);
+
+  /// No description provided for @achvUnlockedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked on {date}'**
+  String achvUnlockedAt(String date);
+
+  /// No description provided for @achvNewUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievement Unlocked!'**
+  String get achvNewUnlock;
+
+  /// No description provided for @achvViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View Achievements'**
+  String get achvViewAll;
+
+  /// No description provided for @achvTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get achvTabAll;
+
+  /// No description provided for @achvTabGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get achvTabGeneral;
+
+  /// No description provided for @achvTabHk.
+  ///
+  /// In en, this message translates to:
+  /// **'HK'**
+  String get achvTabHk;
+
+  /// No description provided for @achvTabTw.
+  ///
+  /// In en, this message translates to:
+  /// **'TW'**
+  String get achvTabTw;
+
+  /// No description provided for @achvTabMilestone.
+  ///
+  /// In en, this message translates to:
+  /// **'Milestone'**
+  String get achvTabMilestone;
+
+  /// No description provided for @achvTierBronze.
+  ///
+  /// In en, this message translates to:
+  /// **'Bronze'**
+  String get achvTierBronze;
+
+  /// No description provided for @achvTierSilver.
+  ///
+  /// In en, this message translates to:
+  /// **'Silver'**
+  String get achvTierSilver;
+
+  /// No description provided for @achvTierGold.
+  ///
+  /// In en, this message translates to:
+  /// **'Gold'**
+  String get achvTierGold;
+
+  /// No description provided for @achvTierDiamond.
+  ///
+  /// In en, this message translates to:
+  /// **'Diamond'**
+  String get achvTierDiamond;
+
+  /// No description provided for @achvSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{unlocked} / {total}'**
+  String achvSummary(String unlocked, String total);
+
+  /// No description provided for @achvGenFirstGameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get achvGenFirstGameTitle;
+
+  /// No description provided for @achvGenFirstGameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your first round'**
+  String get achvGenFirstGameDesc;
+
+  /// No description provided for @achvGenTenGamesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Veteran'**
+  String get achvGenTenGamesTitle;
+
+  /// No description provided for @achvGenTenGamesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete 10 rounds'**
+  String get achvGenTenGamesDesc;
+
+  /// No description provided for @achvGenHundredGamesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get achvGenHundredGamesTitle;
+
+  /// No description provided for @achvGenHundredGamesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete 100 rounds'**
+  String get achvGenHundredGamesDesc;
+
+  /// No description provided for @achvGenFirstWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'First Joy'**
+  String get achvGenFirstWinTitle;
+
+  /// No description provided for @achvGenFirstWinDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win a round for the first time'**
+  String get achvGenFirstWinDesc;
+
+  /// No description provided for @achvGenWinStreak3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Win Streak'**
+  String get achvGenWinStreak3Title;
+
+  /// No description provided for @achvGenWinStreak3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win 3 rounds in a row'**
+  String get achvGenWinStreak3Desc;
+
+  /// No description provided for @achvGenWinStreak5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant'**
+  String get achvGenWinStreak5Title;
+
+  /// No description provided for @achvGenWinStreak5Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win 5 rounds in a row'**
+  String get achvGenWinStreak5Desc;
+
+  /// No description provided for @achvGenSelfDraw10Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-Draw Expert'**
+  String get achvGenSelfDraw10Title;
+
+  /// No description provided for @achvGenSelfDraw10Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-draw win 10 times'**
+  String get achvGenSelfDraw10Desc;
+
+  /// No description provided for @achvGenSelfDraw50Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-Draw King'**
+  String get achvGenSelfDraw50Title;
+
+  /// No description provided for @achvGenSelfDraw50Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-draw win 50 times'**
+  String get achvGenSelfDraw50Desc;
+
+  /// No description provided for @achvGenDealerStreak3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Dealer Overlord'**
+  String get achvGenDealerStreak3Title;
+
+  /// No description provided for @achvGenDealerStreak3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win as dealer 3 times in a row'**
+  String get achvGenDealerStreak3Desc;
+
+  /// No description provided for @achvGenNeverDealInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Iron Wall'**
+  String get achvGenNeverDealInTitle;
+
+  /// No description provided for @achvGenNeverDealInDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete a full game without dealing in'**
+  String get achvGenNeverDealInDesc;
+
+  /// No description provided for @achvGenComebackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Great Comeback'**
+  String get achvGenComebackTitle;
+
+  /// No description provided for @achvGenComebackDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Go from last place to first in the final round'**
+  String get achvGenComebackDesc;
+
+  /// No description provided for @achvHkFirstWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HK Debut'**
+  String get achvHkFirstWinTitle;
+
+  /// No description provided for @achvHkFirstWinDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win your first round in Hong Kong mode'**
+  String get achvHkFirstWinDesc;
+
+  /// No description provided for @achvHkFan3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'3 Fan Starter'**
+  String get achvHkFan3Title;
+
+  /// No description provided for @achvHkFan3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with 3 or more Fan'**
+  String get achvHkFan3Desc;
+
+  /// No description provided for @achvHkFullFlushTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Flush Master'**
+  String get achvHkFullFlushTitle;
+
+  /// No description provided for @achvHkFullFlushDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with Full Flush (清一色)'**
+  String get achvHkFullFlushDesc;
+
+  /// No description provided for @achvHkAllPongs5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pong Enthusiast'**
+  String get achvHkAllPongs5Title;
+
+  /// No description provided for @achvHkAllPongs5Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with All Pongs 5 times'**
+  String get achvHkAllPongs5Desc;
+
+  /// No description provided for @achvHkBigThreeDragonsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Big Three Dragons'**
+  String get achvHkBigThreeDragonsTitle;
+
+  /// No description provided for @achvHkBigThreeDragonsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with Big Three Dragons (大三元)'**
+  String get achvHkBigThreeDragonsDesc;
+
+  /// No description provided for @achvHkBigFourWindsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Big Four Winds'**
+  String get achvHkBigFourWindsTitle;
+
+  /// No description provided for @achvHkBigFourWindsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with Big Four Winds (大四喜)'**
+  String get achvHkBigFourWindsDesc;
+
+  /// No description provided for @achvHkThirteenOrphansTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thirteen Orphans'**
+  String get achvHkThirteenOrphansTitle;
+
+  /// No description provided for @achvHkThirteenOrphansDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with Thirteen Orphans (十三么)'**
+  String get achvHkThirteenOrphansDesc;
+
+  /// No description provided for @achvHkNineGatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nine Gates'**
+  String get achvHkNineGatesTitle;
+
+  /// No description provided for @achvHkNineGatesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with Nine Gates (九子連環)'**
+  String get achvHkNineGatesDesc;
+
+  /// No description provided for @achvHkConcealedHand10Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed Master'**
+  String get achvHkConcealedHand10Title;
+
+  /// No description provided for @achvHkConcealedHand10Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with concealed hand 10 times'**
+  String get achvHkConcealedHand10Desc;
+
+  /// No description provided for @achvHkLastTileWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Under the Sea'**
+  String get achvHkLastTileWinTitle;
+
+  /// No description provided for @achvHkLastTileWinDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win by drawing the last tile (海底撈月)'**
+  String get achvHkLastTileWinDesc;
+
+  /// No description provided for @achvHkRobbingKongTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Robbing Kong'**
+  String get achvHkRobbingKongTitle;
+
+  /// No description provided for @achvHkRobbingKongDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win by robbing a Kong (搶槓)'**
+  String get achvHkRobbingKongDesc;
+
+  /// No description provided for @achvHkMaxFanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum Fan'**
+  String get achvHkMaxFanTitle;
+
+  /// No description provided for @achvHkMaxFanDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach the maximum fan cap'**
+  String get achvHkMaxFanDesc;
+
+  /// No description provided for @achvTwFirstWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'TW Debut'**
+  String get achvTwFirstWinTitle;
+
+  /// No description provided for @achvTwFirstWinDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win your first round in Taiwan mode'**
+  String get achvTwFirstWinDesc;
+
+  /// No description provided for @achvTwTai10Title.
+  ///
+  /// In en, this message translates to:
+  /// **'10 Tai Reached'**
+  String get achvTwTai10Title;
+
+  /// No description provided for @achvTwTai10Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with 10 or more Tai'**
+  String get achvTwTai10Desc;
+
+  /// No description provided for @achvTwTai30Title.
+  ///
+  /// In en, this message translates to:
+  /// **'30 Tai Luxury'**
+  String get achvTwTai30Title;
+
+  /// No description provided for @achvTwTai30Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with 30 or more Tai'**
+  String get achvTwTai30Desc;
+
+  /// No description provided for @achvTwTai80Title.
+  ///
+  /// In en, this message translates to:
+  /// **'80 Tai Legend'**
+  String get achvTwTai80Title;
+
+  /// No description provided for @achvTwTai80Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with 80 or more Tai'**
+  String get achvTwTai80Desc;
+
+  /// No description provided for @achvTwCommonHand10Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Ping Hu Expert'**
+  String get achvTwCommonHand10Title;
+
+  /// No description provided for @achvTwCommonHand10Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with Ping Hu 10 times'**
+  String get achvTwCommonHand10Desc;
+
+  /// No description provided for @achvTwConcealedSelfDrawn5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed Self-Draw'**
+  String get achvTwConcealedSelfDrawn5Title;
+
+  /// No description provided for @achvTwConcealedSelfDrawn5Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win concealed self-draw 5 times'**
+  String get achvTwConcealedSelfDrawn5Desc;
+
+  /// No description provided for @achvTwDealerStreak5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Dealer Tyrant'**
+  String get achvTwDealerStreak5Title;
+
+  /// No description provided for @achvTwDealerStreak5Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win as dealer 5 times in a row'**
+  String get achvTwDealerStreak5Desc;
+
+  /// No description provided for @achvTwKongWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Kong Win'**
+  String get achvTwKongWinTitle;
+
+  /// No description provided for @achvTwKongWinDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win on Kong replacement (槓上食胡)'**
+  String get achvTwKongWinDesc;
+
+  /// No description provided for @achvTwFlowerWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Flower Win'**
+  String get achvTwFlowerWinTitle;
+
+  /// No description provided for @achvTwFlowerWinDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win by Flower Win / Two Flower Sets (花胡)'**
+  String get achvTwFlowerWinDesc;
+
+  /// No description provided for @achvTwSevenRobOneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Seven Rob One'**
+  String get achvTwSevenRobOneTitle;
+
+  /// No description provided for @achvTwSevenRobOneDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win by Seven Rob One (七搶一)'**
+  String get achvTwSevenRobOneDesc;
+
+  /// No description provided for @achvTwHeavenlyListenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Heavenly Listen'**
+  String get achvTwHeavenlyListenTitle;
+
+  /// No description provided for @achvTwHeavenlyListenDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Achieve Heavenly Ready (天聽)'**
+  String get achvTwHeavenlyListenDesc;
+
+  /// No description provided for @achvTwChickenHand10Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Chicken King'**
+  String get achvTwChickenHand10Title;
+
+  /// No description provided for @achvTwChickenHand10Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with Chicken Hand 10 times'**
+  String get achvTwChickenHand10Desc;
+
+  /// No description provided for @achvTwLikulikuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Likuliku'**
+  String get achvTwLikulikuTitle;
+
+  /// No description provided for @achvTwLikulikuDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win with Eight Pairs (嚦咕嚦咕)'**
+  String get achvTwLikulikuDesc;
+
+  /// No description provided for @achvMsWins100Title.
+  ///
+  /// In en, this message translates to:
+  /// **'100 Wins'**
+  String get achvMsWins100Title;
+
+  /// No description provided for @achvMsWins100Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win 100 rounds total'**
+  String get achvMsWins100Desc;
+
+  /// No description provided for @achvMsWins500Title.
+  ///
+  /// In en, this message translates to:
+  /// **'500 Wins'**
+  String get achvMsWins500Title;
+
+  /// No description provided for @achvMsWins500Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Win 500 rounds total'**
+  String get achvMsWins500Desc;
+
+  /// No description provided for @achvMsScore10000Title.
+  ///
+  /// In en, this message translates to:
+  /// **'10K Score'**
+  String get achvMsScore10000Title;
+
+  /// No description provided for @achvMsScore10000Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Accumulate 10,000 total score'**
+  String get achvMsScore10000Desc;
+
+  /// No description provided for @achvMsScore100000Title.
+  ///
+  /// In en, this message translates to:
+  /// **'100K Score'**
+  String get achvMsScore100000Title;
+
+  /// No description provided for @achvMsScore100000Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Accumulate 100,000 total score'**
+  String get achvMsScore100000Desc;
+
+  /// No description provided for @achvMsDualModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dual Player'**
+  String get achvMsDualModeTitle;
+
+  /// No description provided for @achvMsDualModeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Play 10+ rounds in both HK and TW mode'**
+  String get achvMsDualModeDesc;
+
+  /// No description provided for @continueLastGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Game'**
+  String get continueLastGame;
+
+  /// No description provided for @greetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning! Ready for a round?'**
+  String get greetingMorning;
+
+  /// No description provided for @greetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon! Time to play?'**
+  String get greetingAfternoon;
+
+  /// No description provided for @greetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening! Perfect time for mahjong.'**
+  String get greetingEvening;
+
+  /// No description provided for @quickStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Start'**
+  String get quickStart;
+
+  /// No description provided for @hkQuickStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Hong Kong\nMahjong'**
+  String get hkQuickStart;
+
+  /// No description provided for @twQuickStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Taiwan\nMahjong'**
+  String get twQuickStart;
+
+  /// No description provided for @dailyTipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'💡 Daily Tip:'**
+  String get dailyTipLabel;
+
+  /// No description provided for @tipDayTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Chicken Hand'**
+  String get tipDayTitle1;
+
+  /// No description provided for @tipDayContent1.
+  ///
+  /// In en, this message translates to:
+  /// **'In HK mahjong, a \'Chicken Hand\' (雞糊) means winning with 0 fan — often not allowed under minimum-fan rules.'**
+  String get tipDayContent1;
+
+  /// No description provided for @tipDayTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Flowers & Seasons'**
+  String get tipDayTitle2;
+
+  /// No description provided for @tipDayContent2.
+  ///
+  /// In en, this message translates to:
+  /// **'Taiwan mahjong uses 16 tiles per player. Flowers and seasons are bonus tiles that give extra fan automatically.'**
+  String get tipDayContent2;
+
+  /// No description provided for @tipDayTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'All Pongs'**
+  String get tipDayTitle3;
+
+  /// No description provided for @tipDayContent3.
+  ///
+  /// In en, this message translates to:
+  /// **'A hand made entirely of Pong/Kong sets (no Chow) is called All Pongs (對對糊) — worth 3 fan in HK rules.'**
+  String get tipDayContent3;
+
+  /// No description provided for @tipDayTitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed Hand'**
+  String get tipDayTitle4;
+
+  /// No description provided for @tipDayContent4.
+  ///
+  /// In en, this message translates to:
+  /// **'Winning without any open melds is a Concealed Hand (門前清). It\'s worth 1 fan in HK and higher in TW rules.'**
+  String get tipDayContent4;
+
+  /// No description provided for @tipDayTitle5.
+  ///
+  /// In en, this message translates to:
+  /// **'Dealer Advantage'**
+  String get tipDayTitle5;
+
+  /// No description provided for @tipDayContent5.
+  ///
+  /// In en, this message translates to:
+  /// **'The dealer (莊家) receives and pays double in many rule sets. Winning as dealer lets you keep the deal!'**
+  String get tipDayContent5;
+
+  /// No description provided for @tipDayTitle6.
+  ///
+  /// In en, this message translates to:
+  /// **'Half Flush'**
+  String get tipDayTitle6;
+
+  /// No description provided for @tipDayContent6.
+  ///
+  /// In en, this message translates to:
+  /// **'Half Flush (混一色) uses one suit plus honor tiles. It\'s one of the most common high-scoring hands at 3 fan.'**
+  String get tipDayContent6;
+
+  /// No description provided for @tipDayTitle7.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Flush'**
+  String get tipDayTitle7;
+
+  /// No description provided for @tipDayContent7.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Flush (清一色) uses only one suit with no honors — worth 7 fan in HK rules. Hard to conceal!'**
+  String get tipDayContent7;
+
+  /// No description provided for @tipDayTitle8.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-Draw Bonus'**
+  String get tipDayTitle8;
+
+  /// No description provided for @tipDayContent8.
+  ///
+  /// In en, this message translates to:
+  /// **'Winning by self-draw (自摸) adds extra fan in most rule sets and means all other players pay you.'**
+  String get tipDayContent8;
+
+  /// No description provided for @tipDayTitle9.
+  ///
+  /// In en, this message translates to:
+  /// **'Thirteen Orphans'**
+  String get tipDayTitle9;
+
+  /// No description provided for @tipDayContent9.
+  ///
+  /// In en, this message translates to:
+  /// **'Thirteen Orphans (十三么) requires one of each terminal and honor tile plus one duplicate — a limit hand!'**
+  String get tipDayContent9;
+
+  /// No description provided for @tipDayTitle10.
+  ///
+  /// In en, this message translates to:
+  /// **'La (拉) Rule'**
+  String get tipDayTitle10;
+
+  /// No description provided for @tipDayContent10.
+  ///
+  /// In en, this message translates to:
+  /// **'In Taiwan mahjong, the La rule multiplies carry-over debts by 1.5× when the same player wins consecutively.'**
+  String get tipDayContent10;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

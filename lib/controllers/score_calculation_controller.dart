@@ -756,6 +756,100 @@ class ScoreCalculationController extends ChangeNotifier {
       'isSelfDraw': isSelfDraw,
       'discardPlayer': isSelfDraw ? null : discardPlayer,
       'totalPoints': totalPoints,
+      'fanCount': fanCount,
+      'effectiveFan': effectiveFan,
+      'patterns': _buildPatternIds(),
     };
+  }
+
+  /// Derives a set of standardized pattern ID strings from display rules
+  /// and special conditions for the achievement system.
+  List<String> _buildPatternIds() {
+    final patterns = <String>[];
+
+    // Map localized rule names → achievement pattern IDs
+    final ruleMapping = {
+      AppLocalizations.ruleAllPongs: 'allPongs',
+      AppLocalizations.ruleHiddenTreasure: 'allPongs',
+      AppLocalizations.ruleMenQianQing: 'concealedHand',
+      AppLocalizations.ruleSelfDraw: 'selfDraw',
+      AppLocalizations.ruleHaidilao: 'lastTileWin',
+      AppLocalizations.ruleRobbingKong: 'robbingKong',
+      AppLocalizations.ruleKongOnKong: 'kongWin',
+      AppLocalizations.ruleHeavenlyHand: 'heavenlyHand',
+      AppLocalizations.ruleEarthlyHand: 'earthlyHand',
+      AppLocalizations.ruleBigThreeDragons: 'bigThreeDragons',
+      AppLocalizations.ruleBigFourWinds: 'bigFourWinds',
+    };
+
+    // TW-specific rule names
+    if (gameMode == GameMode.taiwan) {
+      ruleMapping[AppLocalizations.twConcealedSelfDraw] = 'concealedSelfDrawn';
+      ruleMapping[AppLocalizations.twDeclaredReady] = 'declaredReady';
+      ruleMapping[AppLocalizations.twUnderTheSea] = 'lastTileWin';
+      ruleMapping[AppLocalizations.twNoHonorsNoFlowersPingHu] = 'commonHand';
+      ruleMapping[AppLocalizations.twChickenHand] = 'chickenHand';
+      ruleMapping[AppLocalizations.twMiguiTw] = 'likuliku';
+      ruleMapping[AppLocalizations.twHeavenlyReady] = 'heavenlyListen';
+      ruleMapping[AppLocalizations.twSevenRobOne] = 'sevenRobOne';
+    }
+
+    for (final rule in displayRules) {
+      final name = rule['name'] as String?;
+      if (name != null && ruleMapping.containsKey(name)) {
+        final id = ruleMapping[name]!;
+        if (!patterns.contains(id)) {
+          patterns.add(id);
+        }
+      }
+    }
+
+    // Check for all-one-suit patterns from matched rules
+    for (final rule in matchedRulesDetails) {
+      final name = rule['name'] as String?;
+      // Detect full flush / all-one-suit by fan value (7 in HK)
+      if (name != null) {
+        if (ruleMapping.containsKey(name)) {
+          final id = ruleMapping[name]!;
+          if (!patterns.contains(id)) patterns.add(id);
+        }
+      }
+    }
+
+    // Detect special patterns from tile analysis that may use localized keys
+    // Check for thirteen orphans and nine gates via fan cap
+    if (gameMode == GameMode.hongKong) {
+      for (final rule in displayRules) {
+        final fan = rule['fan'] as int? ?? 0;
+        final name = rule['name'] as String? ?? '';
+        if (fan >= 13 || name.contains('十三') || name.contains('Thirteen')) {
+          if (!patterns.contains('thirteenOrphans') &&
+              (name.contains('十三') || name.contains('Thirteen'))) {
+            patterns.add('thirteenOrphans');
+          }
+          if (!patterns.contains('nineGates') &&
+              (name.contains('九子') || name.contains('Nine Gates'))) {
+            patterns.add('nineGates');
+          }
+        }
+      }
+      // All one suit detection
+      for (final rule in displayRules) {
+        final name = rule['name'] as String? ?? '';
+        if (name.contains('清一色') || name.contains('Full Flush') || name.contains('One Suit')) {
+          if (!patterns.contains('allOneSuit')) patterns.add('allOneSuit');
+        }
+      }
+    }
+
+    // Flower win detection for TW
+    if (gameMode == GameMode.taiwan) {
+      final flowerCount = selectedFlowers.values.where((v) => v).length;
+      if (flowerCount >= 7) {
+        if (!patterns.contains('flowerWin')) patterns.add('flowerWin');
+      }
+    }
+
+    return patterns;
   }
 }

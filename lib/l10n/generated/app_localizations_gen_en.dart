@@ -685,6 +685,9 @@ class L10nEn extends L10n {
   String get recentGroups => 'Recent Groups';
 
   @override
+  String get mostPlayedGroups => 'Most Played Groups';
+
+  @override
   String get editPlayers => 'Edit Players';
 
   @override
@@ -2473,4 +2476,403 @@ class L10nEn extends L10n {
   @override
   String get twStackRule7 =>
       'Chicken Hand (10) only applies when hand is worth exactly 1 Tai before dealer bonus.';
+
+  @override
+  String get achvTitle => 'Achievements';
+
+  @override
+  String get achvUnlocked => 'Unlocked';
+
+  @override
+  String get achvLocked => 'Locked';
+
+  @override
+  String achvProgress(String current, String target) {
+    return '$current/$target';
+  }
+
+  @override
+  String achvUnlockedAt(String date) {
+    return 'Unlocked on $date';
+  }
+
+  @override
+  String get achvNewUnlock => 'Achievement Unlocked!';
+
+  @override
+  String get achvViewAll => 'View Achievements';
+
+  @override
+  String get achvTabAll => 'All';
+
+  @override
+  String get achvTabGeneral => 'General';
+
+  @override
+  String get achvTabHk => 'HK';
+
+  @override
+  String get achvTabTw => 'TW';
+
+  @override
+  String get achvTabMilestone => 'Milestone';
+
+  @override
+  String get achvTierBronze => 'Bronze';
+
+  @override
+  String get achvTierSilver => 'Silver';
+
+  @override
+  String get achvTierGold => 'Gold';
+
+  @override
+  String get achvTierDiamond => 'Diamond';
+
+  @override
+  String achvSummary(String unlocked, String total) {
+    return '$unlocked / $total';
+  }
+
+  @override
+  String get achvGenFirstGameTitle => 'Beginner';
+
+  @override
+  String get achvGenFirstGameDesc => 'Complete your first round';
+
+  @override
+  String get achvGenTenGamesTitle => 'Veteran';
+
+  @override
+  String get achvGenTenGamesDesc => 'Complete 10 rounds';
+
+  @override
+  String get achvGenHundredGamesTitle => 'General';
+
+  @override
+  String get achvGenHundredGamesDesc => 'Complete 100 rounds';
+
+  @override
+  String get achvGenFirstWinTitle => 'First Joy';
+
+  @override
+  String get achvGenFirstWinDesc => 'Win a round for the first time';
+
+  @override
+  String get achvGenWinStreak3Title => 'Win Streak';
+
+  @override
+  String get achvGenWinStreak3Desc => 'Win 3 rounds in a row';
+
+  @override
+  String get achvGenWinStreak5Title => 'Dominant';
+
+  @override
+  String get achvGenWinStreak5Desc => 'Win 5 rounds in a row';
+
+  @override
+  String get achvGenSelfDraw10Title => 'Self-Draw Expert';
+
+  @override
+  String get achvGenSelfDraw10Desc => 'Self-draw win 10 times';
+
+  @override
+  String get achvGenSelfDraw50Title => 'Self-Draw King';
+
+  @override
+  String get achvGenSelfDraw50Desc => 'Self-draw win 50 times';
+
+  @override
+  String get achvGenDealerStreak3Title => 'Dealer Overlord';
+
+  @override
+  String get achvGenDealerStreak3Desc => 'Win as dealer 3 times in a row';
+
+  @override
+  String get achvGenNeverDealInTitle => 'Iron Wall';
+
+  @override
+  String get achvGenNeverDealInDesc =>
+      'Complete a full game without dealing in';
+
+  @override
+  String get achvGenComebackTitle => 'Great Comeback';
+
+  @override
+  String get achvGenComebackDesc =>
+      'Go from last place to first in the final round';
+
+  @override
+  String get achvHkFirstWinTitle => 'HK Debut';
+
+  @override
+  String get achvHkFirstWinDesc => 'Win your first round in Hong Kong mode';
+
+  @override
+  String get achvHkFan3Title => '3 Fan Starter';
+
+  @override
+  String get achvHkFan3Desc => 'Win with 3 or more Fan';
+
+  @override
+  String get achvHkFullFlushTitle => 'Full Flush Master';
+
+  @override
+  String get achvHkFullFlushDesc => 'Win with Full Flush (清一色)';
+
+  @override
+  String get achvHkAllPongs5Title => 'Pong Enthusiast';
+
+  @override
+  String get achvHkAllPongs5Desc => 'Win with All Pongs 5 times';
+
+  @override
+  String get achvHkBigThreeDragonsTitle => 'Big Three Dragons';
+
+  @override
+  String get achvHkBigThreeDragonsDesc => 'Win with Big Three Dragons (大三元)';
+
+  @override
+  String get achvHkBigFourWindsTitle => 'Big Four Winds';
+
+  @override
+  String get achvHkBigFourWindsDesc => 'Win with Big Four Winds (大四喜)';
+
+  @override
+  String get achvHkThirteenOrphansTitle => 'Thirteen Orphans';
+
+  @override
+  String get achvHkThirteenOrphansDesc => 'Win with Thirteen Orphans (十三么)';
+
+  @override
+  String get achvHkNineGatesTitle => 'Nine Gates';
+
+  @override
+  String get achvHkNineGatesDesc => 'Win with Nine Gates (九子連環)';
+
+  @override
+  String get achvHkConcealedHand10Title => 'Concealed Master';
+
+  @override
+  String get achvHkConcealedHand10Desc => 'Win with concealed hand 10 times';
+
+  @override
+  String get achvHkLastTileWinTitle => 'Under the Sea';
+
+  @override
+  String get achvHkLastTileWinDesc => 'Win by drawing the last tile (海底撈月)';
+
+  @override
+  String get achvHkRobbingKongTitle => 'Robbing Kong';
+
+  @override
+  String get achvHkRobbingKongDesc => 'Win by robbing a Kong (搶槓)';
+
+  @override
+  String get achvHkMaxFanTitle => 'Maximum Fan';
+
+  @override
+  String get achvHkMaxFanDesc => 'Reach the maximum fan cap';
+
+  @override
+  String get achvTwFirstWinTitle => 'TW Debut';
+
+  @override
+  String get achvTwFirstWinDesc => 'Win your first round in Taiwan mode';
+
+  @override
+  String get achvTwTai10Title => '10 Tai Reached';
+
+  @override
+  String get achvTwTai10Desc => 'Win with 10 or more Tai';
+
+  @override
+  String get achvTwTai30Title => '30 Tai Luxury';
+
+  @override
+  String get achvTwTai30Desc => 'Win with 30 or more Tai';
+
+  @override
+  String get achvTwTai80Title => '80 Tai Legend';
+
+  @override
+  String get achvTwTai80Desc => 'Win with 80 or more Tai';
+
+  @override
+  String get achvTwCommonHand10Title => 'Ping Hu Expert';
+
+  @override
+  String get achvTwCommonHand10Desc => 'Win with Ping Hu 10 times';
+
+  @override
+  String get achvTwConcealedSelfDrawn5Title => 'Concealed Self-Draw';
+
+  @override
+  String get achvTwConcealedSelfDrawn5Desc => 'Win concealed self-draw 5 times';
+
+  @override
+  String get achvTwDealerStreak5Title => 'Dealer Tyrant';
+
+  @override
+  String get achvTwDealerStreak5Desc => 'Win as dealer 5 times in a row';
+
+  @override
+  String get achvTwKongWinTitle => 'Kong Win';
+
+  @override
+  String get achvTwKongWinDesc => 'Win on Kong replacement (槓上食胡)';
+
+  @override
+  String get achvTwFlowerWinTitle => 'Flower Win';
+
+  @override
+  String get achvTwFlowerWinDesc => 'Win by Flower Win / Two Flower Sets (花胡)';
+
+  @override
+  String get achvTwSevenRobOneTitle => 'Seven Rob One';
+
+  @override
+  String get achvTwSevenRobOneDesc => 'Win by Seven Rob One (七搶一)';
+
+  @override
+  String get achvTwHeavenlyListenTitle => 'Heavenly Listen';
+
+  @override
+  String get achvTwHeavenlyListenDesc => 'Achieve Heavenly Ready (天聽)';
+
+  @override
+  String get achvTwChickenHand10Title => 'Chicken King';
+
+  @override
+  String get achvTwChickenHand10Desc => 'Win with Chicken Hand 10 times';
+
+  @override
+  String get achvTwLikulikuTitle => 'Likuliku';
+
+  @override
+  String get achvTwLikulikuDesc => 'Win with Eight Pairs (嚦咕嚦咕)';
+
+  @override
+  String get achvMsWins100Title => '100 Wins';
+
+  @override
+  String get achvMsWins100Desc => 'Win 100 rounds total';
+
+  @override
+  String get achvMsWins500Title => '500 Wins';
+
+  @override
+  String get achvMsWins500Desc => 'Win 500 rounds total';
+
+  @override
+  String get achvMsScore10000Title => '10K Score';
+
+  @override
+  String get achvMsScore10000Desc => 'Accumulate 10,000 total score';
+
+  @override
+  String get achvMsScore100000Title => '100K Score';
+
+  @override
+  String get achvMsScore100000Desc => 'Accumulate 100,000 total score';
+
+  @override
+  String get achvMsDualModeTitle => 'Dual Player';
+
+  @override
+  String get achvMsDualModeDesc => 'Play 10+ rounds in both HK and TW mode';
+
+  @override
+  String get continueLastGame => 'Continue Game';
+
+  @override
+  String get greetingMorning => 'Good morning! Ready for a round?';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon! Time to play?';
+
+  @override
+  String get greetingEvening => 'Good evening! Perfect time for mahjong.';
+
+  @override
+  String get quickStart => 'Quick Start';
+
+  @override
+  String get hkQuickStart => 'Hong Kong\nMahjong';
+
+  @override
+  String get twQuickStart => 'Taiwan\nMahjong';
+
+  @override
+  String get dailyTipLabel => '💡 Daily Tip:';
+
+  @override
+  String get tipDayTitle1 => 'Chicken Hand';
+
+  @override
+  String get tipDayContent1 =>
+      'In HK mahjong, a \'Chicken Hand\' (雞糊) means winning with 0 fan — often not allowed under minimum-fan rules.';
+
+  @override
+  String get tipDayTitle2 => 'Flowers & Seasons';
+
+  @override
+  String get tipDayContent2 =>
+      'Taiwan mahjong uses 16 tiles per player. Flowers and seasons are bonus tiles that give extra fan automatically.';
+
+  @override
+  String get tipDayTitle3 => 'All Pongs';
+
+  @override
+  String get tipDayContent3 =>
+      'A hand made entirely of Pong/Kong sets (no Chow) is called All Pongs (對對糊) — worth 3 fan in HK rules.';
+
+  @override
+  String get tipDayTitle4 => 'Concealed Hand';
+
+  @override
+  String get tipDayContent4 =>
+      'Winning without any open melds is a Concealed Hand (門前清). It\'s worth 1 fan in HK and higher in TW rules.';
+
+  @override
+  String get tipDayTitle5 => 'Dealer Advantage';
+
+  @override
+  String get tipDayContent5 =>
+      'The dealer (莊家) receives and pays double in many rule sets. Winning as dealer lets you keep the deal!';
+
+  @override
+  String get tipDayTitle6 => 'Half Flush';
+
+  @override
+  String get tipDayContent6 =>
+      'Half Flush (混一色) uses one suit plus honor tiles. It\'s one of the most common high-scoring hands at 3 fan.';
+
+  @override
+  String get tipDayTitle7 => 'Full Flush';
+
+  @override
+  String get tipDayContent7 =>
+      'Full Flush (清一色) uses only one suit with no honors — worth 7 fan in HK rules. Hard to conceal!';
+
+  @override
+  String get tipDayTitle8 => 'Self-Draw Bonus';
+
+  @override
+  String get tipDayContent8 =>
+      'Winning by self-draw (自摸) adds extra fan in most rule sets and means all other players pay you.';
+
+  @override
+  String get tipDayTitle9 => 'Thirteen Orphans';
+
+  @override
+  String get tipDayContent9 =>
+      'Thirteen Orphans (十三么) requires one of each terminal and honor tile plus one duplicate — a limit hand!';
+
+  @override
+  String get tipDayTitle10 => 'La (拉) Rule';
+
+  @override
+  String get tipDayContent10 =>
+      'In Taiwan mahjong, the La rule multiplies carry-over debts by 1.5× when the same player wins consecutively.';
 }

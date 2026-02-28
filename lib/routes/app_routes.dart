@@ -20,6 +20,7 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String savedGroups = '/saved-groups';
   static const String groupDetail = '/group-detail';
+  static const String achievements = '/achievements';
 }
 
 // ─── Typed argument classes ────────────────────────────────────────
@@ -121,5 +122,16 @@ class TileSelectionArgs {
   const TileSelectionArgs({
     this.initialTiles = const [],
     this.gameMode = GameMode.hongKong,
+  });
+}
+
+/// Arguments for [AchievementScreen].
+class AchievementArgs {
+  final String groupName;
+  final String playerName;
+
+  const AchievementArgs({
+    required this.groupName,
+    required this.playerName,
   });
 }

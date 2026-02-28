@@ -668,6 +668,9 @@ class L10nZh extends L10n {
   String get recentGroups => '最近群組';
 
   @override
+  String get mostPlayedGroups => '常用群組';
+
+  @override
   String get editPlayers => '編輯玩家';
 
   @override
@@ -2273,4 +2276,391 @@ class L10nZh extends L10n {
 
   @override
   String get twStackRule7 => '雞胡 (10) 僅在莊前只有 1 台時才適用。';
+
+  @override
+  String get achvTitle => '成就';
+
+  @override
+  String get achvUnlocked => '已解鎖';
+
+  @override
+  String get achvLocked => '未解鎖';
+
+  @override
+  String achvProgress(String current, String target) {
+    return '$current/$target';
+  }
+
+  @override
+  String achvUnlockedAt(String date) {
+    return '$date 達成';
+  }
+
+  @override
+  String get achvNewUnlock => '成就解鎖！';
+
+  @override
+  String get achvViewAll => '查看成就';
+
+  @override
+  String get achvTabAll => '全部';
+
+  @override
+  String get achvTabGeneral => '通用';
+
+  @override
+  String get achvTabHk => '港式';
+
+  @override
+  String get achvTabTw => '台式';
+
+  @override
+  String get achvTabMilestone => '里程碑';
+
+  @override
+  String get achvTierBronze => '銅牌';
+
+  @override
+  String get achvTierSilver => '銀牌';
+
+  @override
+  String get achvTierGold => '金牌';
+
+  @override
+  String get achvTierDiamond => '鑽石';
+
+  @override
+  String achvSummary(String unlocked, String total) {
+    return '$unlocked / $total';
+  }
+
+  @override
+  String get achvGenFirstGameTitle => '初出茅廬';
+
+  @override
+  String get achvGenFirstGameDesc => '完成第一局';
+
+  @override
+  String get achvGenTenGamesTitle => '十戰老兵';
+
+  @override
+  String get achvGenTenGamesDesc => '累計完成 10 局';
+
+  @override
+  String get achvGenHundredGamesTitle => '百戰將軍';
+
+  @override
+  String get achvGenHundredGamesDesc => '累計完成 100 局';
+
+  @override
+  String get achvGenFirstWinTitle => '首勝之喜';
+
+  @override
+  String get achvGenFirstWinDesc => '第一次胡牌';
+
+  @override
+  String get achvGenWinStreak3Title => '連勝達人';
+
+  @override
+  String get achvGenWinStreak3Desc => '連續贏 3 局';
+
+  @override
+  String get achvGenWinStreak5Title => '五連霸';
+
+  @override
+  String get achvGenWinStreak5Desc => '連續贏 5 局';
+
+  @override
+  String get achvGenSelfDraw10Title => '自摸達人';
+
+  @override
+  String get achvGenSelfDraw10Desc => '累計自摸 10 次';
+
+  @override
+  String get achvGenSelfDraw50Title => '自摸之王';
+
+  @override
+  String get achvGenSelfDraw50Desc => '累計自摸 50 次';
+
+  @override
+  String get achvGenDealerStreak3Title => '莊家霸主';
+
+  @override
+  String get achvGenDealerStreak3Desc => '連莊 3 次';
+
+  @override
+  String get achvGenNeverDealInTitle => '鐵壁防守';
+
+  @override
+  String get achvGenNeverDealInDesc => '一場完整對局中從未放銃';
+
+  @override
+  String get achvGenComebackTitle => '大逆轉';
+
+  @override
+  String get achvGenComebackDesc => '最後一局從末位逆轉為首位';
+
+  @override
+  String get achvHkFirstWinTitle => '港式初體驗';
+
+  @override
+  String get achvHkFirstWinDesc => '在港式麻將中首次胡牌';
+
+  @override
+  String get achvHkFan3Title => '三番起步';
+
+  @override
+  String get achvHkFan3Desc => '以 3 番或以上胡牌';
+
+  @override
+  String get achvHkFullFlushTitle => '清一色達人';
+
+  @override
+  String get achvHkFullFlushDesc => '胡出清一色';
+
+  @override
+  String get achvHkAllPongs5Title => '碰碰胡愛好者';
+
+  @override
+  String get achvHkAllPongs5Desc => '累計胡出對對胡 5 次';
+
+  @override
+  String get achvHkBigThreeDragonsTitle => '大三元';
+
+  @override
+  String get achvHkBigThreeDragonsDesc => '胡出大三元';
+
+  @override
+  String get achvHkBigFourWindsTitle => '大四喜';
+
+  @override
+  String get achvHkBigFourWindsDesc => '胡出大四喜';
+
+  @override
+  String get achvHkThirteenOrphansTitle => '十三么';
+
+  @override
+  String get achvHkThirteenOrphansDesc => '胡出十三么';
+
+  @override
+  String get achvHkNineGatesTitle => '九子連環';
+
+  @override
+  String get achvHkNineGatesDesc => '胡出九子連環';
+
+  @override
+  String get achvHkConcealedHand10Title => '門清高手';
+
+  @override
+  String get achvHkConcealedHand10Desc => '累計門清胡牌 10 次';
+
+  @override
+  String get achvHkLastTileWinTitle => '海底撈月';
+
+  @override
+  String get achvHkLastTileWinDesc => '以海底撈月胡牌';
+
+  @override
+  String get achvHkRobbingKongTitle => '搶槓食胡';
+
+  @override
+  String get achvHkRobbingKongDesc => '搶槓胡牌';
+
+  @override
+  String get achvHkMaxFanTitle => '爆棚大師';
+
+  @override
+  String get achvHkMaxFanDesc => '達成最高番數上限';
+
+  @override
+  String get achvTwFirstWinTitle => '台灣入門';
+
+  @override
+  String get achvTwFirstWinDesc => '在台式麻將中首次胡牌';
+
+  @override
+  String get achvTwTai10Title => '十台達成';
+
+  @override
+  String get achvTwTai10Desc => '胡出 10 台或以上';
+
+  @override
+  String get achvTwTai30Title => '三十台豪華';
+
+  @override
+  String get achvTwTai30Desc => '胡出 30 台或以上';
+
+  @override
+  String get achvTwTai80Title => '八十台傳說';
+
+  @override
+  String get achvTwTai80Desc => '胡出 80 台或以上';
+
+  @override
+  String get achvTwCommonHand10Title => '平胡專家';
+
+  @override
+  String get achvTwCommonHand10Desc => '累計胡出平胡 10 次';
+
+  @override
+  String get achvTwConcealedSelfDrawn5Title => '門清自摸王';
+
+  @override
+  String get achvTwConcealedSelfDrawn5Desc => '累計門清自摸 5 次';
+
+  @override
+  String get achvTwDealerStreak5Title => '拉莊達人';
+
+  @override
+  String get achvTwDealerStreak5Desc => '連莊 5 次或以上';
+
+  @override
+  String get achvTwKongWinTitle => '槓上開花';
+
+  @override
+  String get achvTwKongWinDesc => '槓上食胡';
+
+  @override
+  String get achvTwFlowerWinTitle => '花胡奇蹟';
+
+  @override
+  String get achvTwFlowerWinDesc => '以花胡（兩台花）胡牌';
+
+  @override
+  String get achvTwSevenRobOneTitle => '七搶一壯舉';
+
+  @override
+  String get achvTwSevenRobOneDesc => '七搶一';
+
+  @override
+  String get achvTwHeavenlyListenTitle => '天聽宣告';
+
+  @override
+  String get achvTwHeavenlyListenDesc => '達成天聽';
+
+  @override
+  String get achvTwChickenHand10Title => '雞胡之王';
+
+  @override
+  String get achvTwChickenHand10Desc => '累計雞胡 10 次';
+
+  @override
+  String get achvTwLikulikuTitle => '嚦咕嚦咕';
+
+  @override
+  String get achvTwLikulikuDesc => '胡出嚦咕嚦咕';
+
+  @override
+  String get achvMsWins100Title => '百勝達成';
+
+  @override
+  String get achvMsWins100Desc => '累計贏 100 局';
+
+  @override
+  String get achvMsWins500Title => '五百勝達成';
+
+  @override
+  String get achvMsWins500Desc => '累計贏 500 局';
+
+  @override
+  String get achvMsScore10000Title => '萬分大師';
+
+  @override
+  String get achvMsScore10000Desc => '累計總得分超過 10,000';
+
+  @override
+  String get achvMsScore100000Title => '十萬富翁';
+
+  @override
+  String get achvMsScore100000Desc => '累計總得分超過 100,000';
+
+  @override
+  String get achvMsDualModeTitle => '雙棲玩家';
+
+  @override
+  String get achvMsDualModeDesc => '在港式和台式各打過 10 局以上';
+
+  @override
+  String get continueLastGame => '繼續遊戲';
+
+  @override
+  String get greetingMorning => '早安！準備好打一局了嗎？';
+
+  @override
+  String get greetingAfternoon => '午安！來打麻將吧？';
+
+  @override
+  String get greetingEvening => '晚安！正是打麻將的好時候。';
+
+  @override
+  String get quickStart => '快速開局';
+
+  @override
+  String get hkQuickStart => '港式\n麻將';
+
+  @override
+  String get twQuickStart => '台式\n麻將';
+
+  @override
+  String get dailyTipLabel => '💡 每日小知識：';
+
+  @override
+  String get tipDayTitle1 => '雞糊';
+
+  @override
+  String get tipDayContent1 => '港式麻將中「雞糊」是指 0 番胡牠——在設有起糊番數的規則下通常不允許胡牠。';
+
+  @override
+  String get tipDayTitle2 => '花牌與季牌';
+
+  @override
+  String get tipDayContent2 => '台式麻將每人 16 張牌，花牌和季牌是額外的獎勵牌，摘到即自動加番。';
+
+  @override
+  String get tipDayTitle3 => '對對糊';
+
+  @override
+  String get tipDayContent3 => '全部由碰/槓組成（無吃）的牌型稱為對對糊，港式規則中值 3 番。';
+
+  @override
+  String get tipDayTitle4 => '門前清';
+
+  @override
+  String get tipDayContent4 => '沒有任何明牌即胡牠稱為門前清，港式值 1 番，台式更高。';
+
+  @override
+  String get tipDayTitle5 => '莊家優勢';
+
+  @override
+  String get tipDayContent5 => '莊家在許多規則中可以收付雙倍。莊家胡牠可以繼續連莊！';
+
+  @override
+  String get tipDayTitle6 => '混一色';
+
+  @override
+  String get tipDayContent6 => '混一色使用一種花色加字牌，是最常見的高分牌型之一，值 3 番。';
+
+  @override
+  String get tipDayTitle7 => '清一色';
+
+  @override
+  String get tipDayContent7 => '清一色只用一種花色且無字牌，港式值 7 番。難以隱藏！';
+
+  @override
+  String get tipDayTitle8 => '自摸加番';
+
+  @override
+  String get tipDayContent8 => '自摸胡牠在大多數規則中可額外加番，且其他三家都要付款。';
+
+  @override
+  String get tipDayTitle9 => '十三么';
+
+  @override
+  String get tipDayContent9 => '十三么需要每種幺九牌和字牌各一張加一張重複——是滿貫牌型！';
+
+  @override
+  String get tipDayTitle10 => '拉（La）規則';
+
+  @override
+  String get tipDayContent10 => '台式麻將中，拉規則會將前一局的欠款乘以 1.5 倍，當同一玩家連續胡牠時生效。';
 }

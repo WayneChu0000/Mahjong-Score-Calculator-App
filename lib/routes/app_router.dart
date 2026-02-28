@@ -13,6 +13,7 @@ import '../screens/rules_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/saved_groups_screen.dart';
 import '../screens/group_detail_screen.dart';
+import '../screens/achievement_screen.dart';
 
 /// Centralized route generator.
 ///
@@ -73,6 +74,16 @@ class AppRouter {
       case AppRoutes.groupDetail:
         final group = settings.arguments as GroupDetailArgs;
         return _build(GroupDetailScreen(group: group.group), settings);
+
+      case AppRoutes.achievements:
+        final args = settings.arguments as AchievementArgs;
+        return _build(
+          AchievementScreen(
+            groupName: args.groupName,
+            playerName: args.playerName,
+          ),
+          settings,
+        );
 
       case AppRoutes.scoreRecording:
         final args = settings.arguments as ScoreRecordingArgs;

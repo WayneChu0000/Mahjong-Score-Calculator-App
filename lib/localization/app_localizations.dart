@@ -236,6 +236,7 @@ class AppLocalizations {
   static String get backToGame => _l10n.backToGame;
   static String get playerStatsTitle => _l10n.playerStatsTitle;
   static String get recentGroups => _l10n.recentGroups;
+  static String get mostPlayedGroups => _l10n.mostPlayedGroups;
   static String get editPlayers => _l10n.editPlayers;
   static String get setupPlayers => _l10n.setupPlayers;
   static String get enterGroupNameHint => _l10n.enterGroupNameHint;
@@ -790,6 +791,236 @@ class AppLocalizations {
   static String get twStackRule5 => _l10n.twStackRule5;
   static String get twStackRule6 => _l10n.twStackRule6;
   static String get twStackRule7 => _l10n.twStackRule7;
+
+  // ── Achievement system ──
+  static String get achvTitle => _l10n.achvTitle;
+
+  /// Dynamic key lookup for achievement title/description keys.
+  /// Falls back to the key itself if not found.
+  static String getString(String key) => _achvKeyMap[key]?.call() ?? key;
+
+  static final Map<String, String Function()> _achvKeyMap = {
+    'achvGenFirstGameTitle': () => _l10n.achvGenFirstGameTitle,
+    'achvGenFirstGameDesc': () => _l10n.achvGenFirstGameDesc,
+    'achvGenTenGamesTitle': () => _l10n.achvGenTenGamesTitle,
+    'achvGenTenGamesDesc': () => _l10n.achvGenTenGamesDesc,
+    'achvGenHundredGamesTitle': () => _l10n.achvGenHundredGamesTitle,
+    'achvGenHundredGamesDesc': () => _l10n.achvGenHundredGamesDesc,
+    'achvGenFirstWinTitle': () => _l10n.achvGenFirstWinTitle,
+    'achvGenFirstWinDesc': () => _l10n.achvGenFirstWinDesc,
+    'achvGenWinStreak3Title': () => _l10n.achvGenWinStreak3Title,
+    'achvGenWinStreak3Desc': () => _l10n.achvGenWinStreak3Desc,
+    'achvGenWinStreak5Title': () => _l10n.achvGenWinStreak5Title,
+    'achvGenWinStreak5Desc': () => _l10n.achvGenWinStreak5Desc,
+    'achvGenSelfDraw10Title': () => _l10n.achvGenSelfDraw10Title,
+    'achvGenSelfDraw10Desc': () => _l10n.achvGenSelfDraw10Desc,
+    'achvGenSelfDraw50Title': () => _l10n.achvGenSelfDraw50Title,
+    'achvGenSelfDraw50Desc': () => _l10n.achvGenSelfDraw50Desc,
+    'achvGenDealerStreak3Title': () => _l10n.achvGenDealerStreak3Title,
+    'achvGenDealerStreak3Desc': () => _l10n.achvGenDealerStreak3Desc,
+    'achvGenNeverDealInTitle': () => _l10n.achvGenNeverDealInTitle,
+    'achvGenNeverDealInDesc': () => _l10n.achvGenNeverDealInDesc,
+    'achvGenComebackTitle': () => _l10n.achvGenComebackTitle,
+    'achvGenComebackDesc': () => _l10n.achvGenComebackDesc,
+    'achvHkFirstWinTitle': () => _l10n.achvHkFirstWinTitle,
+    'achvHkFirstWinDesc': () => _l10n.achvHkFirstWinDesc,
+    'achvHkFan3Title': () => _l10n.achvHkFan3Title,
+    'achvHkFan3Desc': () => _l10n.achvHkFan3Desc,
+    'achvHkFullFlushTitle': () => _l10n.achvHkFullFlushTitle,
+    'achvHkFullFlushDesc': () => _l10n.achvHkFullFlushDesc,
+    'achvHkAllPongs5Title': () => _l10n.achvHkAllPongs5Title,
+    'achvHkAllPongs5Desc': () => _l10n.achvHkAllPongs5Desc,
+    'achvHkBigThreeDragonsTitle': () => _l10n.achvHkBigThreeDragonsTitle,
+    'achvHkBigThreeDragonsDesc': () => _l10n.achvHkBigThreeDragonsDesc,
+    'achvHkBigFourWindsTitle': () => _l10n.achvHkBigFourWindsTitle,
+    'achvHkBigFourWindsDesc': () => _l10n.achvHkBigFourWindsDesc,
+    'achvHkThirteenOrphansTitle': () => _l10n.achvHkThirteenOrphansTitle,
+    'achvHkThirteenOrphansDesc': () => _l10n.achvHkThirteenOrphansDesc,
+    'achvHkNineGatesTitle': () => _l10n.achvHkNineGatesTitle,
+    'achvHkNineGatesDesc': () => _l10n.achvHkNineGatesDesc,
+    'achvHkConcealedHand10Title': () => _l10n.achvHkConcealedHand10Title,
+    'achvHkConcealedHand10Desc': () => _l10n.achvHkConcealedHand10Desc,
+    'achvHkLastTileWinTitle': () => _l10n.achvHkLastTileWinTitle,
+    'achvHkLastTileWinDesc': () => _l10n.achvHkLastTileWinDesc,
+    'achvHkRobbingKongTitle': () => _l10n.achvHkRobbingKongTitle,
+    'achvHkRobbingKongDesc': () => _l10n.achvHkRobbingKongDesc,
+    'achvHkMaxFanTitle': () => _l10n.achvHkMaxFanTitle,
+    'achvHkMaxFanDesc': () => _l10n.achvHkMaxFanDesc,
+    'achvTwFirstWinTitle': () => _l10n.achvTwFirstWinTitle,
+    'achvTwFirstWinDesc': () => _l10n.achvTwFirstWinDesc,
+    'achvTwTai10Title': () => _l10n.achvTwTai10Title,
+    'achvTwTai10Desc': () => _l10n.achvTwTai10Desc,
+    'achvTwTai30Title': () => _l10n.achvTwTai30Title,
+    'achvTwTai30Desc': () => _l10n.achvTwTai30Desc,
+    'achvTwTai80Title': () => _l10n.achvTwTai80Title,
+    'achvTwTai80Desc': () => _l10n.achvTwTai80Desc,
+    'achvTwCommonHand10Title': () => _l10n.achvTwCommonHand10Title,
+    'achvTwCommonHand10Desc': () => _l10n.achvTwCommonHand10Desc,
+    'achvTwConcealedSelfDrawn5Title': () => _l10n.achvTwConcealedSelfDrawn5Title,
+    'achvTwConcealedSelfDrawn5Desc': () => _l10n.achvTwConcealedSelfDrawn5Desc,
+    'achvTwDealerStreak5Title': () => _l10n.achvTwDealerStreak5Title,
+    'achvTwDealerStreak5Desc': () => _l10n.achvTwDealerStreak5Desc,
+    'achvTwKongWinTitle': () => _l10n.achvTwKongWinTitle,
+    'achvTwKongWinDesc': () => _l10n.achvTwKongWinDesc,
+    'achvTwFlowerWinTitle': () => _l10n.achvTwFlowerWinTitle,
+    'achvTwFlowerWinDesc': () => _l10n.achvTwFlowerWinDesc,
+    'achvTwSevenRobOneTitle': () => _l10n.achvTwSevenRobOneTitle,
+    'achvTwSevenRobOneDesc': () => _l10n.achvTwSevenRobOneDesc,
+    'achvTwHeavenlyListenTitle': () => _l10n.achvTwHeavenlyListenTitle,
+    'achvTwHeavenlyListenDesc': () => _l10n.achvTwHeavenlyListenDesc,
+    'achvTwChickenHand10Title': () => _l10n.achvTwChickenHand10Title,
+    'achvTwChickenHand10Desc': () => _l10n.achvTwChickenHand10Desc,
+    'achvTwLikulikuTitle': () => _l10n.achvTwLikulikuTitle,
+    'achvTwLikulikuDesc': () => _l10n.achvTwLikulikuDesc,
+    'achvMsWins100Title': () => _l10n.achvMsWins100Title,
+    'achvMsWins100Desc': () => _l10n.achvMsWins100Desc,
+    'achvMsWins500Title': () => _l10n.achvMsWins500Title,
+    'achvMsWins500Desc': () => _l10n.achvMsWins500Desc,
+    'achvMsScore10000Title': () => _l10n.achvMsScore10000Title,
+    'achvMsScore10000Desc': () => _l10n.achvMsScore10000Desc,
+    'achvMsScore100000Title': () => _l10n.achvMsScore100000Title,
+    'achvMsScore100000Desc': () => _l10n.achvMsScore100000Desc,
+    'achvMsDualModeTitle': () => _l10n.achvMsDualModeTitle,
+    'achvMsDualModeDesc': () => _l10n.achvMsDualModeDesc,
+  };
+  static String get achvUnlocked => _l10n.achvUnlocked;
+  static String get achvLocked => _l10n.achvLocked;
+  static String achvProgress(String current, String target) =>
+      _l10n.achvProgress(current, target);
+  static String achvUnlockedAt(String date) => _l10n.achvUnlockedAt(date);
+  static String get achvNewUnlock => _l10n.achvNewUnlock;
+  static String get achvViewAll => _l10n.achvViewAll;
+  static String get achvTabAll => _l10n.achvTabAll;
+  static String get achvTabGeneral => _l10n.achvTabGeneral;
+  static String get achvTabHk => _l10n.achvTabHk;
+  static String get achvTabTw => _l10n.achvTabTw;
+  static String get achvTabMilestone => _l10n.achvTabMilestone;
+  static String get achvTierBronze => _l10n.achvTierBronze;
+  static String get achvTierSilver => _l10n.achvTierSilver;
+  static String get achvTierGold => _l10n.achvTierGold;
+  static String get achvTierDiamond => _l10n.achvTierDiamond;
+  static String achvSummary(String unlocked, String total) =>
+      _l10n.achvSummary(unlocked, total);
+
+  // ── General achievements ──
+  static String get achvGenFirstGameTitle => _l10n.achvGenFirstGameTitle;
+  static String get achvGenFirstGameDesc => _l10n.achvGenFirstGameDesc;
+  static String get achvGenTenGamesTitle => _l10n.achvGenTenGamesTitle;
+  static String get achvGenTenGamesDesc => _l10n.achvGenTenGamesDesc;
+  static String get achvGenHundredGamesTitle => _l10n.achvGenHundredGamesTitle;
+  static String get achvGenHundredGamesDesc => _l10n.achvGenHundredGamesDesc;
+  static String get achvGenFirstWinTitle => _l10n.achvGenFirstWinTitle;
+  static String get achvGenFirstWinDesc => _l10n.achvGenFirstWinDesc;
+  static String get achvGenWinStreak3Title => _l10n.achvGenWinStreak3Title;
+  static String get achvGenWinStreak3Desc => _l10n.achvGenWinStreak3Desc;
+  static String get achvGenWinStreak5Title => _l10n.achvGenWinStreak5Title;
+  static String get achvGenWinStreak5Desc => _l10n.achvGenWinStreak5Desc;
+  static String get achvGenSelfDraw10Title => _l10n.achvGenSelfDraw10Title;
+  static String get achvGenSelfDraw10Desc => _l10n.achvGenSelfDraw10Desc;
+  static String get achvGenSelfDraw50Title => _l10n.achvGenSelfDraw50Title;
+  static String get achvGenSelfDraw50Desc => _l10n.achvGenSelfDraw50Desc;
+  static String get achvGenDealerStreak3Title => _l10n.achvGenDealerStreak3Title;
+  static String get achvGenDealerStreak3Desc => _l10n.achvGenDealerStreak3Desc;
+  static String get achvGenNeverDealInTitle => _l10n.achvGenNeverDealInTitle;
+  static String get achvGenNeverDealInDesc => _l10n.achvGenNeverDealInDesc;
+  static String get achvGenComebackTitle => _l10n.achvGenComebackTitle;
+  static String get achvGenComebackDesc => _l10n.achvGenComebackDesc;
+
+  // ── HK achievements ──
+  static String get achvHkFirstWinTitle => _l10n.achvHkFirstWinTitle;
+  static String get achvHkFirstWinDesc => _l10n.achvHkFirstWinDesc;
+  static String get achvHkFan3Title => _l10n.achvHkFan3Title;
+  static String get achvHkFan3Desc => _l10n.achvHkFan3Desc;
+  static String get achvHkFullFlushTitle => _l10n.achvHkFullFlushTitle;
+  static String get achvHkFullFlushDesc => _l10n.achvHkFullFlushDesc;
+  static String get achvHkAllPongs5Title => _l10n.achvHkAllPongs5Title;
+  static String get achvHkAllPongs5Desc => _l10n.achvHkAllPongs5Desc;
+  static String get achvHkBigThreeDragonsTitle => _l10n.achvHkBigThreeDragonsTitle;
+  static String get achvHkBigThreeDragonsDesc => _l10n.achvHkBigThreeDragonsDesc;
+  static String get achvHkBigFourWindsTitle => _l10n.achvHkBigFourWindsTitle;
+  static String get achvHkBigFourWindsDesc => _l10n.achvHkBigFourWindsDesc;
+  static String get achvHkThirteenOrphansTitle => _l10n.achvHkThirteenOrphansTitle;
+  static String get achvHkThirteenOrphansDesc => _l10n.achvHkThirteenOrphansDesc;
+  static String get achvHkNineGatesTitle => _l10n.achvHkNineGatesTitle;
+  static String get achvHkNineGatesDesc => _l10n.achvHkNineGatesDesc;
+  static String get achvHkConcealedHand10Title => _l10n.achvHkConcealedHand10Title;
+  static String get achvHkConcealedHand10Desc => _l10n.achvHkConcealedHand10Desc;
+  static String get achvHkLastTileWinTitle => _l10n.achvHkLastTileWinTitle;
+  static String get achvHkLastTileWinDesc => _l10n.achvHkLastTileWinDesc;
+  static String get achvHkRobbingKongTitle => _l10n.achvHkRobbingKongTitle;
+  static String get achvHkRobbingKongDesc => _l10n.achvHkRobbingKongDesc;
+  static String get achvHkMaxFanTitle => _l10n.achvHkMaxFanTitle;
+  static String get achvHkMaxFanDesc => _l10n.achvHkMaxFanDesc;
+
+  // ── TW achievements ──
+  static String get achvTwFirstWinTitle => _l10n.achvTwFirstWinTitle;
+  static String get achvTwFirstWinDesc => _l10n.achvTwFirstWinDesc;
+  static String get achvTwTai10Title => _l10n.achvTwTai10Title;
+  static String get achvTwTai10Desc => _l10n.achvTwTai10Desc;
+  static String get achvTwTai30Title => _l10n.achvTwTai30Title;
+  static String get achvTwTai30Desc => _l10n.achvTwTai30Desc;
+  static String get achvTwTai80Title => _l10n.achvTwTai80Title;
+  static String get achvTwTai80Desc => _l10n.achvTwTai80Desc;
+  static String get achvTwCommonHand10Title => _l10n.achvTwCommonHand10Title;
+  static String get achvTwCommonHand10Desc => _l10n.achvTwCommonHand10Desc;
+  static String get achvTwConcealedSelfDrawn5Title => _l10n.achvTwConcealedSelfDrawn5Title;
+  static String get achvTwConcealedSelfDrawn5Desc => _l10n.achvTwConcealedSelfDrawn5Desc;
+  static String get achvTwDealerStreak5Title => _l10n.achvTwDealerStreak5Title;
+  static String get achvTwDealerStreak5Desc => _l10n.achvTwDealerStreak5Desc;
+  static String get achvTwKongWinTitle => _l10n.achvTwKongWinTitle;
+  static String get achvTwKongWinDesc => _l10n.achvTwKongWinDesc;
+  static String get achvTwFlowerWinTitle => _l10n.achvTwFlowerWinTitle;
+  static String get achvTwFlowerWinDesc => _l10n.achvTwFlowerWinDesc;
+  static String get achvTwSevenRobOneTitle => _l10n.achvTwSevenRobOneTitle;
+  static String get achvTwSevenRobOneDesc => _l10n.achvTwSevenRobOneDesc;
+  static String get achvTwHeavenlyListenTitle => _l10n.achvTwHeavenlyListenTitle;
+  static String get achvTwHeavenlyListenDesc => _l10n.achvTwHeavenlyListenDesc;
+  static String get achvTwChickenHand10Title => _l10n.achvTwChickenHand10Title;
+  static String get achvTwChickenHand10Desc => _l10n.achvTwChickenHand10Desc;
+  static String get achvTwLikulikuTitle => _l10n.achvTwLikulikuTitle;
+  static String get achvTwLikulikuDesc => _l10n.achvTwLikulikuDesc;
+
+  // ── Milestone achievements ──
+  static String get achvMsWins100Title => _l10n.achvMsWins100Title;
+  static String get achvMsWins100Desc => _l10n.achvMsWins100Desc;
+  static String get achvMsWins500Title => _l10n.achvMsWins500Title;
+  static String get achvMsWins500Desc => _l10n.achvMsWins500Desc;
+  static String get achvMsScore10000Title => _l10n.achvMsScore10000Title;
+  static String get achvMsScore10000Desc => _l10n.achvMsScore10000Desc;
+  static String get achvMsScore100000Title => _l10n.achvMsScore100000Title;
+  static String get achvMsScore100000Desc => _l10n.achvMsScore100000Desc;
+  static String get achvMsDualModeTitle => _l10n.achvMsDualModeTitle;
+  static String get achvMsDualModeDesc => _l10n.achvMsDualModeDesc;
+
+  // ── Home screen: hero banner / quick start / daily tips ──
+  static String get continueLastGame => _l10n.continueLastGame;
+  static String get greetingMorning => _l10n.greetingMorning;
+  static String get greetingAfternoon => _l10n.greetingAfternoon;
+  static String get greetingEvening => _l10n.greetingEvening;
+  static String get quickStart => _l10n.quickStart;
+  static String get hkQuickStart => _l10n.hkQuickStart;
+  static String get twQuickStart => _l10n.twQuickStart;
+  static String get dailyTipLabel => _l10n.dailyTipLabel;
+  static String get tipDayTitle1 => _l10n.tipDayTitle1;
+  static String get tipDayContent1 => _l10n.tipDayContent1;
+  static String get tipDayTitle2 => _l10n.tipDayTitle2;
+  static String get tipDayContent2 => _l10n.tipDayContent2;
+  static String get tipDayTitle3 => _l10n.tipDayTitle3;
+  static String get tipDayContent3 => _l10n.tipDayContent3;
+  static String get tipDayTitle4 => _l10n.tipDayTitle4;
+  static String get tipDayContent4 => _l10n.tipDayContent4;
+  static String get tipDayTitle5 => _l10n.tipDayTitle5;
+  static String get tipDayContent5 => _l10n.tipDayContent5;
+  static String get tipDayTitle6 => _l10n.tipDayTitle6;
+  static String get tipDayContent6 => _l10n.tipDayContent6;
+  static String get tipDayTitle7 => _l10n.tipDayTitle7;
+  static String get tipDayContent7 => _l10n.tipDayContent7;
+  static String get tipDayTitle8 => _l10n.tipDayTitle8;
+  static String get tipDayContent8 => _l10n.tipDayContent8;
+  static String get tipDayTitle9 => _l10n.tipDayTitle9;
+  static String get tipDayContent9 => _l10n.tipDayContent9;
+  static String get tipDayTitle10 => _l10n.tipDayTitle10;
+  static String get tipDayContent10 => _l10n.tipDayContent10;
 
   // ── manual: fanCount uses string replacement (not ARB-compatible) ──
   static String fanCount(String count) {

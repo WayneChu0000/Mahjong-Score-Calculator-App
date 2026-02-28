@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import '../widgets/score_display.dart';
 import '../widgets/base_screen.dart';
 import '../models/player.dart';
 import '../models/player_group.dart';
+import '../models/game_mode.dart';
 import '../services/player_group_service.dart';
 import '../routes/app_routes.dart';
 import '../localization/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_dimens.dart';
+import '../utils/daily_tips.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -50,8 +51,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> _loadPlayerGroups() async {
     try {
       final groups = await PlayerGroupService.getSavedGroups();
-      // Sort by last played time (descending)
+      // Sort by most played (totalGamesPlayedInGroup descending),
+      // then by last played time as tiebreaker.
       groups.sort((a, b) {
+        final cmp = b.totalGamesPlayedInGroup.compareTo(a.totalGamesPlayedInGroup);
+        if (cmp != 0) return cmp;
         final aTime = a.lastPlayedAt ?? a.createdAt;
         final bTime = b.lastPlayedAt ?? b.createdAt;
         return bTime.compareTo(aTime);
@@ -82,134 +86,73 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final lastGroup = _findLastPlayedGroup();
+
     return BaseScreen(
       title: AppLocalizations.homeTitle,
       currentIndex: 0,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                // Fixed header content
-                Container(
-                  padding: AppDimens.paddingAllLg,
-                  child: Column(
-                    children: [
-                      // Welcome card
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: SlideTransition(
-                          position: _slideAnimation,
-                          child: Card(
-                            elevation: 4,
-                            child: Padding(
-                              padding: AppDimens.paddingAllLg,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    AppLocalizations.welcomeBack,
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  ScoreDisplay(
-                                    gamesPlayed: _playerGroups.fold(0, (sum, group) => sum + ((group.currentRound ?? 1) - 1))
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 24),
-                      
-                      // Main action buttons
-                      Row(
+          : RefreshIndicator(
+              onRefresh: _loadPlayerGroups,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  // ── Hero Banner ──────────────────────────────────
+                  _buildHeroBanner(isDark, lastGroup),
+
+                  const SizedBox(height: 16),
+
+                  // ── Quick Start Shortcuts ────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildQuickStartRow(),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // ── Daily Tip ────────────────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildDailyTipCard(isDark),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // ── Most Played Groups header ────────────────────
+                  if (_playerGroups.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
                         children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.add, size: 20),
-                              label: Text(AppLocalizations.newGroup),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                foregroundColor: AppColors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 14),
-                              ),
-                              onPressed: () async {
-                                final result = await Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.playerSetup,
-                                );
-                                
-                                // Reload list if new group was created
-                                if (result == true) {
-                                  _loadPlayerGroups();
-                                }
-                              },
-                            ),
+                          Text(
+                            AppLocalizations.mostPlayedGroups,
+                            style: AppTextStyles.heading3,
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.history, size: 20),
-                              label: Text(AppLocalizations.history),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                foregroundColor: AppColors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 14),
-                              ),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.savedGroups,
-                                ).then((_) => _loadPlayerGroups());
-                              },
-                            ),
+                          const Spacer(),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.savedGroups,
+                              ).then((_) => _loadPlayerGroups());
+                            },
+                            child: Text(AppLocalizations.viewAll),
                           ),
                         ],
                       ),
-                      
-                      const SizedBox(height: 20),
-                      
-                      // Saved groups header
-                      if (_playerGroups.isNotEmpty) ...[
-                        Row(
-                          children: [
-                            Text(
-                              AppLocalizations.recentGroups,
-                              style: AppTextStyles.heading3,
-                            ),
-                            const Spacer(),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.savedGroups,
-                                ).then((_) => _loadPlayerGroups());
-                              },
-                              child: Text(AppLocalizations.viewAll),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                    ],
-                  ),
-                ),
-              
-                // Scrollable player groups list
-                Expanded(
-                  child: _playerGroups.isNotEmpty
-                      ? RefreshIndicator(
-                          onRefresh: _loadPlayerGroups,
-                          child: ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: _playerGroups.length,
-                            itemBuilder: (context, index) {
-                              final group = _playerGroups[index];
-                              return Card(
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+
+                  // ── Group list (or empty state) ──────────────────
+                  if (_playerGroups.isNotEmpty)
+                    ...List.generate(_playerGroups.length, (index) {
+                      final group = _playerGroups[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Card(
                                 margin: const EdgeInsets.only(bottom: 12),
                                 child: InkWell(
                                   onTap: () => _startGameWithGroup(group),
@@ -286,69 +229,286 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-                              );
-                            },
+                              ),
+                        );
+                      })
+                  else
+                    Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.group_add,
+                            size: 64,
+                            color: AppColors.grey400,
                           ),
-                        )
-                      : Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.group_add,
-                                  size: 64,
-                                  color: AppColors.grey400,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  AppLocalizations.noSavedGroups,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  AppLocalizations.createFirstGroupHint,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 24),
-                                ElevatedButton.icon(
-                                  icon: const Icon(Icons.add),
-                                  label: Text(AppLocalizations.createGroup),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: AppColors.white,
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  ),
-                                  onPressed: () async {
-                                    final result = await Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.playerSetup,
-                                    );
-                                    
-                                    if (result == true) {
-                                      _loadPlayerGroups();
-                                    }
-                                  },
-                                ),
-                              ],
+                          const SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.noSavedGroups,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ),
-                ),
-              ],
+                          const SizedBox(height: 8),
+                          Text(
+                            AppLocalizations.createFirstGroupHint,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 24),
+                          ElevatedButton.icon(
+                            icon: const Icon(Icons.add),
+                            label: Text(AppLocalizations.createGroup),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            ),
+                            onPressed: () async {
+                              final result = await Navigator.pushNamed(
+                                context,
+                                AppRoutes.playerSetup,
+                              );
+                              if (result == true) {
+                                _loadPlayerGroups();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
     );
   }
-  
+
+  // ── Helper: find the most recently played group ────────────────────
+  PlayerGroup? _findLastPlayedGroup() {
+    if (_playerGroups.isEmpty) return null;
+    PlayerGroup? best;
+    for (final g in _playerGroups) {
+      final t = g.lastPlayedAt ?? g.createdAt;
+      if (best == null || t.isAfter(best.lastPlayedAt ?? best.createdAt)) {
+        best = g;
+      }
+    }
+    return best;
+  }
+
+  // ── Hero Banner ────────────────────────────────────────────────────
+  Widget _buildHeroBanner(bool isDark, PlayerGroup? lastGroup) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark
+                  ? [const Color(0xFF1B5E20), const Color(0xFF004D40)]
+                  : [Colors.green.shade700, Colors.teal.shade600],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Greeting
+                Text(
+                  AppLocalizations.welcomeBack,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _buildGreetingSubtitle(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white.withValues(alpha: 0.85),
+                  ),
+                ),
+
+                // Continue previous game button
+                if (lastGroup != null) ...[
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.play_arrow_rounded, size: 22),
+                      label: Text(
+                        '${AppLocalizations.continueLastGame}  —  ${lastGroup.name}',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.green.shade800,
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      onPressed: () => _startGameWithGroup(lastGroup),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _buildGreetingSubtitle() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return AppLocalizations.greetingMorning;
+    if (hour < 18) return AppLocalizations.greetingAfternoon;
+    return AppLocalizations.greetingEvening;
+  }
+
+  // ── Quick Start Shortcuts ──────────────────────────────────────────
+  Widget _buildQuickStartRow() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(AppLocalizations.quickStart, style: AppTextStyles.heading4),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _quickStartButton(
+                icon: Icons.grid_view_rounded,
+                label: AppLocalizations.hkQuickStart,
+                color: Colors.green,
+                onTap: () => _startQuickGame(GameMode.hongKong),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _quickStartButton(
+                icon: Icons.grid_view_rounded,
+                label: AppLocalizations.twQuickStart,
+                color: Colors.orange,
+                onTap: () => _startQuickGame(GameMode.taiwan),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _quickStartButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            children: [
+              Icon(icon, size: 32, color: color),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _startQuickGame(GameMode mode) async {
+    final result = await Navigator.pushNamed(
+      context,
+      AppRoutes.playerSetup,
+      arguments: PlayerSetupArgs(initialGameMode: mode),
+    );
+    if (result == true) {
+      _loadPlayerGroups();
+    }
+  }
+
+  // ── Daily Tip Card ─────────────────────────────────────────────────
+  Widget _buildDailyTipCard(bool isDark) {
+    final tip = getTodayTip();
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark
+            ? Colors.amber.withValues(alpha: 0.12)
+            : Colors.amber.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark
+              ? Colors.amber.withValues(alpha: 0.3)
+              : Colors.amber.shade200,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.lightbulb_outline, color: Colors.amber.shade700, size: 22),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${AppLocalizations.dailyTipLabel}  ${tip.title()}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.amber.shade800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  tip.content(),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? Colors.white70 : Colors.grey.shade700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Format date and time
   String _formatDateTime(DateTime dateTime) {
     final localTime = dateTime.toLocal();
@@ -459,6 +619,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         prevalentWindIndex: group.prevalentWindIndex,
         currentDealerGameCount: group.currentDealerGameCount,
         totalWindRounds: group.totalWindRounds,
+        initialGameMode: group.gameMode,
       ),
     ).then((hasSaved) {
       if (hasSaved == true) {

@@ -435,7 +435,27 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.emoji_events, color: Colors.amber),
+                      tooltip: AppLocalizations.achvTitle,
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.achievements,
+                          arguments: AchievementArgs(
+                            groupName: _group.name,
+                            playerName: name,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
                 const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

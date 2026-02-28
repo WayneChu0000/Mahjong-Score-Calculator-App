@@ -7,6 +7,10 @@ import '../../models/game_mode.dart';
 import '../../localization/app_localizations.dart';
 import '../../routes/app_routes.dart';
 import '../../utils/la_settlement.dart';
+import '../../utils/achievement_checker.dart';
+import '../../services/achievement_service.dart';
+import '../../models/achievement.dart';
+import '../../utils/achievement_registry.dart';
 import 'widgets/stats_dialog.dart';
 import 'widgets/game_table_layout.dart';
 import 'dart:async';
@@ -72,6 +76,12 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
   // Flag to check if round history is loaded
   // ignore: unused_field
   bool _isRoundHistoryLoaded = false;
+
+  // ── Achievement tracking ──────────────────────────────────────
+  /// Per-player counters keyed by player name.
+  final Map<String, AchievementCounters> _achvCounters = {};
+  /// Per-player progress keyed by player name → achievementId → progress.
+  final Map<String, Map<String, AchievementProgress>> _achvProgress = {};
   
   @override
   void initState() {
@@ -80,7 +90,8 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     // Load round history if group exists
     _loadRoundHistory();
 
-    
+    // Load achievement data for all players
+    _loadAchievements();
     // Initialize player list
     _updatedPlayers = List.from(widget.players);
     
@@ -146,6 +157,200 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       setState(() {
           _isRoundHistoryLoaded = true;
       });
+  }
+
+  // ── Achievement helpers ──────────────────────────────────────────
+
+  /// Load counters & progress for every player from Firebase.
+  Future<void> _loadAchievements() async {
+    if (widget.groupName == null) return;
+    for (final player in widget.players) {
+      try {
+        final data = await AchievementService.loadAll(
+          widget.groupName!,
+          player.name,
+        );
+        _achvCounters[player.name] = data.counters;
+        _achvProgress[player.name] = data.progress;
+      } catch (e) {
+        debugPrint('Error loading achievements for ${player.name}: $e');
+        _achvCounters[player.name] = const AchievementCounters();
+        _achvProgress[player.name] = {};
+      }
+    }
+  }
+
+  /// Run achievement checker for every player after a scored round,
+  /// persist updated data, and show unlock popups.
+  Future<void> _checkAchievements({
+    required Map<String, int> scoreChanges,
+    String? winnerId,
+    bool isSelfDraw = false,
+    String? discarderId,
+    int? fanCount,
+    int? taiCount,
+    List<String> patterns = const [],
+  }) async {
+    if (widget.groupName == null) return;
+
+    final dealerId = widget.players[_dealerIndex].id.toString();
+    final dealerWon = winnerId != null && winnerId == dealerId;
+    final currentRound = _scoreService.getCurrentRound();
+    final totalRounds = _scoreService.getTotalRounds();
+    final isLastRound = totalRounds > 0 && currentRound >= totalRounds;
+    final patternSet = patterns.toSet();
+
+    // Pre-compute rankings for comeback detection
+    final sortedByScore = List<Player>.from(_updatedPlayers)
+      ..sort((a, b) {
+        final sa = _scoreService.getPlayerScore(a.id.toString());
+        final sb = _scoreService.getPlayerScore(b.id.toString());
+        return sa.compareTo(sb);
+      });
+    final firstPlaceName = sortedByScore.last.name;
+    final lastPlaceName = sortedByScore.first.name;
+
+    final allNewlyUnlocked = <String, List<String>>{};
+
+    for (final player in widget.players) {
+      final pid = player.id.toString();
+      final pName = player.name;
+      final oldCounters =
+          _achvCounters[pName] ?? const AchievementCounters();
+      final oldProgress =
+          _achvProgress[pName] ?? <String, AchievementProgress>{};
+
+      // Determine per-player facts
+      final isWinner = winnerId != null && winnerId == pName;
+      final dealtIn = discarderId != null && discarderId == pName;
+      final isDealer = pid == dealerId;
+      final change = scoreChanges[pid] ?? 0;
+
+      // Check whether player was last place BEFORE this round's scores
+      // We already applied scores before calling this, so subtract back.
+      final prevScore =
+          _scoreService.getPlayerScore(pid) - change;
+      final wasLast = widget.players.every((other) {
+        if (other.id == player.id) return true;
+        final os = _scoreService.getPlayerScore(other.id.toString()) -
+            (scoreChanges[other.id.toString()] ?? 0);
+        return prevScore <= os;
+      });
+
+      final ctx = RoundContext(
+        gameMode: widget.gameMode,
+        playerId: pName,
+        isWinner: isWinner,
+        isSelfDraw: isWinner && isSelfDraw,
+        dealtIn: dealtIn,
+        isDealer: isDealer,
+        dealerWon: dealerWon,
+        fanCount: isWinner ? fanCount : null,
+        taiCount: isWinner ? taiCount : null,
+        maxFan: widget.maxFan,
+        patterns: isWinner ? patternSet : const {},
+        scoreChange: change,
+        consecutiveDealerCount: _currentDealerGameCount,
+        roundNumber: currentRound,
+        totalRounds: totalRounds,
+        isLastRound: isLastRound,
+        wasLastPlace: wasLast,
+        isNowFirstPlace: pName == firstPlaceName,
+      );
+
+      final result = AchievementChecker.check(
+        oldCounters: oldCounters,
+        oldProgress: oldProgress,
+        ctx: ctx,
+      );
+
+      _achvCounters[pName] = result.counters;
+      _achvProgress[pName] = result.progress;
+
+      if (result.newlyUnlocked.isNotEmpty) {
+        allNewlyUnlocked[pName] = result.newlyUnlocked;
+      }
+
+      // Persist asynchronously
+      AchievementService.saveAll(
+        widget.groupName!,
+        pName,
+        counters: result.counters,
+        progress: result.progress,
+      );
+    }
+
+    // Show unlock popup for any newly unlocked achievements
+    if (allNewlyUnlocked.isNotEmpty && mounted) {
+      _showAchievementUnlockPopup(allNewlyUnlocked);
+    }
+  }
+
+  /// Display a dialog listing newly unlocked achievements.
+  void _showAchievementUnlockPopup(Map<String, List<String>> unlocked) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final entries = unlocked.entries.toList();
+        return AlertDialog(
+          title: Row(
+            children: [
+              const Icon(Icons.emoji_events, color: Colors.amber),
+              const SizedBox(width: 8),
+              Text(AppLocalizations.achvNewUnlock),
+            ],
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: entries.length,
+              itemBuilder: (_, i) {
+                final playerName = entries[i].key;
+                final achvIds = entries[i].value;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (entries.length > 1)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 4),
+                        child: Text(
+                          playerName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ...achvIds.map((id) {
+                      final def = AchievementRegistry.getById(id);
+                      if (def == null) return const SizedBox.shrink();
+                      return ListTile(
+                        leading: Icon(
+                          IconData(def.iconCodePoint,
+                              fontFamily: 'MaterialIcons'),
+                          color: AchievementRegistry.tierColor(def.tier),
+                        ),
+                        title: Text(
+                          AppLocalizations.getString(def.titleKey),
+                        ),
+                        subtitle: Text(
+                          AppLocalizations.getString(def.descriptionKey),
+                        ),
+                        dense: true,
+                      );
+                    }),
+                  ],
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(AppLocalizations.ok),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -307,6 +512,10 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         bool isSelfDraw = false;
         String? discarderId;
         
+        int? fanCount;
+        int? taiCount;
+        List<String> patterns = [];
+
         if (result is Map<String, int>) {
            scoreChanges = result;
         } else if (result is Map<String, dynamic> && result.containsKey('scores')) {
@@ -314,6 +523,9 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
            winnerId = result['winningPlayer']?.toString();
            isSelfDraw = result['isSelfDraw'] == true;
            discarderId = result['discardPlayer']?.toString();
+           fanCount = result['fanCount'] as int?;
+           taiCount = result['effectiveFan'] as int?; // effectiveFan = tai for TW
+           patterns = (result['patterns'] as List<dynamic>?)?.cast<String>() ?? [];
            _roundHistory.add(result);
         } else {
            return;
@@ -332,6 +544,17 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
 
         widget.onScoreSubmitted(scoreChanges);
         _scoreService.updateScores(scoreChanges);
+
+        // Check achievements after scores are applied
+        _checkAchievements(
+          scoreChanges: scoreChanges,
+          winnerId: winnerId,
+          isSelfDraw: isSelfDraw,
+          discarderId: discarderId,
+          fanCount: widget.gameMode == GameMode.hongKong ? fanCount : null,
+          taiCount: widget.gameMode == GameMode.taiwan ? taiCount : null,
+          patterns: patterns,
+        );
         
         final dealerId = widget.players[_dealerIndex].id.toString();
         bool dealerWon = false;
@@ -393,6 +616,10 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     });
 
     _scoreService.updateScores(noChangeScores);
+
+    // Check achievements for draw round (increment game counts, etc.)
+    _checkAchievements(scoreChanges: noChangeScores);
+
     _scoreService.incrementRound();
     
     if (_scoreService.isGameEnd()) {

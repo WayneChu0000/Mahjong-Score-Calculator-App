@@ -285,9 +285,8 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             const SizedBox(height: 20),
 
             // Game Mode Selector
-            if (_isNewGroup) ...[
                 DropdownButtonFormField<GameMode>(
-                  initialValue: _selectedGameMode,
+                  value: _selectedGameMode,
                   decoration: InputDecoration(
                     labelText: AppLocalizations.gameMode,
                     border: const OutlineInputBorder(),
@@ -315,7 +314,6 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                   },
                 ),
                 const SizedBox(height: 20),
-            ],
             
             // Player list
             Expanded(
