@@ -4,8 +4,12 @@ import 'tile_utils.dart';
 class HandCore {
   /// Check if remaining tiles (as frequency map) can form valid sets of melds.
   /// [kongsNeeded] tracks how many kongs must be formed.
-  static bool checkSets(Map<String, int> counts, int kongsNeeded,
-      {bool allowChow = true, bool allowPong = true}) {
+  static bool checkSets(
+    Map<String, int> counts,
+    int kongsNeeded, {
+    bool allowChow = true,
+    bool allowPong = true,
+  }) {
     // If no tiles left, we are done
     if (counts.isEmpty) return kongsNeeded == 0;
 
@@ -23,8 +27,12 @@ class HandCore {
       nextCounts[firstTile] = nextCounts[firstTile]! - 4;
       if (nextCounts[firstTile] == 0) nextCounts.remove(firstTile);
 
-      if (checkSets(nextCounts, kongsNeeded - 1,
-          allowChow: allowChow, allowPong: allowPong)) {
+      if (checkSets(
+        nextCounts,
+        kongsNeeded - 1,
+        allowChow: allowChow,
+        allowPong: allowPong,
+      )) {
         return true;
       }
     }
@@ -35,8 +43,12 @@ class HandCore {
       nextCounts[firstTile] = nextCounts[firstTile]! - 3;
       if (nextCounts[firstTile] == 0) nextCounts.remove(firstTile);
 
-      if (checkSets(nextCounts, kongsNeeded,
-          allowChow: allowChow, allowPong: allowPong)) {
+      if (checkSets(
+        nextCounts,
+        kongsNeeded,
+        allowChow: allowChow,
+        allowPong: allowPong,
+      )) {
         return true;
       }
     }
@@ -53,8 +65,12 @@ class HandCore {
         TileUtils.removeTile(nextCounts, secondTile);
         TileUtils.removeTile(nextCounts, thirdTile);
 
-        if (checkSets(nextCounts, kongsNeeded,
-            allowChow: allowChow, allowPong: allowPong)) {
+        if (checkSets(
+          nextCounts,
+          kongsNeeded,
+          allowChow: allowChow,
+          allowPong: allowPong,
+        )) {
           return true;
         }
       }
@@ -64,8 +80,11 @@ class HandCore {
   }
 
   /// Check if tiles form a valid hand with specific constraints on allowed set types.
-  static bool checkSpecificHand(List<String> tiles,
-      {required bool allowChow, required bool allowPong}) {
+  static bool checkSpecificHand(
+    List<String> tiles, {
+    required bool allowChow,
+    required bool allowPong,
+  }) {
     int count = tiles.length;
 
     // Check Base 14 (HK standard)
@@ -89,7 +108,11 @@ class HandCore {
 
   /// Validate that tiles can form a valid pair + melds structure.
   static bool validateStructure(
-      List<String> tiles, int kongsNeeded, bool allowChow, bool allowPong) {
+    List<String> tiles,
+    int kongsNeeded,
+    bool allowChow,
+    bool allowPong,
+  ) {
     Map<String, int> tileCounts = TileUtils.buildTileCounts(tiles);
 
     // Try every possible pair as eyes
@@ -99,8 +122,12 @@ class HandCore {
         currentCounts[tile] = currentCounts[tile]! - 2;
         if (currentCounts[tile] == 0) currentCounts.remove(tile);
 
-        if (checkSets(currentCounts, kongsNeeded,
-            allowChow: allowChow, allowPong: allowPong)) {
+        if (checkSets(
+          currentCounts,
+          kongsNeeded,
+          allowChow: allowChow,
+          allowPong: allowPong,
+        )) {
           return true;
         }
       }

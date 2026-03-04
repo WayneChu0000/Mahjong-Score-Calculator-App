@@ -40,8 +40,25 @@ void main() {
         validator: (tiles) => tiles.length == 14,
       );
       expect(r.validator, isNotNull);
-      expect(r.validator!(['1m', '2m', '3m', '4m', '5m', '6m', '7m',
-                            '8m', '9m', '1p', '1p', '1p', '5z', '5z']), isTrue);
+      expect(
+        r.validator!([
+          '1m',
+          '2m',
+          '3m',
+          '4m',
+          '5m',
+          '6m',
+          '7m',
+          '8m',
+          '9m',
+          '1p',
+          '1p',
+          '1p',
+          '5z',
+          '5z',
+        ]),
+        isTrue,
+      );
       expect(r.validator!(['1m']), isFalse);
     });
   });
@@ -74,24 +91,37 @@ void main() {
     test('all HK rules have non-negative fanValue', () {
       final hkRulesList = getRules(GameMode.hongKong);
       for (final r in hkRulesList) {
-        expect(r.fanValue, greaterThanOrEqualTo(0),
-            reason: '${r.name} has negative fanValue');
+        expect(
+          r.fanValue,
+          greaterThanOrEqualTo(0),
+          reason: '${r.name} has negative fanValue',
+        );
       }
     });
 
     test('all TW rules have non-negative fanValue', () {
       final twRulesList = getRules(GameMode.taiwan);
       for (final r in twRulesList) {
-        expect(r.fanValue, greaterThanOrEqualTo(0),
-            reason: '${r.name} has negative fanValue');
+        expect(
+          r.fanValue,
+          greaterThanOrEqualTo(0),
+          reason: '${r.name} has negative fanValue',
+        );
       }
     });
 
     test('all rules have non-empty name and description', () {
-      final allRules = [...getRules(GameMode.hongKong), ...getRules(GameMode.taiwan)];
+      final allRules = [
+        ...getRules(GameMode.hongKong),
+        ...getRules(GameMode.taiwan),
+      ];
       for (final r in allRules) {
         expect(r.name, isNotEmpty, reason: 'Rule has empty name');
-        expect(r.description, isNotEmpty, reason: '${r.name} has empty description');
+        expect(
+          r.description,
+          isNotEmpty,
+          reason: '${r.name} has empty description',
+        );
       }
     });
   });

@@ -113,9 +113,15 @@ void main() {
       expect(restored.currentRound, equals(original.currentRound));
       expect(restored.dealerIndex, equals(original.dealerIndex));
       expect(restored.prevalentWindIndex, equals(original.prevalentWindIndex));
-      expect(restored.currentDealerGameCount, equals(original.currentDealerGameCount));
+      expect(
+        restored.currentDealerGameCount,
+        equals(original.currentDealerGameCount),
+      );
       expect(restored.totalWindRounds, equals(original.totalWindRounds));
-      expect(restored.totalGamesPlayedInGroup, equals(original.totalGamesPlayedInGroup));
+      expect(
+        restored.totalGamesPlayedInGroup,
+        equals(original.totalGamesPlayedInGroup),
+      );
       expect(restored.currentScores, equals(original.currentScores));
     });
 
@@ -164,8 +170,14 @@ void main() {
       final before = DateTime.now();
       final g = PlayerGroup(name: 'T', players: []);
       final after = DateTime.now();
-      expect(g.createdAt.isAfter(before.subtract(const Duration(seconds: 1))), isTrue);
-      expect(g.createdAt.isBefore(after.add(const Duration(seconds: 1))), isTrue);
+      expect(
+        g.createdAt.isAfter(before.subtract(const Duration(seconds: 1))),
+        isTrue,
+      );
+      expect(
+        g.createdAt.isBefore(after.add(const Duration(seconds: 1))),
+        isTrue,
+      );
     });
   });
 }

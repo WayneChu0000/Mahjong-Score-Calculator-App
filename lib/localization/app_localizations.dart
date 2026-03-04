@@ -1,4 +1,4 @@
-﻿import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart';
 
 import '../l10n/generated/app_localizations_gen.dart';
 import '../l10n/generated/app_localizations_gen_en.dart';
@@ -109,6 +109,7 @@ class AppLocalizations {
   static String get selectFlowers => _l10n.selectFlowers;
   static String get handPreviewArea => _l10n.handPreviewArea;
   static String get scanTiles => _l10n.scanTiles;
+  static String get uploadPhoto => _l10n.uploadPhoto;
   static String get selectHand => _l10n.selectHand;
   static String get analyzingTiles => _l10n.analyzingTiles;
   static String get takePhotoHint => _l10n.takePhotoHint;
@@ -482,7 +483,8 @@ class AppLocalizations {
   static String get bambooTab => _l10n.bambooTab;
   static String get honorsTab => _l10n.honorsTab;
   static String get invalidTileCount => _l10n.invalidTileCount;
-  static String get winningHandThirteenOrphans => _l10n.winningHandThirteenOrphans;
+  static String get winningHandThirteenOrphans =>
+      _l10n.winningHandThirteenOrphans;
   static String get winningHand => _l10n.winningHand;
   static String get winningHandInvalid => _l10n.winningHandInvalid;
   static String get gameHistoryTitle => _l10n.gameHistoryTitle;
@@ -526,18 +528,23 @@ class AppLocalizations {
   static String taiCount(int t) => _l10n.taiCount(t);
   static String currentScore(int score) => _l10n.currentScore(score);
   static String totalWin(int score) => _l10n.totalWin(score);
-  static String consecutiveDealerCount(int count) => _l10n.consecutiveDealerCount(count);
+  static String consecutiveDealerCount(int count) =>
+      _l10n.consecutiveDealerCount(count);
   static String editPlayerTitle(int index) => _l10n.editPlayerTitle(index);
-  static String swapPositionsContent(String p1, String p2) => _l10n.swapPositionsContent(p1, p2);
+  static String swapPositionsContent(String p1, String p2) =>
+      _l10n.swapPositionsContent(p1, p2);
   static String roundInfo(String wind, int game) => _l10n.roundInfo(wind, game);
   static String gameCount(int count) => _l10n.gameCount(count);
   static String playerCount(int count) => _l10n.playerCount(count);
-  static String roundOf(int current, int total) => _l10n.roundOf(current, total);
+  static String roundOf(int current, int total) =>
+      _l10n.roundOf(current, total);
   static String gameIndex(int index) => _l10n.gameIndex(index);
   static String defaultPlayerName(int index) => _l10n.defaultPlayerName(index);
-  static String confirmDeleteContent(String name) => _l10n.confirmDeleteContent(name);
+  static String confirmDeleteContent(String name) =>
+      _l10n.confirmDeleteContent(name);
   static String groupDeleted(String name) => _l10n.groupDeleted(name);
-  static String defaultGroupName(String timestamp) => _l10n.defaultGroupName(timestamp);
+  static String defaultGroupName(String timestamp) =>
+      _l10n.defaultGroupName(timestamp);
 
   // ── TW / HK mode labels ──
   static String get twRulesTitle => _l10n.twRulesTitle;
@@ -560,6 +567,11 @@ class AppLocalizations {
   static String get twConcealedKongPayDesc => _l10n.twConcealedKongPayDesc;
   static String get twFlowerSetPay => _l10n.twFlowerSetPay;
   static String get twFlowerSetPayDesc => _l10n.twFlowerSetPayDesc;
+  static String get twFlowerSeasonSetPay => _l10n.twFlowerSeasonSetPay;
+  static String get twFlowerSeasonSetPayDesc => _l10n.twFlowerSeasonSetPayDesc;
+  static String get twFlowerGroupPay => _l10n.twFlowerGroupPay;
+  static String get twFlowerGroupPayDesc => _l10n.twFlowerGroupPayDesc;
+  static String get builtInPayment => _l10n.builtInPayment;
   static String get twFalseWinPay => _l10n.twFalseWinPay;
   static String get twFalseWinPayDesc => _l10n.twFalseWinPayDesc;
   static String get twCalledPongPenalty => _l10n.twCalledPongPenalty;
@@ -586,10 +598,30 @@ class AppLocalizations {
   static String get twLaMultiplierDesc => _l10n.twLaMultiplierDesc;
   static String get twLaReduction => _l10n.twLaReduction;
   static String get twLaReductionDesc => _l10n.twLaReductionDesc;
+  static String get twLaStopRule => _l10n.twLaStopRule;
+  static String get twLaStopRuleDesc => _l10n.twLaStopRuleDesc;
+  static String get twLaStopRuleTitle => _l10n.twLaStopRuleTitle;
+  static String twLaStopRuleMessage(
+    String playerName,
+    int lossCount,
+    String streakWinnerName,
+  ) => _l10n.twLaStopRuleMessage(playerName, lossCount, streakWinnerName);
+  static String get twLaStopRuleContinue => _l10n.twLaStopRuleContinue;
+  static String get twLaStopRuleSettle => _l10n.twLaStopRuleSettle;
   static String get twLaApplied => _l10n.twLaApplied;
   static String get twLaMultiplierApplied => _l10n.twLaMultiplierApplied;
   static String get twLaReductionApplied => _l10n.twLaReductionApplied;
   static String get twLaCarryDebt => _l10n.twLaCarryDebt;
+  static String get twLaDebtTracker => _l10n.twLaDebtTracker;
+  static String get twLaStreakWinner => _l10n.twLaStreakWinner;
+  static String get twLaDebtTotal => _l10n.twLaDebtTotal;
+  static String get twLaDebtApplied => _l10n.twLaDebtApplied;
+  static String get twLaDebtPending => _l10n.twLaDebtPending;
+  static String twLaLosses(int count) => _l10n.twLaLosses(count);
+  static String get twLaSettled => _l10n.twLaSettled;
+  static String get twLaForceSettleAction => _l10n.twLaForceSettleAction;
+  static String get twLaNoActiveStreak => _l10n.twLaNoActiveStreak;
+  static String twLaStreakRounds(int count) => _l10n.twLaStreakRounds(count);
 
   // ── TW dealer bonus ──
   static String get twDealerBonusTitle => _l10n.twDealerBonusTitle;
@@ -599,7 +631,8 @@ class AppLocalizations {
   static String get twDealerBonusExample1 => _l10n.twDealerBonusExample1;
   static String get twDealerBonusExample2 => _l10n.twDealerBonusExample2;
   static String get twDealerBonusExample3 => _l10n.twDealerBonusExample3;
-  static String get twDealerBonusResponsibility => _l10n.twDealerBonusResponsibility;
+  static String get twDealerBonusResponsibility =>
+      _l10n.twDealerBonusResponsibility;
 
   static String get twNoStackRule => _l10n.twNoStackRule;
 
@@ -621,9 +654,12 @@ class AppLocalizations {
   static String get twNoHonorsNoFlowers => _l10n.twNoHonorsNoFlowers;
   static String get twDescNoHonorsNoFlowers => _l10n.twDescNoHonorsNoFlowers;
   static String get twExplNoHonorsNoFlowers => _l10n.twExplNoHonorsNoFlowers;
-  static String get twNoHonorsNoFlowersPingHu => _l10n.twNoHonorsNoFlowersPingHu;
-  static String get twDescNoHonorsNoFlowersPingHu => _l10n.twDescNoHonorsNoFlowersPingHu;
-  static String get twExplNoHonorsNoFlowersPingHu => _l10n.twExplNoHonorsNoFlowersPingHu;
+  static String get twNoHonorsNoFlowersPingHu =>
+      _l10n.twNoHonorsNoFlowersPingHu;
+  static String get twDescNoHonorsNoFlowersPingHu =>
+      _l10n.twDescNoHonorsNoFlowersPingHu;
+  static String get twExplNoHonorsNoFlowersPingHu =>
+      _l10n.twExplNoHonorsNoFlowersPingHu;
   static String get twChickenHand => _l10n.twChickenHand;
   static String get twDescChickenHand => _l10n.twDescChickenHand;
   static String get twExplChickenHand => _l10n.twExplChickenHand;
@@ -664,20 +700,28 @@ class AppLocalizations {
   static String get twDescTwoConcealedPongs => _l10n.twDescTwoConcealedPongs;
   static String get twExplTwoConcealedPongs => _l10n.twExplTwoConcealedPongs;
   static String get twThreeConcealedPongs => _l10n.twThreeConcealedPongs;
-  static String get twDescThreeConcealedPongs => _l10n.twDescThreeConcealedPongs;
-  static String get twExplThreeConcealedPongs => _l10n.twExplThreeConcealedPongs;
+  static String get twDescThreeConcealedPongs =>
+      _l10n.twDescThreeConcealedPongs;
+  static String get twExplThreeConcealedPongs =>
+      _l10n.twExplThreeConcealedPongs;
   static String get twFourConcealedPongs => _l10n.twFourConcealedPongs;
   static String get twDescFourConcealedPongs => _l10n.twDescFourConcealedPongs;
   static String get twExplFourConcealedPongs => _l10n.twExplFourConcealedPongs;
   static String get twIdenticalSequenceTwo => _l10n.twIdenticalSequenceTwo;
-  static String get twDescIdenticalSequenceTwo => _l10n.twDescIdenticalSequenceTwo;
-  static String get twExplIdenticalSequenceTwo => _l10n.twExplIdenticalSequenceTwo;
+  static String get twDescIdenticalSequenceTwo =>
+      _l10n.twDescIdenticalSequenceTwo;
+  static String get twExplIdenticalSequenceTwo =>
+      _l10n.twExplIdenticalSequenceTwo;
   static String get twIdenticalSequenceThree => _l10n.twIdenticalSequenceThree;
-  static String get twDescIdenticalSequenceThree => _l10n.twDescIdenticalSequenceThree;
-  static String get twExplIdenticalSequenceThree => _l10n.twExplIdenticalSequenceThree;
+  static String get twDescIdenticalSequenceThree =>
+      _l10n.twDescIdenticalSequenceThree;
+  static String get twExplIdenticalSequenceThree =>
+      _l10n.twExplIdenticalSequenceThree;
   static String get twIdenticalSequenceFour => _l10n.twIdenticalSequenceFour;
-  static String get twDescIdenticalSequenceFour => _l10n.twDescIdenticalSequenceFour;
-  static String get twExplIdenticalSequenceFour => _l10n.twExplIdenticalSequenceFour;
+  static String get twDescIdenticalSequenceFour =>
+      _l10n.twDescIdenticalSequenceFour;
+  static String get twExplIdenticalSequenceFour =>
+      _l10n.twExplIdenticalSequenceFour;
   static String get twMixedDoubleSeq => _l10n.twMixedDoubleSeq;
   static String get twDescMixedDoubleSeq => _l10n.twDescMixedDoubleSeq;
   static String get twExplMixedDoubleSeq => _l10n.twExplMixedDoubleSeq;
@@ -718,8 +762,10 @@ class AppLocalizations {
   static String get twDescExposedMixedDragon => _l10n.twDescExposedMixedDragon;
   static String get twExplExposedMixedDragon => _l10n.twExplExposedMixedDragon;
   static String get twConcealedMixedDragon => _l10n.twConcealedMixedDragon;
-  static String get twDescConcealedMixedDragon => _l10n.twDescConcealedMixedDragon;
-  static String get twExplConcealedMixedDragon => _l10n.twExplConcealedMixedDragon;
+  static String get twDescConcealedMixedDragon =>
+      _l10n.twDescConcealedMixedDragon;
+  static String get twExplConcealedMixedDragon =>
+      _l10n.twExplConcealedMixedDragon;
   static String get twFiveGates => _l10n.twFiveGates;
   static String get twDescFiveGates => _l10n.twDescFiveGates;
   static String get twExplFiveGates => _l10n.twExplFiveGates;
@@ -754,8 +800,10 @@ class AppLocalizations {
   static String get twDescTwoFlowerSets => _l10n.twDescTwoFlowerSets;
   static String get twExplTwoFlowerSets => _l10n.twExplTwoFlowerSets;
   static String get twMixedTerminalsPongs => _l10n.twMixedTerminalsPongs;
-  static String get twDescMixedTerminalsPongs => _l10n.twDescMixedTerminalsPongs;
-  static String get twExplMixedTerminalsPongs => _l10n.twExplMixedTerminalsPongs;
+  static String get twDescMixedTerminalsPongs =>
+      _l10n.twDescMixedTerminalsPongs;
+  static String get twExplMixedTerminalsPongs =>
+      _l10n.twExplMixedTerminalsPongs;
   static String get twPureTerminalsTw => _l10n.twPureTerminalsTw;
   static String get twDescPureTerminalsTw => _l10n.twDescPureTerminalsTw;
   static String get twExplPureTerminalsTw => _l10n.twExplPureTerminalsTw;
@@ -856,7 +904,8 @@ class AppLocalizations {
     'achvTwTai80Desc': () => _l10n.achvTwTai80Desc,
     'achvTwCommonHand10Title': () => _l10n.achvTwCommonHand10Title,
     'achvTwCommonHand10Desc': () => _l10n.achvTwCommonHand10Desc,
-    'achvTwConcealedSelfDrawn5Title': () => _l10n.achvTwConcealedSelfDrawn5Title,
+    'achvTwConcealedSelfDrawn5Title': () =>
+        _l10n.achvTwConcealedSelfDrawn5Title,
     'achvTwConcealedSelfDrawn5Desc': () => _l10n.achvTwConcealedSelfDrawn5Desc,
     'achvTwDealerStreak5Title': () => _l10n.achvTwDealerStreak5Title,
     'achvTwDealerStreak5Desc': () => _l10n.achvTwDealerStreak5Desc,
@@ -919,7 +968,8 @@ class AppLocalizations {
   static String get achvGenSelfDraw10Desc => _l10n.achvGenSelfDraw10Desc;
   static String get achvGenSelfDraw50Title => _l10n.achvGenSelfDraw50Title;
   static String get achvGenSelfDraw50Desc => _l10n.achvGenSelfDraw50Desc;
-  static String get achvGenDealerStreak3Title => _l10n.achvGenDealerStreak3Title;
+  static String get achvGenDealerStreak3Title =>
+      _l10n.achvGenDealerStreak3Title;
   static String get achvGenDealerStreak3Desc => _l10n.achvGenDealerStreak3Desc;
   static String get achvGenNeverDealInTitle => _l10n.achvGenNeverDealInTitle;
   static String get achvGenNeverDealInDesc => _l10n.achvGenNeverDealInDesc;
@@ -935,16 +985,22 @@ class AppLocalizations {
   static String get achvHkFullFlushDesc => _l10n.achvHkFullFlushDesc;
   static String get achvHkAllPongs5Title => _l10n.achvHkAllPongs5Title;
   static String get achvHkAllPongs5Desc => _l10n.achvHkAllPongs5Desc;
-  static String get achvHkBigThreeDragonsTitle => _l10n.achvHkBigThreeDragonsTitle;
-  static String get achvHkBigThreeDragonsDesc => _l10n.achvHkBigThreeDragonsDesc;
+  static String get achvHkBigThreeDragonsTitle =>
+      _l10n.achvHkBigThreeDragonsTitle;
+  static String get achvHkBigThreeDragonsDesc =>
+      _l10n.achvHkBigThreeDragonsDesc;
   static String get achvHkBigFourWindsTitle => _l10n.achvHkBigFourWindsTitle;
   static String get achvHkBigFourWindsDesc => _l10n.achvHkBigFourWindsDesc;
-  static String get achvHkThirteenOrphansTitle => _l10n.achvHkThirteenOrphansTitle;
-  static String get achvHkThirteenOrphansDesc => _l10n.achvHkThirteenOrphansDesc;
+  static String get achvHkThirteenOrphansTitle =>
+      _l10n.achvHkThirteenOrphansTitle;
+  static String get achvHkThirteenOrphansDesc =>
+      _l10n.achvHkThirteenOrphansDesc;
   static String get achvHkNineGatesTitle => _l10n.achvHkNineGatesTitle;
   static String get achvHkNineGatesDesc => _l10n.achvHkNineGatesDesc;
-  static String get achvHkConcealedHand10Title => _l10n.achvHkConcealedHand10Title;
-  static String get achvHkConcealedHand10Desc => _l10n.achvHkConcealedHand10Desc;
+  static String get achvHkConcealedHand10Title =>
+      _l10n.achvHkConcealedHand10Title;
+  static String get achvHkConcealedHand10Desc =>
+      _l10n.achvHkConcealedHand10Desc;
   static String get achvHkLastTileWinTitle => _l10n.achvHkLastTileWinTitle;
   static String get achvHkLastTileWinDesc => _l10n.achvHkLastTileWinDesc;
   static String get achvHkRobbingKongTitle => _l10n.achvHkRobbingKongTitle;
@@ -963,8 +1019,10 @@ class AppLocalizations {
   static String get achvTwTai80Desc => _l10n.achvTwTai80Desc;
   static String get achvTwCommonHand10Title => _l10n.achvTwCommonHand10Title;
   static String get achvTwCommonHand10Desc => _l10n.achvTwCommonHand10Desc;
-  static String get achvTwConcealedSelfDrawn5Title => _l10n.achvTwConcealedSelfDrawn5Title;
-  static String get achvTwConcealedSelfDrawn5Desc => _l10n.achvTwConcealedSelfDrawn5Desc;
+  static String get achvTwConcealedSelfDrawn5Title =>
+      _l10n.achvTwConcealedSelfDrawn5Title;
+  static String get achvTwConcealedSelfDrawn5Desc =>
+      _l10n.achvTwConcealedSelfDrawn5Desc;
   static String get achvTwDealerStreak5Title => _l10n.achvTwDealerStreak5Title;
   static String get achvTwDealerStreak5Desc => _l10n.achvTwDealerStreak5Desc;
   static String get achvTwKongWinTitle => _l10n.achvTwKongWinTitle;
@@ -973,7 +1031,8 @@ class AppLocalizations {
   static String get achvTwFlowerWinDesc => _l10n.achvTwFlowerWinDesc;
   static String get achvTwSevenRobOneTitle => _l10n.achvTwSevenRobOneTitle;
   static String get achvTwSevenRobOneDesc => _l10n.achvTwSevenRobOneDesc;
-  static String get achvTwHeavenlyListenTitle => _l10n.achvTwHeavenlyListenTitle;
+  static String get achvTwHeavenlyListenTitle =>
+      _l10n.achvTwHeavenlyListenTitle;
   static String get achvTwHeavenlyListenDesc => _l10n.achvTwHeavenlyListenDesc;
   static String get achvTwChickenHand10Title => _l10n.achvTwChickenHand10Title;
   static String get achvTwChickenHand10Desc => _l10n.achvTwChickenHand10Desc;
@@ -1027,4 +1086,82 @@ class AppLocalizations {
     if (_l10n is L10nZh) return count.replaceAll('Fan', '番');
     return count;
   }
+
+  // ── Settings: new options ──
+  static String get customFanValues => _l10n.customFanValues;
+  static String get customFanValuesDesc => _l10n.customFanValuesDesc;
+  static String get customHkFan => _l10n.customHkFan;
+  static String get customTwTai => _l10n.customTwTai;
+  static String get resetToDefault => _l10n.resetToDefault;
+  static String get resetFanConfirm => _l10n.resetFanConfirm;
+  static String get customized => _l10n.customized;
+  static String defaultValue(int value) => _l10n.defaultValue(value);
+  static String get gamePreferences => _l10n.gamePreferences;
+  static String get displaySettings => _l10n.displaySettings;
+  static String get advancedSettings => _l10n.advancedSettings;
+  static String get accountSettings => _l10n.accountSettings;
+  static String get noCustomizations => _l10n.noCustomizations;
+  static String get editFanValue => _l10n.editFanValue;
+  static String get editTaiValue => _l10n.editTaiValue;
+  static String get enterNewValue => _l10n.enterNewValue;
+  static String get enterNewTaiValue => _l10n.enterNewTaiValue;
+  static String get invalidValue => _l10n.invalidValue;
+  static String get customFanSaved => _l10n.customFanSaved;
+  static String get allReset => _l10n.allReset;
+  static String get hkGameSettings => _l10n.hkGameSettings;
+  static String get twGameSettings => _l10n.twGameSettings;
+  static String get hkMinFanSetting => _l10n.hkMinFan;
+  static String get hkMaxFanSetting => _l10n.hkMaxFan;
+  static String get twBaseTaiSetting => _l10n.twBaseTaiSetting;
+  static String get twTaiValueSetting => _l10n.twTaiValueSetting;
+  static String get addRule => _l10n.addRule;
+  static String get deleteRule => _l10n.deleteRule;
+  static String get ruleName => _l10n.ruleName;
+  static String get fanValueLabel => _l10n.fanValueLabel;
+  static String get taiValueLabel => _l10n.taiValueLabel;
+  static String get addCustomRule => _l10n.addCustomRule;
+  static String get deleteConfirm => _l10n.deleteConfirm;
+  static String get ruleDeleted => _l10n.ruleDeleted;
+  static String get ruleAdded => _l10n.ruleAdded;
+  static String get ruleRestored => _l10n.ruleRestored;
+  static String get deletedRules => _l10n.deletedRules;
+  static String get restore => _l10n.restore;
+  static String get customRules => _l10n.customRules;
+  static String get builtInRules => _l10n.builtInRules;
+  static String get twPayments => _l10n.twPayments;
+  static String get twPaymentsDesc => _l10n.twPaymentsDesc;
+  static String get paymentName => _l10n.paymentName;
+  static String get paymentValue => _l10n.paymentValue;
+  static String get addPayment => _l10n.addPayment;
+  static String get editPayment => _l10n.editPayment;
+  static String get noPayments => _l10n.noPayments;
+  static String get paymentSaved => _l10n.paymentSaved;
+  static String get paymentDeleted => _l10n.paymentDeleted;
+  static String get enterRuleName => _l10n.enterRuleName;
+  static String get enterValue => _l10n.enterValue;
+  static String get instantPayment => _l10n.instantPayment;
+  static String get selectPayer => _l10n.selectPayer;
+  static String get selectReceiver => _l10n.selectReceiver;
+  static String get selectPaymentItem => _l10n.selectPaymentItem;
+  static String get paymentAmount => _l10n.paymentAmount;
+  static String get paymentApplied => _l10n.paymentApplied;
+  static String get allOtherPlayers => _l10n.allOtherPlayers;
+  static String get customAmount => _l10n.customAmount;
+  static String get achvTwInstantPay5Title => _l10n.achvTwInstantPay5Title;
+  static String get achvTwInstantPay5Desc => _l10n.achvTwInstantPay5Desc;
+  static String get achvTwInstantPay20Title => _l10n.achvTwInstantPay20Title;
+  static String get achvTwInstantPay20Desc => _l10n.achvTwInstantPay20Desc;
+  static String userSetFan(int f) => _l10n.userSetFan(f);
+  static String userSetTai(int f) => _l10n.userSetTai(f);
+  static String get roundHistory => _l10n.roundHistory;
+
+  // ── Player setup redesign ──
+  static String get seatOrder => _l10n.seatOrder;
+  static String get dragToReorder => _l10n.dragToReorder;
+  static String get recentPlayers => _l10n.recentPlayers;
+  static String get duplicateNameWarning => _l10n.duplicateNameWarning;
+  static String windSeat(String wind) => _l10n.windSeat(wind);
+  static String get tapToEdit => _l10n.tapToEdit;
+  static String get playerSetupSubtitle => _l10n.playerSetupSubtitle;
+  static String get clearName => _l10n.clearName;
 }

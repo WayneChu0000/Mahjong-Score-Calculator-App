@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   List<PlayerGroup> _playerGroups = [];
   bool _isLoading = true;
 
@@ -33,34 +33,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.6, curve: Curves.easeOut))
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+      ),
     );
-    
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.2, 1.0, curve: Curves.easeOut))
-    );
-    
+
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
+          ),
+        );
+
     _controller.forward();
-    
+
     // Load player groups data
     _loadPlayerGroups();
   }
-  
+
   Future<void> _loadPlayerGroups() async {
     try {
       final groups = await PlayerGroupService.getSavedGroups();
       // Sort by most played (totalGamesPlayedInGroup descending),
       // then by last played time as tiebreaker.
       groups.sort((a, b) {
-        final cmp = b.totalGamesPlayedInGroup.compareTo(a.totalGamesPlayedInGroup);
+        final cmp = b.totalGamesPlayedInGroup.compareTo(
+          a.totalGamesPlayedInGroup,
+        );
         if (cmp != 0) return cmp;
         final aTime = a.lastPlayedAt ?? a.createdAt;
         final bTime = b.lastPlayedAt ?? b.createdAt;
         return bTime.compareTo(aTime);
       });
-      
+
       if (mounted) {
         setState(() {
           _playerGroups = groups;
@@ -118,6 +127,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: _buildDailyTipCard(isDark),
                   ),
 
+                  if (lastGroup != null) const SizedBox(height: 12),
+
+                  // ── Continue Previous Game ───────────────────────
+                  _buildContinueGameButton(lastGroup),
+
                   const SizedBox(height: 20),
 
                   // ── Most Played Groups header ────────────────────
@@ -153,85 +167,115 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Card(
-                                margin: const EdgeInsets.only(bottom: 12),
-                                child: InkWell(
-                                  onTap: () => _startGameWithGroup(group),
-                                  borderRadius: AppDimens.borderRadiusMd,
-                                  child: Padding(
-                                    padding: AppDimens.paddingAllLg,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                group.name,
-                                                style: AppTextStyles.heading3,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ],
+                          margin: const EdgeInsets.only(bottom: 12),
+                          child: InkWell(
+                            onTap: () => _startGameWithGroup(group),
+                            borderRadius: AppDimens.borderRadiusMd,
+                            child: Padding(
+                              padding: AppDimens.paddingAllLg,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          group.name,
+                                          style: AppTextStyles.heading3,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        const SizedBox(height: 10),
-                                        Wrap(
-                                          spacing: 6,
-                                          runSpacing: 4,
-                                          children: group.players.map((player) {
-                                            return Chip(
-                                              label: Text(
-                                                player,
-                                                style: const TextStyle(fontSize: 11),
-                                              ),
-                                              backgroundColor: AppColors.primaryCardBackground(Theme.of(context).brightness == Brightness.dark),
-                                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                                              visualDensity: VisualDensity.compact,
-                                            );
-                                          }).toList(),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              '${AppLocalizations.createdPrefix}${_formatDateTime(group.createdAt)}',
-                                              style: TextStyle(
-                                                color: AppColors.subtitleColor(Theme.of(context).brightness == Brightness.dark),
-                                                fontSize: 11,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                TextButton.icon(
-                                                  icon: const Icon(Icons.edit, size: 14),
-                                                  label: Text(AppLocalizations.edit, style: AppTextStyles.footnote),
-                                                  style: TextButton.styleFrom(
-                                                    padding: AppDimens.paddingHorizontalSm,
-                                                    minimumSize: const Size(60, 32),
-                                                  ),
-                                                  onPressed: () => _editPlayerGroup(group),
-                                                ),
-                                                TextButton.icon(
-                                                  icon: const Icon(Icons.delete, size: 14, color: AppColors.destructive),
-                                                  label: Text(AppLocalizations.delete, style: const TextStyle(fontSize: 12, color: AppColors.destructive)),
-                                                  style: TextButton.styleFrom(
-                                                    padding: AppDimens.paddingHorizontalSm,
-                                                    minimumSize: const Size(60, 32),
-                                                  ),
-                                                  onPressed: () => _deleteGroup(group.name),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                  const SizedBox(height: 10),
+                                  Wrap(
+                                    spacing: 6,
+                                    runSpacing: 4,
+                                    children: group.players.map((player) {
+                                      return Chip(
+                                        label: Text(
+                                          player,
+                                          style: const TextStyle(fontSize: 11),
+                                        ),
+                                        backgroundColor:
+                                            AppColors.primaryCardBackground(
+                                              Theme.of(context).brightness ==
+                                                  Brightness.dark,
+                                            ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 4,
+                                        ),
+                                        visualDensity: VisualDensity.compact,
+                                      );
+                                    }).toList(),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${AppLocalizations.createdPrefix}${_formatDateTime(group.createdAt)}',
+                                        style: TextStyle(
+                                          color: AppColors.subtitleColor(
+                                            Theme.of(context).brightness ==
+                                                Brightness.dark,
+                                          ),
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextButton.icon(
+                                            icon: const Icon(
+                                              Icons.edit,
+                                              size: 14,
+                                            ),
+                                            label: Text(
+                                              AppLocalizations.edit,
+                                              style: AppTextStyles.footnote,
+                                            ),
+                                            style: TextButton.styleFrom(
+                                              padding:
+                                                  AppDimens.paddingHorizontalSm,
+                                              minimumSize: const Size(60, 32),
+                                            ),
+                                            onPressed: () =>
+                                                _editPlayerGroup(group),
+                                          ),
+                                          TextButton.icon(
+                                            icon: const Icon(
+                                              Icons.delete,
+                                              size: 14,
+                                              color: AppColors.destructive,
+                                            ),
+                                            label: Text(
+                                              AppLocalizations.delete,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: AppColors.destructive,
+                                              ),
+                                            ),
+                                            style: TextButton.styleFrom(
+                                              padding:
+                                                  AppDimens.paddingHorizontalSm,
+                                              minimumSize: const Size(60, 32),
+                                            ),
+                                            onPressed: () =>
+                                                _deleteGroup(group.name),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                        );
-                      })
+                            ),
+                          ),
+                        ),
+                      );
+                    })
                   else
                     Padding(
                       padding: const EdgeInsets.all(32.0),
@@ -267,7 +311,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               foregroundColor: AppColors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
                             ),
                             onPressed: () async {
                               final result = await Navigator.pushNamed(
@@ -342,34 +389,39 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     color: Colors.white.withValues(alpha: 0.85),
                   ),
                 ),
-
-                // Continue previous game button
-                if (lastGroup != null) ...[
-                  const SizedBox(height: 18),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.play_arrow_rounded, size: 22),
-                      label: Text(
-                        '${AppLocalizations.continueLastGame}  —  ${lastGroup.name}',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.green.shade800,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 0,
-                      ),
-                      onPressed: () => _startGameWithGroup(lastGroup),
-                    ),
-                  ),
-                ],
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContinueGameButton(PlayerGroup? lastGroup) {
+    if (lastGroup == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.play_arrow_rounded, size: 20),
+          label: Text(
+            '${AppLocalizations.continueLastGame} — ${lastGroup.name}',
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 13),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            elevation: 1,
+            visualDensity: VisualDensity.compact,
+          ),
+          onPressed: () => _startGameWithGroup(lastGroup),
         ),
       ),
     );
@@ -513,10 +565,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   String _formatDateTime(DateTime dateTime) {
     final localTime = dateTime.toLocal();
     return '${localTime.year}/${localTime.month.toString().padLeft(2, '0')}/${localTime.day.toString().padLeft(2, '0')} '
-           '${localTime.hour.toString().padLeft(2, '0')}:'
-           '${localTime.minute.toString().padLeft(2, '0')}';
+        '${localTime.hour.toString().padLeft(2, '0')}:'
+        '${localTime.minute.toString().padLeft(2, '0')}';
   }
-  
+
   // Show all player groups
   // ignore: unused_element
   void _showAllPlayerGroups() {
@@ -595,13 +647,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       },
     );
   }
-  
+
   // Edit player group
   void _editPlayerGroup(PlayerGroup group) {
     // Map players with their current scores
-    final List<Player> playersWithScores = group.players.asMap().entries.map((entry) {
+    final List<Player> playersWithScores = group.players.asMap().entries.map((
+      entry,
+    ) {
       int score = 0;
-      if (group.currentScores != null && group.currentScores!.containsKey(entry.value)) {
+      if (group.currentScores != null &&
+          group.currentScores!.containsKey(entry.value)) {
         score = group.currentScores![entry.value]!;
       }
       return Player(id: entry.key, name: entry.value, score: score);
@@ -642,7 +697,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(AppLocalizations.delete, style: AppTextStyles.destructive),
+            child: Text(
+              AppLocalizations.delete,
+              style: AppTextStyles.destructive,
+            ),
           ),
         ],
       ),
@@ -650,7 +708,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     if (confirmed == true) {
       final success = await PlayerGroupService.deleteGroup(groupName);
-      
+
       if (success) {
         _loadPlayerGroups(); // Reload list
         if (mounted) {
@@ -664,7 +722,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       }
     }
   }
-  
+
   // Start game with selected player group
   void _startGameWithGroup(PlayerGroup group) {
     Navigator.pushNamed(

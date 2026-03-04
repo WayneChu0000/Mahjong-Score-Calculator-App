@@ -18,10 +18,8 @@ class AppColors {
   static final Color primaryDark = Colors.green.shade700;
   static final Color primaryDarker = Colors.green.shade800;
   static final Color primarySurface = Colors.green.shade50;
-  static final Color primarySurfaceDark =
-      Colors.green.withValues(alpha: 0.2);
-  static final Color primarySurfaceSubtle =
-      Colors.green.withValues(alpha: 0.1);
+  static final Color primarySurfaceDark = Colors.green.withValues(alpha: 0.2);
+  static final Color primarySurfaceSubtle = Colors.green.withValues(alpha: 0.1);
 
   // ─── Accent (Amber) ───────────────────────────────────────────────
   static const Color accent = Colors.amber;
@@ -54,22 +52,18 @@ class AppColors {
   // ─── Semantic helpers ─────────────────────────────────────────────
 
   /// Returns green for positive scores, red for negative.
-  static Color scoreColor(num score) =>
-      score >= 0 ? primary : destructive;
+  static Color scoreColor(num score) => score >= 0 ? primary : destructive;
 
   /// Adaptive card background: translucent green (dark) / green.shade50 (light).
   static Color primaryCardBackground(bool isDark) =>
       isDark ? primarySurfaceDark : primarySurface;
 
   /// Adaptive subtle text colour.
-  static Color subtitleColor(bool isDark) =>
-      isDark ? grey400 : grey600;
+  static Color subtitleColor(bool isDark) => isDark ? grey400 : grey600;
 
   /// Adaptive border colour.
-  static Color borderColor(bool isDark) =>
-      isDark ? grey700 : grey300;
+  static Color borderColor(bool isDark) => isDark ? grey700 : grey300;
 
   /// Adaptive secondary surface colour.
-  static Color secondarySurface(bool isDark) =>
-      isDark ? grey800 : grey200;
+  static Color secondarySurface(bool isDark) => isDark ? grey800 : grey200;
 }

@@ -11,16 +11,21 @@ void showStatsDialog({
   required List<Player> players,
   required List<Map<String, dynamic>> roundHistory,
 }) {
-  final int totalRounds = roundHistory.length;
+  // Filter out instant payments — they are not hands
+  final hands = roundHistory
+      .where(
+        (r) => r['resultType'] != 'InstantPayment',
+      )
+      .toList();
+  final int totalRounds = hands.length;
 
   int noResultCount = 0;
-  for (var round in roundHistory) {
+  for (var round in hands) {
     if (round['winningPlayer'] == null) {
       noResultCount++;
     }
   }
-  final double noResultRate =
-      totalRounds > 0 ? noResultCount / totalRounds : 0;
+  final double noResultRate = totalRounds > 0 ? noResultCount / totalRounds : 0;
 
   showDialog(
     context: context,
@@ -50,7 +55,7 @@ void showStatsDialog({
                   int rons = 0;
                   int dealsIn = 0;
 
-                  for (var round in roundHistory) {
+                  for (var round in hands) {
                     if (round['winningPlayer'] == player.name) {
                       wins++;
                       if (round['isSelfDraw'] == true) {
@@ -64,17 +69,21 @@ void showStatsDialog({
                     }
                   }
 
-                  final double winRate =
-                      totalRounds > 0 ? wins / totalRounds : 0;
+                  final double winRate = totalRounds > 0
+                      ? wins / totalRounds
+                      : 0;
 
                   return ListTile(
-                    title: Text(player.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text(
+                      player.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            '${AppLocalizations.statsWinRate}: ${(winRate * 100).toStringAsFixed(2)}%'),
+                          '${AppLocalizations.statsWinRate}: ${(winRate * 100).toStringAsFixed(2)}%',
+                        ),
                         const SizedBox(height: 4),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

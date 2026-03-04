@@ -19,7 +19,8 @@ class PlayerStats {
     this.totalDealsIn = 0,
   });
 
-  double get winningRate => totalGamesPlayed > 0 ? totalWins / totalGamesPlayed : 0.0;
+  double get winningRate =>
+      totalGamesPlayed > 0 ? totalWins / totalGamesPlayed : 0.0;
   double get selfDrawRate => totalWins > 0 ? totalTsumo / totalWins : 0.0;
   double get discardWinRate => totalWins > 0 ? totalRon / totalWins : 0.0;
 

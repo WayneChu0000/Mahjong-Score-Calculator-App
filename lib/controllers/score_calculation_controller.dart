@@ -122,8 +122,9 @@ class ScoreCalculationController extends ChangeNotifier {
       return;
     }
     if (discardPlayer == null || discardPlayer == winningPlayer) {
-      final validPlayers =
-          players.where((p) => p.name != winningPlayer).toList();
+      final validPlayers = players
+          .where((p) => p.name != winningPlayer)
+          .toList();
       if (validPlayers.isNotEmpty) {
         discardPlayer = validPlayers.first.name;
       }
@@ -190,12 +191,10 @@ class ScoreCalculationController extends ChangeNotifier {
     if (value == isSelfDraw) return;
     isSelfDraw = value;
     _ensureValidDiscardPlayer();
-    if (selectedTiles.isEmpty) {
-      fanCount = value
-          ? (fanCount + 1).clamp(0, 13)
-          : (fanCount - 1).clamp(0, 13);
+    if (selectedTiles.isNotEmpty) {
+      // Only auto-adjust fan for tile-based analysis; manual mode keeps raw count
+      calculateFanFromTiles();
     }
-    calculateFanFromTiles();
     calculateScore();
     notifyListeners();
   }
@@ -294,10 +293,12 @@ class ScoreCalculationController extends ChangeNotifier {
     }
 
     // Manual Check for Dragons
-    bool hasBigThreeDragons =
-        matchedRules.any((r) => r['name'] == AppLocalizations.ruleBigThreeDragons);
-    bool hasSmallThreeDragons =
-        matchedRules.any((r) => r['name'] == AppLocalizations.ruleSmallThreeDragons);
+    bool hasBigThreeDragons = matchedRules.any(
+      (r) => r['name'] == AppLocalizations.ruleBigThreeDragons,
+    );
+    bool hasSmallThreeDragons = matchedRules.any(
+      (r) => r['name'] == AppLocalizations.ruleSmallThreeDragons,
+    );
 
     if (!hasBigThreeDragons && !hasSmallThreeDragons) {
       Map<String, int> counts = {};
@@ -322,10 +323,12 @@ class ScoreCalculationController extends ChangeNotifier {
     }
 
     // Manual Check for Winds
-    bool hasBigFourWinds =
-        matchedRules.any((r) => r['name'] == AppLocalizations.ruleBigFourWinds);
-    bool hasSmallFourWinds =
-        matchedRules.any((r) => r['name'] == AppLocalizations.ruleSmallFourWinds);
+    bool hasBigFourWinds = matchedRules.any(
+      (r) => r['name'] == AppLocalizations.ruleBigFourWinds,
+    );
+    bool hasSmallFourWinds = matchedRules.any(
+      (r) => r['name'] == AppLocalizations.ruleSmallFourWinds,
+    );
 
     if (!hasBigFourWinds && !hasSmallFourWinds) {
       Map<String, int> windCounts = {};
@@ -349,7 +352,8 @@ class ScoreCalculationController extends ChangeNotifier {
         int windFan = gameMode == GameMode.taiwan ? 2 : 1;
         calculatedFan += windFan;
         matchedRules.add({
-          'name': '${AppLocalizations.ruleRoundWind} (${getLocalizedWind(roundWind)})',
+          'name':
+              '${AppLocalizations.ruleRoundWind} (${getLocalizedWind(roundWind)})',
           'fan': windFan,
         });
       }
@@ -358,7 +362,8 @@ class ScoreCalculationController extends ChangeNotifier {
         int windFan = gameMode == GameMode.taiwan ? 2 : 1;
         calculatedFan += windFan;
         matchedRules.add({
-          'name': '${AppLocalizations.ruleSeatWind} (${getLocalizedWind(seatWind)})',
+          'name':
+              '${AppLocalizations.ruleSeatWind} (${getLocalizedWind(seatWind)})',
           'fan': windFan,
         });
       }
@@ -390,7 +395,7 @@ class ScoreCalculationController extends ChangeNotifier {
     if (isSelfDraw) {
       bool isSpecialHand =
           selectedFlowers.values.where((v) => v).length >= 7 ||
-              selectedSpecialCondition == 'Heavenly Hand';
+          selectedSpecialCondition == 'Heavenly Hand';
 
       if (!isSpecialHand) {
         calculatedFan += 1;
@@ -412,16 +417,40 @@ class ScoreCalculationController extends ChangeNotifier {
   }
 
   void _calculateScoreInternal() {
+    // ── Manual mode: user typed a fan/tai number with no tiles,
+    //    no flowers, and no special condition ────────────────────────
+    bool hasFlowers = selectedFlowers.values.any((v) => v);
+    bool hasSpecialCondition = selectedSpecialCondition != 'None';
+
+    if (selectedTiles.isEmpty && !hasFlowers && !hasSpecialCondition) {
+      effectiveFan = fanCount;
+      displayRules = [
+        {
+          'name': gameMode == GameMode.taiwan
+              ? AppLocalizations.userSetTai(fanCount)
+              : AppLocalizations.userSetFan(fanCount),
+          'fan': fanCount,
+        },
+      ];
+      // In manual mode the entered number IS the per-person score
+      totalPoints = fanCount;
+      return;
+    }
+
+    // ── Tile-based calculation ──────────────────────────────────────
     int localEffectiveFan = fanCount;
     displayRules = List.from(matchedRulesDetails);
 
     // Check for Hidden Treasure combination
-    bool hasAllPongs =
-        displayRules.any((r) => r['name'] == AppLocalizations.ruleAllPongs);
+    bool hasAllPongs = displayRules.any(
+      (r) => r['name'] == AppLocalizations.ruleAllPongs,
+    );
     bool isMenQianQing = selectedSpecialCondition == 'Men Qian Qing';
 
     if (hasAllPongs && isMenQianQing) {
-      displayRules.removeWhere((r) => r['name'] == AppLocalizations.ruleAllPongs);
+      displayRules.removeWhere(
+        (r) => r['name'] == AppLocalizations.ruleAllPongs,
+      );
       displayRules.add({'name': AppLocalizations.ruleHiddenTreasure, 'fan': 8});
       localEffectiveFan = localEffectiveFan - 3 + 8;
     } else {
@@ -433,7 +462,9 @@ class ScoreCalculationController extends ChangeNotifier {
         specialFan = isTW ? 3 : 1;
         specialName = AppLocalizations.ruleMenQianQing;
         if (isTW && isSelfDraw) {
-          displayRules.removeWhere((r) => r['name'] == AppLocalizations.ruleSelfDraw);
+          displayRules.removeWhere(
+            (r) => r['name'] == AppLocalizations.ruleSelfDraw,
+          );
           specialFan = 5;
           specialName = AppLocalizations.twConcealedSelfDraw;
         }
@@ -467,12 +498,13 @@ class ScoreCalculationController extends ChangeNotifier {
     }
 
     // Self-draw in manual mode
-    bool hasSelfDrawRule =
-        displayRules.any((r) => r['name'] == AppLocalizations.ruleSelfDraw);
+    bool hasSelfDrawRule = displayRules.any(
+      (r) => r['name'] == AppLocalizations.ruleSelfDraw,
+    );
     if (isSelfDraw && !hasSelfDrawRule && selectedTiles.isEmpty) {
       bool isSpecialHand =
           selectedSpecialCondition == 'Heavenly Hand' ||
-              selectedFlowers.values.where((v) => v).length >= 7;
+          selectedFlowers.values.where((v) => v).length >= 7;
       if (!isSpecialHand) {
         localEffectiveFan += 1;
         displayRules.add({'name': AppLocalizations.ruleSelfDraw, 'fan': 1});
@@ -494,14 +526,14 @@ class ScoreCalculationController extends ChangeNotifier {
         return;
       } else {
         displayRules = [
-          {'name': AppLocalizations.ruleSevenFlowers, 'fan': 3}
+          {'name': AppLocalizations.ruleSevenFlowers, 'fan': 3},
         ];
         localEffectiveFan = 3;
       }
     } else if (flowerCount == 8) {
       int val = 8;
       displayRules = [
-        {'name': AppLocalizations.ruleEightImmortals, 'fan': val}
+        {'name': AppLocalizations.ruleEightImmortals, 'fan': val},
       ];
       localEffectiveFan = val;
     } else if (isTW) {
@@ -530,7 +562,10 @@ class ScoreCalculationController extends ChangeNotifier {
 
       if (hasFlowers1to4) {
         flowerFan += 2;
-        displayRules.add({'name': AppLocalizations.ruleFlowerPlatform14, 'fan': 2});
+        displayRules.add({
+          'name': AppLocalizations.ruleFlowerPlatform14,
+          'fan': 2,
+        });
       } else {
         if (selectedFlowers[ownFlower] == true) {
           flowerFan += 1;
@@ -545,7 +580,10 @@ class ScoreCalculationController extends ChangeNotifier {
 
       if (hasSeasons1to4) {
         flowerFan += 2;
-        displayRules.add({'name': AppLocalizations.ruleFlowerPlatform58, 'fan': 2});
+        displayRules.add({
+          'name': AppLocalizations.ruleFlowerPlatform58,
+          'fan': 2,
+        });
       } else {
         if (selectedFlowers[ownSeason] == true) {
           flowerFan += 1;
@@ -743,8 +781,7 @@ class ScoreCalculationController extends ChangeNotifier {
           scoreChanges[getId(player.name)] = -totalPoints;
         }
       }
-      scoreChanges[getId(winningPlayer!)] =
-          totalPoints * (players.length - 1);
+      scoreChanges[getId(winningPlayer!)] = totalPoints * (players.length - 1);
     } else if (!isSelfDraw && winningPlayer != null && discardPlayer != null) {
       scoreChanges[getId(discardPlayer!)] = -totalPoints;
       scoreChanges[getId(winningPlayer!)] = totalPoints;
@@ -836,7 +873,9 @@ class ScoreCalculationController extends ChangeNotifier {
       // All one suit detection
       for (final rule in displayRules) {
         final name = rule['name'] as String? ?? '';
-        if (name.contains('清一色') || name.contains('Full Flush') || name.contains('One Suit')) {
+        if (name.contains('清一色') ||
+            name.contains('Full Flush') ||
+            name.contains('One Suit')) {
           if (!patterns.contains('allOneSuit')) patterns.add('allOneSuit');
         }
       }

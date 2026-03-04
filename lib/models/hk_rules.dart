@@ -67,7 +67,7 @@ List<Rule> get hkRules => [
     exampleTiles: [
       ['5z', '5z', '5z'],
     ],
-    // Validator requires context or specific check. 
+    // Validator requires context or specific check.
   ),
   Rule(
     name: AppLocalizations.ruleRobbingKong,
@@ -327,7 +327,22 @@ List<Rule> get hkRules => [
     explanation: AppLocalizations.explThirteenOrphans,
     validator: HandPatterns.isThirteenOrphans,
     exampleTiles: [
-      ['1m', '9m', '1p', '9p', '1s', '9s', '1z', '2z', '3z', '4z', '5z', '6z', '7z', '1m'],
+      [
+        '1m',
+        '9m',
+        '1p',
+        '9p',
+        '1s',
+        '9s',
+        '1z',
+        '2z',
+        '3z',
+        '4z',
+        '5z',
+        '6z',
+        '7z',
+        '1m',
+      ],
     ],
   ),
   Rule(

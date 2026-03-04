@@ -99,8 +99,7 @@ class HandPatterns {
 
   /// 1 Fan: Ping Hu (All Chows) - hand formed entirely by chows + one pair
   static bool isPingHu(List<String> tiles) {
-    return HandCore.checkSpecificHand(tiles,
-        allowChow: true, allowPong: false);
+    return HandCore.checkSpecificHand(tiles, allowChow: true, allowPong: false);
   }
 
   /// Taiwan Ping Hu (strict version)
@@ -130,8 +129,7 @@ class HandPatterns {
 
   /// 3 Fan: All Pongs / Dui Dui Hu (對對胡)
   static bool isAllPongs(List<String> tiles) {
-    return HandCore.checkSpecificHand(tiles,
-        allowChow: false, allowPong: true);
+    return HandCore.checkSpecificHand(tiles, allowChow: false, allowPong: true);
   }
 
   /// 4 Fan: Mixed Terminals / Hua Yao Jiu (花么九)
@@ -306,8 +304,19 @@ class HandPatterns {
     if (tiles.length != 14) return false;
     Set<String> uniqueTiles = tiles.toSet();
     Set<String> requiredOrphans = {
-      '1m', '9m', '1p', '9p', '1s', '9s',
-      '1z', '2z', '3z', '4z', '5z', '6z', '7z'
+      '1m',
+      '9m',
+      '1p',
+      '9p',
+      '1s',
+      '9s',
+      '1z',
+      '2z',
+      '3z',
+      '4z',
+      '5z',
+      '6z',
+      '7z',
     };
     return uniqueTiles.length == 13 && uniqueTiles.containsAll(requiredOrphans);
   }

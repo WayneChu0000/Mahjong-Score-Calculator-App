@@ -281,13 +281,17 @@ class L10nEn extends L10n {
   String get scanTiles => 'Scan Tiles';
 
   @override
+  String get uploadPhoto => 'Upload Photo';
+
+  @override
   String get selectHand => 'Select Hand';
 
   @override
   String get analyzingTiles => 'Analyzing tiles...';
 
   @override
-  String get takePhotoHint => 'Take photo or click to select hand pattern';
+  String get takePhotoHint =>
+      'Take photo, upload image, or click to select hand pattern';
 
   @override
   String get item => 'Item';
@@ -1705,6 +1709,23 @@ class L10nEn extends L10n {
       'One complete flower set (一台草): each opponent pays half a base. One complete flower group (一台花): each opponent pays one base. Note: claiming flowers forfeits grass bonus.';
 
   @override
+  String get twFlowerSeasonSetPay => 'Season Set (一台草)';
+
+  @override
+  String get twFlowerSeasonSetPayDesc =>
+      'Collecting all 4 season tiles (Spring/Summer/Autumn/Winter). Each opponent pays the specified amount.';
+
+  @override
+  String get twFlowerGroupPay => 'Flower Group (一台花)';
+
+  @override
+  String get twFlowerGroupPayDesc =>
+      'Collecting all 4 flower tiles (Plum/Orchid/Bamboo/Chrysanthemum). Each opponent pays the specified amount.';
+
+  @override
+  String get builtInPayment => 'Built-in';
+
+  @override
   String get twFalseWinPay => 'False Win (詐胡)';
 
   @override
@@ -1765,21 +1786,46 @@ class L10nEn extends L10n {
 
   @override
   String get twLaSettlementDesc =>
-      'A carry-over settlement system that multiplies debt across consecutive rounds.';
+      'A carry-over settlement system that multiplies debt across consecutive rounds. Debts accumulate during a winning streak and are settled when the streak ends.';
 
   @override
-  String get twLaMultiplier => 'Multiplier Effect';
+  String get twLaMultiplier => 'Multiplier Effect (×1.5)';
 
   @override
   String get twLaMultiplierDesc =>
-      'If the previous round\'s winner wins again, the losers\' previous debts are multiplied by 1.5× before adding the new round\'s losses.';
+      'If the same player wins consecutively, each loser\'s previous debt is multiplied by 1.5× before adding the new round\'s loss. Self-draw: all compound. Discard: only the discarder compounds.';
 
   @override
-  String get twLaReduction => 'Debt Reduction';
+  String get twLaReduction => 'Debt Reduction (÷2)';
 
   @override
   String get twLaReductionDesc =>
-      'If the previous round\'s loser self-draws, or the previous winner discards the winning tile, accumulated debts are halved.';
+      'When the streak ends: if the streak winner discards the winning tile, or if a debtor self-draws, ONLY that specific player\'s debt is halved. Other debtors pay full.';
+
+  @override
+  String get twLaStopRule => 'Stop Rule (逼停)';
+
+  @override
+  String get twLaStopRuleDesc =>
+      'If a player loses to the same streak winner 3, 6, 9, or 12 times, they can force an immediate settlement at full debt (no reduction opportunity).';
+
+  @override
+  String get twLaStopRuleTitle => 'Force Settlement (逼停)';
+
+  @override
+  String twLaStopRuleMessage(
+    String playerName,
+    int lossCount,
+    String streakWinnerName,
+  ) {
+    return '$playerName has lost $lossCount consecutive times to $streakWinnerName. Force settle debt now (no reduction chance)?';
+  }
+
+  @override
+  String get twLaStopRuleContinue => 'Continue Playing';
+
+  @override
+  String get twLaStopRuleSettle => 'Force Settle';
 
   @override
   String get twLaApplied => 'La Carry-over (拉)';
@@ -1792,6 +1838,40 @@ class L10nEn extends L10n {
 
   @override
   String get twLaCarryDebt => 'Carry-over debt from previous round';
+
+  @override
+  String get twLaDebtTracker => 'La Debt Tracker (拉)';
+
+  @override
+  String get twLaStreakWinner => 'Streak Winner';
+
+  @override
+  String get twLaDebtTotal => 'Total Debt';
+
+  @override
+  String get twLaDebtApplied => 'Already Applied';
+
+  @override
+  String get twLaDebtPending => 'Pending Settlement';
+
+  @override
+  String twLaLosses(int count) {
+    return '$count losses';
+  }
+
+  @override
+  String get twLaSettled => 'Settled';
+
+  @override
+  String get twLaForceSettleAction => 'Force Settle';
+
+  @override
+  String get twLaNoActiveStreak => 'No active La streak';
+
+  @override
+  String twLaStreakRounds(int count) {
+    return '$count round streak';
+  }
 
   @override
   String get twDealerBonusTitle => 'Dealer Bonus Rules';
@@ -2875,4 +2955,238 @@ class L10nEn extends L10n {
   @override
   String get tipDayContent10 =>
       'In Taiwan mahjong, the La rule multiplies carry-over debts by 1.5× when the same player wins consecutively.';
+
+  @override
+  String get customFanValues => 'Custom Fan/Tai Values';
+
+  @override
+  String get customFanValuesDesc =>
+      'Customize scoring values for individual rules';
+
+  @override
+  String get customHkFan => 'Hong Kong Fan Values';
+
+  @override
+  String get customTwTai => 'Taiwan Tai Values';
+
+  @override
+  String get resetToDefault => 'Reset to Default';
+
+  @override
+  String get resetFanConfirm => 'Reset all custom fan/tai values to default?';
+
+  @override
+  String get customized => 'Customized';
+
+  @override
+  String defaultValue(int value) {
+    return 'Default: $value';
+  }
+
+  @override
+  String get gamePreferences => 'Game Preferences';
+
+  @override
+  String get displaySettings => 'Display Settings';
+
+  @override
+  String get advancedSettings => 'Advanced Settings';
+
+  @override
+  String get accountSettings => 'Account';
+
+  @override
+  String get noCustomizations =>
+      'No customizations yet. Tap a rule to change its fan/tai value.';
+
+  @override
+  String get editFanValue => 'Edit Fan Value';
+
+  @override
+  String get editTaiValue => 'Edit Tai Value';
+
+  @override
+  String get enterNewValue => 'Enter new value (0-13)';
+
+  @override
+  String get enterNewTaiValue => 'Enter new value (0-100)';
+
+  @override
+  String get invalidValue => 'Please enter a valid number';
+
+  @override
+  String get customFanSaved => 'Custom value saved';
+
+  @override
+  String get allReset => 'All values reset to default';
+
+  @override
+  String get hkGameSettings => 'HK Mahjong Settings';
+
+  @override
+  String get twGameSettings => 'TW Mahjong Settings';
+
+  @override
+  String get hkMinFan => 'Minimum Fan';
+
+  @override
+  String get hkMaxFan => 'Maximum Fan';
+
+  @override
+  String get twBaseTaiSetting => 'Base (底)';
+
+  @override
+  String get twTaiValueSetting => 'Value per Tai (每台)';
+
+  @override
+  String get addRule => 'Add Rule';
+
+  @override
+  String get deleteRule => 'Delete Rule';
+
+  @override
+  String get ruleName => 'Rule Name';
+
+  @override
+  String get fanValueLabel => 'Fan Value';
+
+  @override
+  String get taiValueLabel => 'Tai Value';
+
+  @override
+  String get addCustomRule => 'Add Custom Rule';
+
+  @override
+  String get deleteConfirm => 'Are you sure you want to delete this rule?';
+
+  @override
+  String get ruleDeleted => 'Rule deleted';
+
+  @override
+  String get ruleAdded => 'Rule added';
+
+  @override
+  String get ruleRestored => 'Rule restored';
+
+  @override
+  String get deletedRules => 'Deleted Rules';
+
+  @override
+  String get restore => 'Restore';
+
+  @override
+  String get customRules => 'Custom Rules';
+
+  @override
+  String get builtInRules => 'Built-in Rules';
+
+  @override
+  String get twPayments => 'TW Real-time Payments';
+
+  @override
+  String get twPaymentsDesc =>
+      'Configure real-time payment items for TW Mahjong';
+
+  @override
+  String get paymentName => 'Payment Name';
+
+  @override
+  String get paymentValue => 'Payment Value';
+
+  @override
+  String get addPayment => 'Add Payment';
+
+  @override
+  String get editPayment => 'Edit Payment';
+
+  @override
+  String get noPayments => 'No payment items configured';
+
+  @override
+  String get paymentSaved => 'Payment saved';
+
+  @override
+  String get paymentDeleted => 'Payment deleted';
+
+  @override
+  String get enterRuleName => 'Enter rule name';
+
+  @override
+  String get enterValue => 'Enter value';
+
+  @override
+  String get instantPayment => 'Instant Payment';
+
+  @override
+  String get selectPayer => 'Who pays?';
+
+  @override
+  String get selectReceiver => 'Who receives?';
+
+  @override
+  String get selectPaymentItem => 'Select payment item';
+
+  @override
+  String get paymentAmount => 'Amount';
+
+  @override
+  String get paymentApplied => 'Payment applied';
+
+  @override
+  String get allOtherPlayers => 'All other players';
+
+  @override
+  String get customAmount => 'Custom amount';
+
+  @override
+  String get achvTwInstantPay5Title => 'Quick Pay';
+
+  @override
+  String get achvTwInstantPay5Desc => 'Apply 5 instant payments in TW mahjong';
+
+  @override
+  String get achvTwInstantPay20Title => 'Payment Master';
+
+  @override
+  String get achvTwInstantPay20Desc =>
+      'Apply 20 instant payments in TW mahjong';
+
+  @override
+  String userSetFan(int f) {
+    return 'User Set $f Fan';
+  }
+
+  @override
+  String userSetTai(int f) {
+    return 'User Set $f Tai';
+  }
+
+  @override
+  String get roundHistory => 'Round History';
+
+  @override
+  String get seatOrder => 'Seat Order';
+
+  @override
+  String get dragToReorder => 'Hold & drag to reorder seats';
+
+  @override
+  String get recentPlayers => 'Recent Players';
+
+  @override
+  String get duplicateNameWarning => 'Duplicate name detected';
+
+  @override
+  String windSeat(String wind) {
+    return '$wind Seat';
+  }
+
+  @override
+  String get tapToEdit => 'Tap name to edit';
+
+  @override
+  String get playerSetupSubtitle => 'Set up your table';
+
+  @override
+  String get clearName => 'Clear';
 }

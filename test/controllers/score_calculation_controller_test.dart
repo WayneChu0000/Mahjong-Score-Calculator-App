@@ -14,7 +14,8 @@ ScoreCalculationController _hkController({
   List<Player>? players,
 }) {
   return ScoreCalculationController(
-    players: players ??
+    players:
+        players ??
         const [
           Player(id: 0, name: 'Alice', score: 0),
           Player(id: 1, name: 'Bob', score: 0),
@@ -40,7 +41,8 @@ ScoreCalculationController _twController({
   List<Player>? players,
 }) {
   return ScoreCalculationController(
-    players: players ??
+    players:
+        players ??
         const [
           Player(id: 0, name: 'Alice', score: 0),
           Player(id: 1, name: 'Bob', score: 0),
@@ -169,14 +171,17 @@ void main() {
       expect(c.winningPlayer, equals('Alice'));
     });
 
-    test('discardPlayer updated when it equals the new winner (discard mode)', () {
-      final c = _hkController();
-      c.setSelfDraw(false);
-      String? oldDiscard = c.discardPlayer;
-      c.setWinningPlayer(oldDiscard!); // set winner = old discard
-      // discardPlayer must not equal winningPlayer
-      expect(c.discardPlayer, isNot(equals(c.winningPlayer)));
-    });
+    test(
+      'discardPlayer updated when it equals the new winner (discard mode)',
+      () {
+        final c = _hkController();
+        c.setSelfDraw(false);
+        String? oldDiscard = c.discardPlayer;
+        c.setWinningPlayer(oldDiscard!); // set winner = old discard
+        // discardPlayer must not equal winningPlayer
+        expect(c.discardPlayer, isNot(equals(c.winningPlayer)));
+      },
+    );
   });
 
   // ==========================================================================
@@ -317,8 +322,22 @@ void main() {
   group('setSelectedTiles', () {
     test('stores tiles and recalculates', () {
       final c = _hkController();
-      final tiles = ['1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m',
-                      '1p', '1p', '1p', '5z', '5z'];
+      final tiles = [
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '1p',
+        '1p',
+        '1p',
+        '5z',
+        '5z',
+      ];
       c.setSelectedTiles(tiles);
       expect(c.selectedTiles, equals(tiles));
     });
@@ -368,11 +387,14 @@ void main() {
   group('HK flower scoring', () {
     test('no flowers selected gives +1 fan (No Flowers)', () {
       final c = _hkController(dealerIndex: 0);
-      // displayRules should contain "No Flowers"
+      // In manual mode (no tiles, no flowers, no conditions),
+      // displayRules shows "User Set X Fan" instead of individual items
       expect(
-        c.displayRules.any((r) => r['name'] == AppLocalizations.ruleNoFlowers),
+        c.displayRules.any((r) => (r['name'] as String).contains('User Set')),
         isTrue,
       );
+      // totalPoints = fanCount directly
+      expect(c.totalPoints, equals(c.fanCount));
     });
 
     test('own flower gives +1 fan', () {
@@ -401,7 +423,9 @@ void main() {
         c.toggleFlower('${i}f');
       }
       expect(
-        c.displayRules.any((r) => r['name'] == AppLocalizations.ruleFlowerPlatform14),
+        c.displayRules.any(
+          (r) => r['name'] == AppLocalizations.ruleFlowerPlatform14,
+        ),
         isTrue,
       );
     });
@@ -412,7 +436,9 @@ void main() {
         c.toggleFlower('${i}f');
       }
       expect(
-        c.displayRules.any((r) => r['name'] == AppLocalizations.ruleFlowerPlatform58),
+        c.displayRules.any(
+          (r) => r['name'] == AppLocalizations.ruleFlowerPlatform58,
+        ),
         isTrue,
       );
     });
@@ -423,7 +449,9 @@ void main() {
         c.toggleFlower('${i}f');
       }
       expect(
-        c.displayRules.any((r) => r['name'] == AppLocalizations.ruleEightImmortals),
+        c.displayRules.any(
+          (r) => r['name'] == AppLocalizations.ruleEightImmortals,
+        ),
         isTrue,
       );
     });
@@ -437,7 +465,9 @@ void main() {
       final c = _hkController();
       c.setSpecialCondition('Men Qian Qing');
       expect(
-        c.displayRules.any((r) => r['name'] == AppLocalizations.ruleMenQianQing),
+        c.displayRules.any(
+          (r) => r['name'] == AppLocalizations.ruleMenQianQing,
+        ),
         isTrue,
       );
     });
@@ -446,7 +476,9 @@ void main() {
       final c = _hkController();
       c.setSpecialCondition('Robbing the Kong');
       expect(
-        c.displayRules.any((r) => r['name'] == AppLocalizations.ruleRobbingKong),
+        c.displayRules.any(
+          (r) => r['name'] == AppLocalizations.ruleRobbingKong,
+        ),
         isTrue,
       );
     });
@@ -495,9 +527,19 @@ void main() {
   //  Taiwan Score Calculation
   // ==========================================================================
   group('Taiwan score calculation', () {
-    test('basic TW scoring: baseTai + fan * taiValue', () {
+    test('basic TW scoring: manual mode totalPoints equals fanCount', () {
       // minFan(baseTai)=10, maxFan(taiValue)=5
       final c = _twController(minFan: 10, maxFan: 5);
+      // In manual mode (no tiles, flowers, or conditions),
+      // totalPoints = fanCount directly
+      expect(c.totalPoints, equals(c.fanCount));
+      c.setFan(50);
+      expect(c.totalPoints, equals(50));
+    });
+
+    test('TW scoring with flowers uses formula: baseTai + fan * taiValue', () {
+      final c = _twController(minFan: 10, maxFan: 5);
+      c.toggleFlower('2f'); // triggers non-manual path
       // totalPoints = baseTai + effectiveFan * taiValue
       expect(c.totalPoints, equals(10 + c.effectiveFan * 5));
     });
@@ -569,7 +611,9 @@ void main() {
       c.setSpecialCondition('Men Qian Qing');
       // Should be converted to Concealed Self-Draw
       expect(
-        c.displayRules.any((r) => r['name'] == AppLocalizations.twConcealedSelfDraw),
+        c.displayRules.any(
+          (r) => r['name'] == AppLocalizations.twConcealedSelfDraw,
+        ),
         isTrue,
       );
       final rule = c.displayRules.firstWhere(
@@ -583,10 +627,15 @@ void main() {
         dealerIndex: 0,
         consecutiveDealerCount: 3, // 3-1 = 2 bonus tai
       );
+      // Toggle a flower to exit manual mode so dealer bonus path runs
+      c.toggleFlower('2f');
       // winningPlayer is Alice (index 0), dealer is index 0 → winner IS dealer
       expect(
-        c.displayRules.any((r) =>
-            (r['name'] as String).contains(AppLocalizations.twConsecutiveDealer)),
+        c.displayRules.any(
+          (r) => (r['name'] as String).contains(
+            AppLocalizations.twConsecutiveDealer,
+          ),
+        ),
         isTrue,
       );
     });
@@ -601,8 +650,10 @@ void main() {
       final c = _twController(dealerIndex: 0);
       c.toggleFlower('1f');
       expect(
-        c.displayRules.any((r) =>
-            (r['name'] as String).contains(AppLocalizations.twProperFlower)),
+        c.displayRules.any(
+          (r) =>
+              (r['name'] as String).contains(AppLocalizations.twProperFlower),
+        ),
         isTrue,
       );
     });
@@ -612,8 +663,9 @@ void main() {
       final c = _twController(dealerIndex: 0);
       c.toggleFlower('2f');
       expect(
-        c.displayRules.any((r) =>
-            (r['name'] as String).contains(AppLocalizations.twWrongFlower)),
+        c.displayRules.any(
+          (r) => (r['name'] as String).contains(AppLocalizations.twWrongFlower),
+        ),
         isTrue,
       );
     });
@@ -627,12 +679,26 @@ void main() {
       final c = _hkController(dealerIndex: 0);
       // Hand with a white dragon pong: 1m2m3m 4m5m6m 7m8m9m 5z5z5z + 1p1p
       final tiles = [
-        '1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m',
-        '5z', '5z', '5z', '1p', '1p',
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '5z',
+        '5z',
+        '5z',
+        '1p',
+        '1p',
       ];
       c.setSelectedTiles(tiles);
       expect(
-        c.matchedRulesDetails.any((r) => r['name'] == AppLocalizations.rulePongOfWhite),
+        c.matchedRulesDetails.any(
+          (r) => r['name'] == AppLocalizations.rulePongOfWhite,
+        ),
         isTrue,
       );
     });
@@ -641,13 +707,26 @@ void main() {
       final c = _hkController(dealerIndex: 0, roundWindIndex: 0); // East wind
       // Hand with East wind pong: 1z1z1z + chows + pair
       final tiles = [
-        '1z', '1z', '1z', '1m', '2m', '3m', '4m', '5m', '6m',
-        '7m', '8m', '9m', '1p', '1p',
+        '1z',
+        '1z',
+        '1z',
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '1p',
+        '1p',
       ];
       c.setSelectedTiles(tiles);
       expect(
-        c.matchedRulesDetails.any((r) =>
-            (r['name'] as String).contains(AppLocalizations.ruleRoundWind)),
+        c.matchedRulesDetails.any(
+          (r) => (r['name'] as String).contains(AppLocalizations.ruleRoundWind),
+        ),
         isTrue,
       );
     });
@@ -656,13 +735,26 @@ void main() {
       // dealerIndex=0, winner=Alice(0) → seatWind=East → 1z
       final c = _hkController(dealerIndex: 0);
       final tiles = [
-        '1z', '1z', '1z', '1m', '2m', '3m', '4m', '5m', '6m',
-        '7m', '8m', '9m', '1p', '1p',
+        '1z',
+        '1z',
+        '1z',
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '1p',
+        '1p',
       ];
       c.setSelectedTiles(tiles);
       expect(
-        c.matchedRulesDetails.any((r) =>
-            (r['name'] as String).contains(AppLocalizations.ruleSeatWind)),
+        c.matchedRulesDetails.any(
+          (r) => (r['name'] as String).contains(AppLocalizations.ruleSeatWind),
+        ),
         isTrue,
       );
     });
@@ -671,12 +763,26 @@ void main() {
       final c = _hkController(dealerIndex: 0);
       c.setSelfDraw(true);
       final tiles = [
-        '1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m',
-        '1p', '1p', '1p', '5z', '5z',
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '1p',
+        '1p',
+        '1p',
+        '5z',
+        '5z',
       ];
       c.setSelectedTiles(tiles);
       expect(
-        c.matchedRulesDetails.any((r) => r['name'] == AppLocalizations.ruleSelfDraw),
+        c.matchedRulesDetails.any(
+          (r) => r['name'] == AppLocalizations.ruleSelfDraw,
+        ),
         isTrue,
       );
     });
@@ -690,13 +796,27 @@ void main() {
       final c = _hkController(dealerIndex: 0);
       // All pong hand: 1m1m1m 5p5p5p 9s9s9s 3z3z3z + 7z7z
       final tiles = [
-        '1m', '1m', '1m', '5p', '5p', '5p', '9s', '9s', '9s',
-        '3z', '3z', '3z', '7z', '7z',
+        '1m',
+        '1m',
+        '1m',
+        '5p',
+        '5p',
+        '5p',
+        '9s',
+        '9s',
+        '9s',
+        '3z',
+        '3z',
+        '3z',
+        '7z',
+        '7z',
       ];
       c.setSelectedTiles(tiles);
       c.setSpecialCondition('Men Qian Qing');
       expect(
-        c.displayRules.any((r) => r['name'] == AppLocalizations.ruleHiddenTreasure),
+        c.displayRules.any(
+          (r) => r['name'] == AppLocalizations.ruleHiddenTreasure,
+        ),
         isTrue,
       );
       // All Pongs should be removed in favour of Hidden Treasure
@@ -725,19 +845,22 @@ void main() {
   //  buildSubmitResult
   // ==========================================================================
   group('buildSubmitResult', () {
-    test('self-draw: winner gains totalPoints * 3, others lose totalPoints', () {
-      final c = _hkController();
-      c.setSelfDraw(true);
-      final result = c.buildSubmitResult()!;
-      final scores = result['scores'] as Map<String, int>;
+    test(
+      'self-draw: winner gains totalPoints * 3, others lose totalPoints',
+      () {
+        final c = _hkController();
+        c.setSelfDraw(true);
+        final result = c.buildSubmitResult()!;
+        final scores = result['scores'] as Map<String, int>;
 
-      // Winner (Alice, id=0) gets totalPoints * 3
-      expect(scores['0'], equals(c.totalPoints * 3));
-      // Each other player loses totalPoints
-      expect(scores['1'], equals(-c.totalPoints));
-      expect(scores['2'], equals(-c.totalPoints));
-      expect(scores['3'], equals(-c.totalPoints));
-    });
+        // Winner (Alice, id=0) gets totalPoints * 3
+        expect(scores['0'], equals(c.totalPoints * 3));
+        // Each other player loses totalPoints
+        expect(scores['1'], equals(-c.totalPoints));
+        expect(scores['2'], equals(-c.totalPoints));
+        expect(scores['3'], equals(-c.totalPoints));
+      },
+    );
 
     test('discard: winner gains totalPoints, loser loses totalPoints', () {
       final c = _hkController();
@@ -747,10 +870,7 @@ void main() {
 
       String winnerId = '0'; // Alice
       String loserId = c.discardPlayer != null
-          ? c.players
-              .firstWhere((p) => p.name == c.discardPlayer)
-              .id
-              .toString()
+          ? c.players.firstWhere((p) => p.name == c.discardPlayer).id.toString()
           : '';
 
       expect(scores[winnerId], equals(c.totalPoints));
@@ -780,7 +900,10 @@ void main() {
   group('getAssetPath', () {
     test('characters tile', () {
       final c = _hkController();
-      expect(c.getAssetPath('1m'), equals('assets/images/tiles/characters/1m.png'));
+      expect(
+        c.getAssetPath('1m'),
+        equals('assets/images/tiles/characters/1m.png'),
+      );
     });
 
     test('dots tile', () {
@@ -800,7 +923,10 @@ void main() {
 
     test('flower tile', () {
       final c = _hkController();
-      expect(c.getAssetPath('3f'), equals('assets/images/tiles/flowers/3f.png'));
+      expect(
+        c.getAssetPath('3f'),
+        equals('assets/images/tiles/flowers/3f.png'),
+      );
     });
   });
 
@@ -810,11 +936,18 @@ void main() {
   group('getLocalizedCondition', () {
     test('returns localised string for known conditions', () {
       final c = _hkController();
-      expect(c.getLocalizedCondition('None'), equals(AppLocalizations.ruleNone));
-      expect(c.getLocalizedCondition('Men Qian Qing'),
-          equals(AppLocalizations.ruleMenQianQing));
-      expect(c.getLocalizedCondition('Heavenly Hand'),
-          equals(AppLocalizations.ruleHeavenlyHand));
+      expect(
+        c.getLocalizedCondition('None'),
+        equals(AppLocalizations.ruleNone),
+      );
+      expect(
+        c.getLocalizedCondition('Men Qian Qing'),
+        equals(AppLocalizations.ruleMenQianQing),
+      );
+      expect(
+        c.getLocalizedCondition('Heavenly Hand'),
+        equals(AppLocalizations.ruleHeavenlyHand),
+      );
     });
 
     test('returns raw string for unknown conditions', () {
@@ -843,9 +976,9 @@ void main() {
   // ==========================================================================
   group('getPlayerCurrentScore', () {
     test('returns score for existing player', () {
-      final c = _hkController(players: [
-        const Player(id: 0, name: 'Alice', score: 500),
-      ]);
+      final c = _hkController(
+        players: [const Player(id: 0, name: 'Alice', score: 500)],
+      );
       expect(c.getPlayerCurrentScore('Alice'), equals(500));
     });
 

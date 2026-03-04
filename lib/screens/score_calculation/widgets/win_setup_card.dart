@@ -61,10 +61,7 @@ class WinSetupCard extends StatelessWidget {
           children: [
             Text(
               AppLocalizations.win,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             // Self-draw or discard selection
@@ -105,7 +102,8 @@ class WinSetupCard extends StatelessWidget {
                 return DropdownMenuItem<String>(
                   value: player.name,
                   child: Text(
-                      '${player.name} ${AppLocalizations.currentScore(getPlayerCurrentScore(player.name))}'),
+                    '${player.name} ${AppLocalizations.currentScore(getPlayerCurrentScore(player.name))}',
+                  ),
                 );
               }).toList(),
               onChanged: onWinningPlayerChanged,
@@ -121,7 +119,9 @@ class WinSetupCard extends StatelessWidget {
                       labelText: AppLocalizations.roundWind,
                       border: const OutlineInputBorder(),
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 12),
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
                     ),
                     initialValue: roundWind,
                     items: winds.map((wind) {
@@ -140,7 +140,9 @@ class WinSetupCard extends StatelessWidget {
                       labelText: AppLocalizations.seatWind,
                       border: const OutlineInputBorder(),
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 12),
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
                     ),
                     initialValue: seatWind,
                     items: winds.map((wind) {
@@ -165,13 +167,14 @@ class WinSetupCard extends StatelessWidget {
                   border: const OutlineInputBorder(),
                 ),
                 initialValue: discardPlayer,
-                items: players
-                    .where((player) => player.name != winningPlayer)
-                    .map((player) {
+                items: players.where((player) => player.name != winningPlayer).map((
+                  player,
+                ) {
                   return DropdownMenuItem<String>(
                     value: player.name,
                     child: Text(
-                        '${player.name} ${AppLocalizations.currentScore(getPlayerCurrentScore(player.name))}'),
+                      '${player.name} ${AppLocalizations.currentScore(getPlayerCurrentScore(player.name))}',
+                    ),
                   );
                 }).toList(),
                 onChanged: onDiscardPlayerChanged,

@@ -8,8 +8,10 @@ import 'tile_utils.dart';
 class HandValidator {
   /// Check if the hand is a winning hand.
   /// Returns a map with 'valid' (bool) and 'message' (String).
-  static Map<String, dynamic> checkWinningHand(List<String> tiles,
-      {GameMode gameMode = GameMode.hongKong}) {
+  static Map<String, dynamic> checkWinningHand(
+    List<String> tiles, {
+    GameMode gameMode = GameMode.hongKong,
+  }) {
     // Sort tiles for easier processing
     tiles.sort(TileUtils.compareTiles);
 
@@ -34,15 +36,26 @@ class HandValidator {
       if (standardCount == 14) {
         Set<String> uniqueTiles = tiles.toSet();
         Set<String> requiredOrphans = {
-          '1m', '9m', '1p', '9p', '1s', '9s',
-          '1z', '2z', '3z', '4z', '5z', '6z', '7z'
+          '1m',
+          '9m',
+          '1p',
+          '9p',
+          '1s',
+          '9s',
+          '1z',
+          '2z',
+          '3z',
+          '4z',
+          '5z',
+          '6z',
+          '7z',
         };
 
         if (uniqueTiles.length == 13 &&
             uniqueTiles.containsAll(requiredOrphans)) {
           return {
             'valid': true,
-            'message': AppLocalizations.winningHandThirteenOrphans
+            'message': AppLocalizations.winningHandThirteenOrphans,
           };
         }
       }

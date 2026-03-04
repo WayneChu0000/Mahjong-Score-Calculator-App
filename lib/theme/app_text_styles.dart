@@ -57,8 +57,6 @@ class AppTextStyles {
   static const TextStyle destructive = TextStyle(color: AppColors.destructive);
 
   /// 14 pt grey subtitle text.
-  static TextStyle subtitleGrey({bool isDark = false}) => TextStyle(
-        fontSize: 14,
-        color: isDark ? AppColors.grey400 : Colors.grey,
-      );
+  static TextStyle subtitleGrey({bool isDark = false}) =>
+      TextStyle(fontSize: 14, color: isDark ? AppColors.grey400 : Colors.grey);
 }

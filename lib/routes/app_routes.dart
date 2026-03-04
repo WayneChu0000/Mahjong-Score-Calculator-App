@@ -21,6 +21,7 @@ class AppRoutes {
   static const String savedGroups = '/saved-groups';
   static const String groupDetail = '/group-detail';
   static const String achievements = '/achievements';
+  static const String customFanEditor = '/custom-fan-editor';
 }
 
 // ─── Typed argument classes ────────────────────────────────────────
@@ -130,8 +131,5 @@ class AchievementArgs {
   final String groupName;
   final String playerName;
 
-  const AchievementArgs({
-    required this.groupName,
-    required this.playerName,
-  });
+  const AchievementArgs({required this.groupName, required this.playerName});
 }

@@ -1,7 +1,4 @@
-enum GameMode {
-  hongKong,
-  taiwan,
-}
+enum GameMode { hongKong, taiwan }
 
 extension GameModeExtension on GameMode {
   String get name {

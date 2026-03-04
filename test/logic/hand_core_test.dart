@@ -55,19 +55,13 @@ void main() {
     // chow disabled
     test('allowChow=false rejects chow', () {
       final counts = {'1m': 1, '2m': 1, '3m': 1};
-      expect(
-        HandCore.checkSets(counts, 0, allowChow: false),
-        isFalse,
-      );
+      expect(HandCore.checkSets(counts, 0, allowChow: false), isFalse);
     });
 
     // pong disabled
     test('allowPong=false rejects pong', () {
       final counts = {'5p': 3};
-      expect(
-        HandCore.checkSets(counts, 0, allowPong: false),
-        isFalse,
-      );
+      expect(HandCore.checkSets(counts, 0, allowPong: false), isFalse);
     });
 
     // Complex: mix of chows and pongs
@@ -88,8 +82,20 @@ void main() {
     test('valid all-chow hand (14 tiles) with allowPong=false', () {
       // 1m2m3m 4m5m6m 7m8m9m 1p2p3p + 5s5s (pair)
       final tiles = [
-        '1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m',
-        '1p', '2p', '3p', '5s', '5s',
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '1p',
+        '2p',
+        '3p',
+        '5s',
+        '5s',
       ];
       expect(
         HandCore.checkSpecificHand(tiles, allowChow: true, allowPong: false),
@@ -101,8 +107,20 @@ void main() {
     test('valid all-pong hand (14 tiles) with allowChow=false', () {
       // 1m×3 5p×3 9s×3 3z×3 + 7z×2 (pair)
       final tiles = [
-        '1m', '1m', '1m', '5p', '5p', '5p', '9s', '9s', '9s',
-        '3z', '3z', '3z', '7z', '7z',
+        '1m',
+        '1m',
+        '1m',
+        '5p',
+        '5p',
+        '5p',
+        '9s',
+        '9s',
+        '9s',
+        '3z',
+        '3z',
+        '3z',
+        '7z',
+        '7z',
       ];
       expect(
         HandCore.checkSpecificHand(tiles, allowChow: false, allowPong: true),
@@ -111,7 +129,18 @@ void main() {
     });
 
     test('only 10 tiles → too few for either base, returns false', () {
-      final tiles = ['1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m', '1p'];
+      final tiles = [
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '1p',
+      ];
       expect(
         HandCore.checkSpecificHand(tiles, allowChow: true, allowPong: true),
         isFalse,
@@ -123,16 +152,40 @@ void main() {
     test('valid 4-meld + pair structure (14 tiles, 0 kongs)', () {
       // 1m2m3m 4m5m6m 7m8m9m 1p1p1p + 5z5z
       final tiles = [
-        '1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m',
-        '1p', '1p', '1p', '5z', '5z',
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '1p',
+        '1p',
+        '1p',
+        '5z',
+        '5z',
       ];
       expect(HandCore.validateStructure(tiles, 0, true, true), isTrue);
     });
 
     test('invalid grouping → false', () {
       final tiles = [
-        '1m', '1m', '2m', '3m', '5m', '6m', '7m', '8m', '9m',
-        '1p', '2p', '3p', '5z', '5z',
+        '1m',
+        '1m',
+        '2m',
+        '3m',
+        '5m',
+        '6m',
+        '7m',
+        '8m',
+        '9m',
+        '1p',
+        '2p',
+        '3p',
+        '5z',
+        '5z',
       ];
       expect(HandCore.validateStructure(tiles, 0, true, true), isFalse);
     });

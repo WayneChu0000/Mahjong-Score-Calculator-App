@@ -1,20 +1,10 @@
 import 'game_mode.dart';
 
 /// Achievement tier representing difficulty/rarity.
-enum AchievementTier {
-  bronze,
-  silver,
-  gold,
-  diamond,
-}
+enum AchievementTier { bronze, silver, gold, diamond }
 
 /// Category of achievement.
-enum AchievementCategory {
-  general,
-  hk,
-  tw,
-  milestone,
-}
+enum AchievementCategory { general, hk, tw, milestone }
 
 /// Static definition of an achievement (immutable template).
 class AchievementDef {
@@ -231,7 +221,8 @@ class AchievementCounters {
       totalFangChong: totalFangChong ?? this.totalFangChong,
       maxConsecutiveWins: maxConsecutiveWins ?? this.maxConsecutiveWins,
       maxConsecutiveDealer: maxConsecutiveDealer ?? this.maxConsecutiveDealer,
-      currentConsecutiveWins: currentConsecutiveWins ?? this.currentConsecutiveWins,
+      currentConsecutiveWins:
+          currentConsecutiveWins ?? this.currentConsecutiveWins,
       hkGames: hkGames ?? this.hkGames,
       hkWins: hkWins ?? this.hkWins,
       hkMaxFan: hkMaxFan ?? this.hkMaxFan,
@@ -249,7 +240,8 @@ class AchievementCounters {
       twMaxTai: twMaxTai ?? this.twMaxTai,
       twCommonHand: twCommonHand ?? this.twCommonHand,
       twConcealedSelfDrawn: twConcealedSelfDrawn ?? this.twConcealedSelfDrawn,
-      twMaxConsecutiveDealer: twMaxConsecutiveDealer ?? this.twMaxConsecutiveDealer,
+      twMaxConsecutiveDealer:
+          twMaxConsecutiveDealer ?? this.twMaxConsecutiveDealer,
       twKongWin: twKongWin ?? this.twKongWin,
       twFlowerWin: twFlowerWin ?? this.twFlowerWin,
       twSevenRobOne: twSevenRobOne ?? this.twSevenRobOne,

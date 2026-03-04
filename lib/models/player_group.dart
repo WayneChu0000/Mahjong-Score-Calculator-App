@@ -15,6 +15,7 @@ class PlayerGroup {
   final int totalGamesPlayedInGroup;
   final Map<String, PlayerStats>? playerStats;
   final List<Map<String, dynamic>>? roundHistory;
+
   /// For HK mode: minimum fan required to win, maximum fan cap.
   /// For TW mode: minFan = baseTai (底, e.g. 10), maxFan = taiValue (每台金額, e.g. 5).
   final int minFan;
@@ -46,7 +47,7 @@ class PlayerGroup {
       name: json['name'],
       players: List<String>.from(json['players']),
       createdAt: DateTime.parse(json['createdAt']).toLocal(),
-      lastPlayedAt: json['lastPlayedAt'] != null 
+      lastPlayedAt: json['lastPlayedAt'] != null
           ? DateTime.parse(json['lastPlayedAt']).toLocal()
           : null,
       currentScores: json['currentScores'] != null
@@ -60,17 +61,18 @@ class PlayerGroup {
       totalGamesPlayedInGroup: json['totalGamesPlayedInGroup'] ?? 0,
       playerStats: json['playerStats'] != null
           ? (json['playerStats'] as Map<String, dynamic>).map(
-              (key, value) => MapEntry(key, PlayerStats.fromJson(value)))
+              (key, value) => MapEntry(key, PlayerStats.fromJson(value)),
+            )
           : null,
       roundHistory: json['roundHistory'] != null
           ? List<Map<String, dynamic>>.from(json['roundHistory'])
           : null,
       minFan: json['minFan'] ?? 3,
       maxFan: json['maxFan'] ?? 13,
-      gameMode: json['gameMode'] != null 
+      gameMode: json['gameMode'] != null
           ? GameMode.values.firstWhere(
-              (e) => e.toString() == json['gameMode'], 
-              orElse: () => GameMode.hongKong
+              (e) => e.toString() == json['gameMode'],
+              orElse: () => GameMode.hongKong,
             )
           : GameMode.hongKong,
     );
@@ -90,7 +92,9 @@ class PlayerGroup {
       'currentDealerGameCount': currentDealerGameCount,
       'totalWindRounds': totalWindRounds,
       'totalGamesPlayedInGroup': totalGamesPlayedInGroup,
-      'playerStats': playerStats?.map((key, value) => MapEntry(key, value.toJson())),
+      'playerStats': playerStats?.map(
+        (key, value) => MapEntry(key, value.toJson()),
+      ),
       'roundHistory': roundHistory,
       'minFan': minFan,
       'maxFan': maxFan,
@@ -126,9 +130,11 @@ class PlayerGroup {
       currentRound: currentRound ?? this.currentRound,
       dealerIndex: dealerIndex ?? this.dealerIndex,
       prevalentWindIndex: prevalentWindIndex ?? this.prevalentWindIndex,
-      currentDealerGameCount: currentDealerGameCount ?? this.currentDealerGameCount,
+      currentDealerGameCount:
+          currentDealerGameCount ?? this.currentDealerGameCount,
       totalWindRounds: totalWindRounds ?? this.totalWindRounds,
-      totalGamesPlayedInGroup: totalGamesPlayedInGroup ?? this.totalGamesPlayedInGroup,
+      totalGamesPlayedInGroup:
+          totalGamesPlayedInGroup ?? this.totalGamesPlayedInGroup,
       playerStats: playerStats ?? this.playerStats,
       roundHistory: roundHistory ?? this.roundHistory,
       minFan: minFan ?? this.minFan,

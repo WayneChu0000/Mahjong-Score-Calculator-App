@@ -377,6 +377,26 @@ class AchievementRegistry {
       target: 1,
       requiredMode: GameMode.taiwan,
     ),
+    AchievementDef(
+      id: 'tw_instant_pay_5',
+      titleKey: 'achvTwInstantPay5Title',
+      descriptionKey: 'achvTwInstantPay5Desc',
+      category: AchievementCategory.tw,
+      tier: AchievementTier.bronze,
+      iconCodePoint: 0xef63, // Icons.payments
+      target: 5,
+      requiredMode: GameMode.taiwan,
+    ),
+    AchievementDef(
+      id: 'tw_instant_pay_20',
+      titleKey: 'achvTwInstantPay20Title',
+      descriptionKey: 'achvTwInstantPay20Desc',
+      category: AchievementCategory.tw,
+      tier: AchievementTier.silver,
+      iconCodePoint: 0xef63, // Icons.payments
+      target: 20,
+      requiredMode: GameMode.taiwan,
+    ),
   ];
 
   // ═════════════════════════════════════════════════════════════════

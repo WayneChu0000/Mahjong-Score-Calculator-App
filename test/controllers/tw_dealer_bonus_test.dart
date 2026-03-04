@@ -25,7 +25,7 @@ void main() {
   /// Creates a TW controller where:
   /// - dealerIndex = 0 (Alice is dealer) by default
   /// - winningPlayer defaults to Alice
-  /// - no flowers selected → +1 "No Flowers" fan
+  /// - one wrong flower selected → +1 fan (same as old No Flowers bonus)
   /// - no special conditions
   ScoreCalculationController _twCtrl({
     int minFan = 10,
@@ -45,10 +45,12 @@ void main() {
     );
     ctrl.winningPlayer = winningPlayer ?? 'Alice';
     ctrl.isSelfDraw = selfDraw;
-    // Ensure no flowers selected (gives +1 No Flowers fan)
+    // Clear all flowers, then toggle one wrong flower (+1 fan)
+    // to bypass manual mode while keeping the same fan contribution
     for (var key in ctrl.selectedFlowers.keys.toList()) {
       ctrl.selectedFlowers[key] = false;
     }
+    ctrl.selectedFlowers['3f'] = true; // wrong flower for Alice (East)
     return ctrl;
   }
 
@@ -58,7 +60,7 @@ void main() {
   group('Basic dealer bonus (consecutiveDealerCount = 1)', () {
     test('Dealer wins → +1 bonus tai', () {
       final ctrl = _twCtrl(
-        dealerIndex: 0,       // Alice is dealer
+        dealerIndex: 0, // Alice is dealer
         winningPlayer: 'Alice',
         consecutiveDealerCount: 1,
       );
@@ -67,7 +69,8 @@ void main() {
 
       // displayRules should contain the base dealer bonus
       final dealerRule = ctrl.displayRules.firstWhere(
-        (r) => (r['name'] as String).contains(AppLocalizations.twDealerBonusBase),
+        (r) =>
+            (r['name'] as String).contains(AppLocalizations.twDealerBonusBase),
         orElse: () => {},
       );
       expect(dealerRule, isNotEmpty, reason: 'Expected base dealer bonus rule');
@@ -76,7 +79,7 @@ void main() {
 
     test('Non-dealer wins → no dealer bonus', () {
       final ctrl = _twCtrl(
-        dealerIndex: 0,       // Alice is dealer
+        dealerIndex: 0, // Alice is dealer
         winningPlayer: 'Bob', // Bob (index 1) wins
         consecutiveDealerCount: 1,
       );
@@ -84,10 +87,15 @@ void main() {
       ctrl.calculateScore();
 
       final dealerRules = ctrl.displayRules.where(
-        (r) => (r['name'] as String).contains('Dealer') ||
-               (r['name'] as String).contains(AppLocalizations.twDealerBonusBase),
+        (r) =>
+            (r['name'] as String).contains('Dealer') ||
+            (r['name'] as String).contains(AppLocalizations.twDealerBonusBase),
       );
-      expect(dealerRules.isEmpty, isTrue, reason: 'Non-dealer should get no dealer bonus');
+      expect(
+        dealerRules.isEmpty,
+        isTrue,
+        reason: 'Non-dealer should get no dealer bonus',
+      );
     });
   });
 
@@ -102,33 +110,35 @@ void main() {
     //          4              |      3         |   7  (連三)
     //          6              |      5         |  11  (連五)
 
-    final testCases = <int, int>{
-      2: 3,
-      3: 5,
-      4: 7,
-      5: 9,
-      6: 11,
-      10: 19,
-    };
+    final testCases = <int, int>{2: 3, 3: 5, 4: 7, 5: 9, 6: 11, 10: 19};
 
     testCases.forEach((consecutiveCount, expectedBonus) {
-      test('consecutiveDealerCount=$consecutiveCount → bonus=$expectedBonus', () {
-        final ctrl = _twCtrl(
-          dealerIndex: 0,
-          winningPlayer: 'Alice',
-          consecutiveDealerCount: consecutiveCount,
-        );
-        ctrl.fanCount = 3;
-        ctrl.calculateScore();
+      test(
+        'consecutiveDealerCount=$consecutiveCount → bonus=$expectedBonus',
+        () {
+          final ctrl = _twCtrl(
+            dealerIndex: 0,
+            winningPlayer: 'Alice',
+            consecutiveDealerCount: consecutiveCount,
+          );
+          ctrl.fanCount = 3;
+          ctrl.calculateScore();
 
-        final dealerRule = ctrl.displayRules.firstWhere(
-          (r) => (r['name'] as String).contains(AppLocalizations.twConsecutiveDealer),
-          orElse: () => {},
-        );
-        expect(dealerRule, isNotEmpty,
-            reason: 'Expected consecutive dealer rule for count=$consecutiveCount');
-        expect(dealerRule['fan'], equals(expectedBonus));
-      });
+          final dealerRule = ctrl.displayRules.firstWhere(
+            (r) => (r['name'] as String).contains(
+              AppLocalizations.twConsecutiveDealer,
+            ),
+            orElse: () => {},
+          );
+          expect(
+            dealerRule,
+            isNotEmpty,
+            reason:
+                'Expected consecutive dealer rule for count=$consecutiveCount',
+          );
+          expect(dealerRule['fan'], equals(expectedBonus));
+        },
+      );
     });
   });
 
@@ -196,10 +206,16 @@ void main() {
         (r) => (r['name'] as String) == AppLocalizations.twDealerBonusBase,
       );
       final hasConsecutive = ctrl.displayRules.any(
-        (r) => (r['name'] as String).contains(AppLocalizations.twConsecutiveDealer),
+        (r) => (r['name'] as String).contains(
+          AppLocalizations.twConsecutiveDealer,
+        ),
       );
       expect(hasBase, isTrue, reason: 'count=1 should use base dealer name');
-      expect(hasConsecutive, isFalse, reason: 'count=1 should NOT use consecutive name');
+      expect(
+        hasConsecutive,
+        isFalse,
+        reason: 'count=1 should NOT use consecutive name',
+      );
     });
 
     test('count=2 uses consecutive dealer name', () {
@@ -212,7 +228,9 @@ void main() {
       ctrl.calculateScore();
 
       final hasConsecutive = ctrl.displayRules.any(
-        (r) => (r['name'] as String).contains(AppLocalizations.twConsecutiveDealer),
+        (r) => (r['name'] as String).contains(
+          AppLocalizations.twConsecutiveDealer,
+        ),
       );
       expect(hasConsecutive, isTrue);
     });

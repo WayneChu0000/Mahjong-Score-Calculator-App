@@ -19,7 +19,10 @@ void main() {
       expect(AchievementCategory.values, contains(AchievementCategory.general));
       expect(AchievementCategory.values, contains(AchievementCategory.hk));
       expect(AchievementCategory.values, contains(AchievementCategory.tw));
-      expect(AchievementCategory.values, contains(AchievementCategory.milestone));
+      expect(
+        AchievementCategory.values,
+        contains(AchievementCategory.milestone),
+      );
     });
   });
 

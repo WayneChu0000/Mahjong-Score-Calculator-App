@@ -14,14 +14,13 @@ class RulesScreen extends StatefulWidget {
   State<RulesScreen> createState() => _RulesScreenState();
 }
 
-class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStateMixin {
+class _RulesScreenState extends State<RulesScreen>
+    with SingleTickerProviderStateMixin {
   String _selectedFan = 'All';
   String _searchQuery = '';
   List<Rule> _filteredRules = [];
   late TabController _tabController;
-  late PageController _tutorialPageController;
   late TextEditingController _searchController;
-  int _currentTutorialPage = 0;
   GameMode _selectedMode = GameMode.hongKong;
 
   @override
@@ -30,40 +29,38 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
     // filteredRules will be updated in didChangeDependencies
     _filteredRules = [];
     _tabController = TabController(length: 2, vsync: this);
-    _tutorialPageController = PageController();
     _searchController = TextEditingController();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Check if we need to update selection due to language change
     String currentFanStr = _selectedFan.split(' ')[0];
     int currentFan = int.tryParse(currentFanStr) ?? 0;
-    
+
     String newCorrectSelection;
     if (currentFan == 0) {
       newCorrectSelection = AppLocalizations.allFan;
     } else {
       newCorrectSelection = AppLocalizations.fan(currentFan);
     }
-    
+
     // Update if changed (e.g. language switch) or if it's the initial load
     if (_selectedFan != newCorrectSelection || _filteredRules.isEmpty) {
       _selectedFan = newCorrectSelection;
       _filterRules();
     } else {
-      // Even if selection didn't change string (unlikely across langs), 
+      // Even if selection didn't change string (unlikely across langs),
       // rules content might need refresh for translation
-       _filterRules();
+      _filterRules();
     }
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _tutorialPageController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -71,7 +68,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
   void _filterRules() {
     setState(() {
       List<Rule> tempRules = getRules(_selectedMode);
-      
+
       // Filter by fan
       if (_selectedFan != AppLocalizations.allFan) {
         // Extract number from "X fan" string in rule.fan
@@ -79,7 +76,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
         // _selectedFan format is "X Fan" or "X Fans" or "X 番"
         String targetFanStr = _selectedFan.split(' ')[0];
         int targetFan = int.tryParse(targetFanStr) ?? 0;
-        
+
         tempRules = tempRules.where((rule) {
           String ruleFanStr = rule.fan.split(' ')[0];
           int ruleFan = int.tryParse(ruleFanStr) ?? 0;
@@ -92,9 +89,15 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
         _filteredRules = tempRules;
       } else {
         _filteredRules = tempRules
-            .where((rule) =>
-                rule.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                rule.description.toLowerCase().contains(_searchQuery.toLowerCase()))
+            .where(
+              (rule) =>
+                  rule.name.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ) ||
+                  rule.description.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ),
+            )
             .toList();
       }
     });
@@ -102,84 +105,39 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    // Ensure selected fan is valid for current language if possible, or just reset if needed?
-    // But simple approach:
-    
-    return BaseScreen(
-      title: AppLocalizations.rulesAndTutorial,
-      currentIndex: 1,
-      body: Column(
-        children: [
-          // Top tabs
-          Material(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? const Color(0xFF1E1E1E)
-                : Colors.green.shade50,
-            child: TabBar(
-              controller: _tabController,
-              labelColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.green.shade300
-                  : Colors.green.shade800,
-              unselectedLabelColor: Colors.grey,
-              indicatorColor: Colors.green,
-              tabs: [
-                Tab(
-                  icon: const Icon(Icons.menu_book),
-                  text: AppLocalizations.rulesReference,
-                ),
-                Tab(
-                  icon: const Icon(Icons.school),
-                  text: AppLocalizations.mahjongTutorial,
-                ),
-              ],
-            ),
-          ),
-          
-          // Tab content
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                // Rules reference page
-                _buildRulesReferenceTab(),
-                
-                // Mahjong tutorial page
-                _buildTutorialTab(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    final canPop = Navigator.canPop(context);
 
-  // Rules reference tab content
-  Widget _buildRulesReferenceTab() {
-    // Generate fan/tai filter options from actual rule set
-    final currentRules = getRules(_selectedMode);
-    final fanValues = currentRules.map((r) => r.fanValue).toSet().toList()..sort();
-    final List<String> fanOptions = [AppLocalizations.allFan];
-    for (final v in fanValues) {
-      if (_selectedMode == GameMode.taiwan) {
-        fanOptions.add(AppLocalizations.taiCount(v));
-      } else {
-        fanOptions.add(AppLocalizations.fan(v));
-      }
-    }
-    
-    // Ensure selected fan is valid
-    if (!fanOptions.contains(_selectedFan)) {
-      _selectedFan = fanOptions[0];
-       // We should ideally re-filter, but for now let's just sync the dropdown
-    }
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return ListView(
-      padding: const EdgeInsets.all(12.0),
+    final body = Column(
       children: [
+        // Top tabs
+        Material(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xFF1E1E1E)
+              : Colors.green.shade50,
+          child: TabBar(
+            controller: _tabController,
+            labelColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.green.shade300
+                : Colors.green.shade800,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Colors.green,
+            tabs: [
+              Tab(
+                icon: const Icon(Icons.menu_book),
+                text: AppLocalizations.rulesReference,
+              ),
+              Tab(
+                icon: const Icon(Icons.school),
+                text: AppLocalizations.mahjongTutorial,
+              ),
+            ],
+          ),
+        ),
+
         // HK / TW mode toggle
-        Center(
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          alignment: Alignment.center,
           child: SegmentedButton<GameMode>(
             segments: [
               ButtonSegment(
@@ -202,8 +160,68 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
             },
           ),
         ),
-        const SizedBox(height: 12),
 
+        // Tab content
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              // Rules reference page
+              _buildRulesReferenceTab(),
+
+              // Mahjong tutorial page
+              TutorialTab(onRuleTap: _navigateToRule, gameMode: _selectedMode),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    // When pushed from another screen (e.g. score recording),
+    // show AppBar with back button instead of bottom navigation bar.
+    if (canPop) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.rulesAndTutorial),
+          leading: BackButton(onPressed: () => Navigator.pop(context)),
+        ),
+        body: body,
+      );
+    }
+
+    return BaseScreen(
+      title: AppLocalizations.rulesAndTutorial,
+      currentIndex: 1,
+      body: body,
+    );
+  }
+
+  // Rules reference tab content
+  Widget _buildRulesReferenceTab() {
+    // Generate fan/tai filter options from actual rule set
+    final currentRules = getRules(_selectedMode);
+    final fanValues = currentRules.map((r) => r.fanValue).toSet().toList()
+      ..sort();
+    final List<String> fanOptions = [AppLocalizations.allFan];
+    for (final v in fanValues) {
+      if (_selectedMode == GameMode.taiwan) {
+        fanOptions.add(AppLocalizations.taiCount(v));
+      } else {
+        fanOptions.add(AppLocalizations.fan(v));
+      }
+    }
+
+    // Ensure selected fan is valid
+    if (!fanOptions.contains(_selectedFan)) {
+      _selectedFan = fanOptions[0];
+      // We should ideally re-filter, but for now let's just sync the dropdown
+    }
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return ListView(
+      padding: const EdgeInsets.all(12.0),
+      children: [
         // Search area
         Card(
           elevation: 2,
@@ -301,7 +319,9 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
       ),
       const SizedBox(height: 8),
       Card(
-        color: isDark ? Colors.orange.withValues(alpha: 0.15) : Colors.orange.shade50,
+        color: isDark
+            ? Colors.orange.withValues(alpha: 0.15)
+            : Colors.orange.shade50,
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
@@ -313,7 +333,9 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                   AppLocalizations.twNoStackRule,
                   style: TextStyle(
                     fontSize: 13,
-                    color: isDark ? Colors.orange.shade200 : Colors.orange.shade900,
+                    color: isDark
+                        ? Colors.orange.shade200
+                        : Colors.orange.shade900,
                   ),
                 ),
               ),
@@ -342,7 +364,10 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -385,28 +410,65 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: Text(
-              rule.explanation,
-              style: const TextStyle(fontSize: 14),
-            ),
+            child: Text(rule.explanation, style: const TextStyle(fontSize: 14)),
           ),
         ],
       ),
     );
   }
-  
+
   void _navigateToRule(String ruleName) {
     setState(() {
       _searchQuery = ruleName;
       _searchController.text = ruleName;
-      _selectedFan = AppLocalizations.allFan; // Reset fan filter to ensure rule is found
+      _selectedFan =
+          AppLocalizations.allFan; // Reset fan filter to ensure rule is found
       _filterRules();
     });
     _tabController.animateTo(0); // Switch to Rules Reference tab
   }
 
   // Tutorial tab content
-  Widget _buildTutorialTab() {
+  // Removed _buildTutorialTab as we now use TutorialTab widget
+}
+
+class TutorialTab extends StatefulWidget {
+  final Function(String) onRuleTap;
+  final GameMode gameMode;
+
+  const TutorialTab({
+    super.key,
+    required this.onRuleTap,
+    required this.gameMode,
+  });
+
+  @override
+  State<TutorialTab> createState() => _TutorialTabState();
+}
+
+class _TutorialTabState extends State<TutorialTab>
+    with AutomaticKeepAliveClientMixin {
+  late PageController _tutorialPageController;
+  int _currentTutorialPage = 0;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _tutorialPageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _tutorialPageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     final tutorialTitles = [
       AppLocalizations.tutorialWelcome,
       AppLocalizations.tutorialTiles,
@@ -418,7 +480,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
 
     return Column(
       children: [
-        // Tutorial page navigation
+        // Top navigation bar for tutorial pages
         Container(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -441,9 +503,11 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: _currentTutorialPage == index 
-                          ? Colors.green.shade600 
-                          : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
+                      color: _currentTutorialPage == index
+                          ? Colors.green.shade600
+                          : (isDark
+                                ? Colors.grey.shade800
+                                : Colors.grey.shade200),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
@@ -455,18 +519,22 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                             Icons.rule,
                             Icons.calculate,
                           ][index],
-                          color: _currentTutorialPage == index 
-                              ? Colors.white 
-                              : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                          color: _currentTutorialPage == index
+                              ? Colors.white
+                              : (isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade600),
                           size: 20,
                         ),
                         const SizedBox(height: 4),
                         Text(
                           tutorialTitles[index],
                           style: TextStyle(
-                            color: _currentTutorialPage == index 
-                                ? Colors.white 
-                                : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                            color: _currentTutorialPage == index
+                                ? Colors.white
+                                : (isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600),
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -480,7 +548,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
             ),
           ),
         ),
-        
+
         // Tutorial content pages
         Expanded(
           child: PageView(
@@ -491,15 +559,31 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
               });
             },
             children: [
-              TutorialContent(pageIndex: 0, onRuleTap: _navigateToRule, gameMode: _selectedMode),
-              TutorialContent(pageIndex: 1, onRuleTap: _navigateToRule, gameMode: _selectedMode),
-              TutorialContent(pageIndex: 2, onRuleTap: _navigateToRule, gameMode: _selectedMode),
-              TutorialContent(pageIndex: 3, onRuleTap: _navigateToRule, gameMode: _selectedMode),
+              TutorialContent(
+                pageIndex: 0,
+                onRuleTap: widget.onRuleTap,
+                gameMode: widget.gameMode,
+              ),
+              TutorialContent(
+                pageIndex: 1,
+                onRuleTap: widget.onRuleTap,
+                gameMode: widget.gameMode,
+              ),
+              TutorialContent(
+                pageIndex: 2,
+                onRuleTap: widget.onRuleTap,
+                gameMode: widget.gameMode,
+              ),
+              TutorialContent(
+                pageIndex: 3,
+                onRuleTap: widget.onRuleTap,
+                gameMode: widget.gameMode,
+              ),
             ],
           ),
         ),
-        
-        // Bottom navigation buttons
+
+        // Bottom pagination controls
         Container(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -508,9 +592,6 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
               ElevatedButton.icon(
                 onPressed: _currentTutorialPage > 0
                     ? () {
-                        setState(() {
-                          _currentTutorialPage--;
-                        });
                         _tutorialPageController.previousPage(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
@@ -524,7 +605,7 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                   foregroundColor: Colors.white,
                 ),
               ),
-              
+
               Text(
                 '${_currentTutorialPage + 1} / 4',
                 style: const TextStyle(
@@ -532,13 +613,10 @@ class _RulesScreenState extends State<RulesScreen> with SingleTickerProviderStat
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              
+
               ElevatedButton.icon(
                 onPressed: _currentTutorialPage < 3
                     ? () {
-                        setState(() {
-                          _currentTutorialPage++;
-                        });
                         _tutorialPageController.nextPage(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
@@ -598,7 +676,7 @@ class _RuleCardState extends State<RuleCard> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     // Keep original rule card implementation...
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -616,17 +694,20 @@ class _RuleCardState extends State<RuleCard> {
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.green.withValues(alpha: 0.2) : Colors.green.shade50,
+                        color: isDark
+                            ? Colors.green.withValues(alpha: 0.2)
+                            : Colors.green.shade50,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: widget.rule.imagePath.isNotEmpty
                           ? Image.asset(
                               widget.rule.imagePath,
-                              errorBuilder: (context, error, stackTrace) => const Icon(
-                                Icons.casino,
-                                size: 40,
-                                color: Colors.green,
-                              ),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                    Icons.casino,
+                                    size: 40,
+                                    color: Colors.green,
+                                  ),
                             )
                           : const Icon(
                               Icons.casino,
@@ -634,9 +715,9 @@ class _RuleCardState extends State<RuleCard> {
                               color: Colors.green,
                             ),
                     ),
-                    
+
                     const SizedBox(width: 12),
-                    
+
                     // Rule information
                     Expanded(
                       child: Column(
@@ -654,7 +735,9 @@ class _RuleCardState extends State<RuleCard> {
                             widget.rule.description,
                             style: TextStyle(
                               fontSize: 14,
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade700,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -664,11 +747,15 @@ class _RuleCardState extends State<RuleCard> {
                               const Spacer(),
                               TextButton.icon(
                                 icon: Icon(
-                                  _showExample ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                  _showExample
+                                      ? Icons.arrow_drop_up
+                                      : Icons.arrow_drop_down,
                                   color: Colors.green,
                                 ),
                                 label: Text(
-                                  _showExample ? AppLocalizations.hideExample : AppLocalizations.viewExample,
+                                  _showExample
+                                      ? AppLocalizations.hideExample
+                                      : AppLocalizations.viewExample,
                                   style: const TextStyle(color: Colors.green),
                                 ),
                                 onPressed: () {
@@ -693,7 +780,9 @@ class _RuleCardState extends State<RuleCard> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isDark ? Colors.green.withValues(alpha: 0.1) : Colors.green.shade50,
+                color: isDark
+                    ? Colors.green.withValues(alpha: 0.1)
+                    : Colors.green.shade50,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
@@ -714,9 +803,9 @@ class _RuleCardState extends State<RuleCard> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: widget.rule.exampleTiles.map((group) => 
-                      TileGroup(tiles: group)
-                    ).toList(),
+                    children: widget.rule.exampleTiles
+                        .map((group) => TileGroup(tiles: group))
+                        .toList(),
                   ),
                   const SizedBox(height: 8),
                   Text(

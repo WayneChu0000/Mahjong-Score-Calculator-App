@@ -17,7 +17,8 @@ class TileSelectionScreen extends StatefulWidget {
   State<TileSelectionScreen> createState() => _TileSelectionScreenState();
 }
 
-class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTickerProviderStateMixin {
+class _TileSelectionScreenState extends State<TileSelectionScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final List<String> _selectedTiles = [];
   String? _validationMessage;
@@ -49,7 +50,12 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     int count = _selectedTiles.where((t) => t == tile).length;
     if (count >= 4) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.maxTilesAlert, style: const TextStyle(fontFamily: "Traditional Chinese"))),
+        SnackBar(
+          content: Text(
+            AppLocalizations.maxTilesAlert,
+            style: const TextStyle(fontFamily: "Traditional Chinese"),
+          ),
+        ),
       );
       return;
     }
@@ -60,7 +66,12 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     int maxTiles = widget.gameMode == GameMode.taiwan ? 21 : 18;
     if (_selectedTiles.length >= maxTiles) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.maxTotalTilesAlert, style: const TextStyle(fontFamily: "Traditional Chinese"))),
+        SnackBar(
+          content: Text(
+            AppLocalizations.maxTotalTilesAlert,
+            style: const TextStyle(fontFamily: "Traditional Chinese"),
+          ),
+        ),
       );
       return;
     }
@@ -86,7 +97,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     String suitB = b.substring(1);
     int numA = int.parse(a.substring(0, 1));
     int numB = int.parse(b.substring(0, 1));
-    
+
     int suitCompare = suits.indexOf(suitA).compareTo(suits.indexOf(suitB));
     if (suitCompare != 0) return suitCompare;
     return numA.compareTo(numB);
@@ -102,7 +113,10 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
       return;
     }
 
-    var result = HandValidator.checkWinningHand(_selectedTiles, gameMode: widget.gameMode);
+    var result = HandValidator.checkWinningHand(
+      _selectedTiles,
+      gameMode: widget.gameMode,
+    );
     setState(() {
       _isValid = result['valid'];
       _validationMessage = result['message'];
@@ -113,10 +127,18 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
     String suit = tile.substring(1);
     String folder = '';
     switch (suit) {
-      case 'm': folder = 'characters'; break;
-      case 'p': folder = 'dots'; break;
-      case 's': folder = 'bamboo'; break;
-      case 'z': folder = 'honors'; break;
+      case 'm':
+        folder = 'characters';
+        break;
+      case 'p':
+        folder = 'dots';
+        break;
+      case 's':
+        folder = 'bamboo';
+        break;
+      case 'z':
+        folder = 'honors';
+        break;
     }
     return 'assets/images/tiles/$folder/$tile.png';
   }
@@ -142,9 +164,11 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
         ),
         actions: [
           TextButton(
-            onPressed: _isValid ? () {
-              Navigator.pop(context, _selectedTiles);
-            } : null,
+            onPressed: _isValid
+                ? () {
+                    Navigator.pop(context, _selectedTiles);
+                  }
+                : null,
             child: Text(
               AppLocalizations.confirm,
               style: TextStyle(
@@ -216,7 +240,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> with SingleTi
               }).toList(),
             ),
           ),
-          
+
           // Selected Tiles Area
           Container(
             height: 160,

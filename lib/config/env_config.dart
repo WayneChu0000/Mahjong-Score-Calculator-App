@@ -25,22 +25,19 @@ class EnvConfig {
 
   // ─── Vision AI Configuration ──────────────────────────────────────
   static String get visionApiUrl {
-    const compileTime =
-        String.fromEnvironment('VISION_API_URL');
+    const compileTime = String.fromEnvironment('VISION_API_URL');
     if (compileTime.isNotEmpty) return compileTime;
     return dotenv.env['VISION_API_URL'] ?? 'https://predict.ultralytics.com';
   }
 
   static String get visionApiKey {
-    const compileTime =
-        String.fromEnvironment('VISION_API_KEY');
+    const compileTime = String.fromEnvironment('VISION_API_KEY');
     if (compileTime.isNotEmpty) return compileTime;
     return dotenv.env['VISION_API_KEY'] ?? '';
   }
 
   static String get visionModelUrl {
-    const compileTime =
-        String.fromEnvironment('VISION_MODEL_URL');
+    const compileTime = String.fromEnvironment('VISION_MODEL_URL');
     if (compileTime.isNotEmpty) return compileTime;
     return dotenv.env['VISION_MODEL_URL'] ?? '';
   }

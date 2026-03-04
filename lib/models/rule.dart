@@ -9,12 +9,14 @@ class Rule {
   final String name;
   final String description;
   final String fan;
+
   /// Raw numeric fan/tai value for scoring calculations.
   /// Avoids regex-parsing the display [fan] string at runtime.
   final int fanValue;
   final String imagePath;
   final String explanation;
-  final List<List<String>> exampleTiles; // Each sublist represents a set of tiles
+  final List<List<String>>
+  exampleTiles; // Each sublist represents a set of tiles
   final bool Function(List<String>)? validator;
 
   Rule({

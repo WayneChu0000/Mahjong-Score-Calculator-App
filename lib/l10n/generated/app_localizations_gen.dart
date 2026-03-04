@@ -625,6 +625,12 @@ abstract class L10n {
   /// **'Scan Tiles'**
   String get scanTiles;
 
+  /// No description provided for @uploadPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Photo'**
+  String get uploadPhoto;
+
   /// No description provided for @selectHand.
   ///
   /// In en, this message translates to:
@@ -640,7 +646,7 @@ abstract class L10n {
   /// No description provided for @takePhotoHint.
   ///
   /// In en, this message translates to:
-  /// **'Take photo or click to select hand pattern'**
+  /// **'Take photo, upload image, or click to select hand pattern'**
   String get takePhotoHint;
 
   /// No description provided for @item.
@@ -3259,6 +3265,36 @@ abstract class L10n {
   /// **'One complete flower set (一台草): each opponent pays half a base. One complete flower group (一台花): each opponent pays one base. Note: claiming flowers forfeits grass bonus.'**
   String get twFlowerSetPayDesc;
 
+  /// No description provided for @twFlowerSeasonSetPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Season Set (一台草)'**
+  String get twFlowerSeasonSetPay;
+
+  /// No description provided for @twFlowerSeasonSetPayDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Collecting all 4 season tiles (Spring/Summer/Autumn/Winter). Each opponent pays the specified amount.'**
+  String get twFlowerSeasonSetPayDesc;
+
+  /// No description provided for @twFlowerGroupPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Flower Group (一台花)'**
+  String get twFlowerGroupPay;
+
+  /// No description provided for @twFlowerGroupPayDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Collecting all 4 flower tiles (Plum/Orchid/Bamboo/Chrysanthemum). Each opponent pays the specified amount.'**
+  String get twFlowerGroupPayDesc;
+
+  /// No description provided for @builtInPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in'**
+  String get builtInPayment;
+
   /// No description provided for @twFalseWinPay.
   ///
   /// In en, this message translates to:
@@ -3364,32 +3400,72 @@ abstract class L10n {
   /// No description provided for @twLaSettlementDesc.
   ///
   /// In en, this message translates to:
-  /// **'A carry-over settlement system that multiplies debt across consecutive rounds.'**
+  /// **'A carry-over settlement system that multiplies debt across consecutive rounds. Debts accumulate during a winning streak and are settled when the streak ends.'**
   String get twLaSettlementDesc;
 
   /// No description provided for @twLaMultiplier.
   ///
   /// In en, this message translates to:
-  /// **'Multiplier Effect'**
+  /// **'Multiplier Effect (×1.5)'**
   String get twLaMultiplier;
 
   /// No description provided for @twLaMultiplierDesc.
   ///
   /// In en, this message translates to:
-  /// **'If the previous round\'s winner wins again, the losers\' previous debts are multiplied by 1.5× before adding the new round\'s losses.'**
+  /// **'If the same player wins consecutively, each loser\'s previous debt is multiplied by 1.5× before adding the new round\'s loss. Self-draw: all compound. Discard: only the discarder compounds.'**
   String get twLaMultiplierDesc;
 
   /// No description provided for @twLaReduction.
   ///
   /// In en, this message translates to:
-  /// **'Debt Reduction'**
+  /// **'Debt Reduction (÷2)'**
   String get twLaReduction;
 
   /// No description provided for @twLaReductionDesc.
   ///
   /// In en, this message translates to:
-  /// **'If the previous round\'s loser self-draws, or the previous winner discards the winning tile, accumulated debts are halved.'**
+  /// **'When the streak ends: if the streak winner discards the winning tile, or if a debtor self-draws, ONLY that specific player\'s debt is halved. Other debtors pay full.'**
   String get twLaReductionDesc;
+
+  /// No description provided for @twLaStopRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Rule (逼停)'**
+  String get twLaStopRule;
+
+  /// No description provided for @twLaStopRuleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'If a player loses to the same streak winner 3, 6, 9, or 12 times, they can force an immediate settlement at full debt (no reduction opportunity).'**
+  String get twLaStopRuleDesc;
+
+  /// No description provided for @twLaStopRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Force Settlement (逼停)'**
+  String get twLaStopRuleTitle;
+
+  /// No description provided for @twLaStopRuleMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{playerName} has lost {lossCount} consecutive times to {streakWinnerName}. Force settle debt now (no reduction chance)?'**
+  String twLaStopRuleMessage(
+    String playerName,
+    int lossCount,
+    String streakWinnerName,
+  );
+
+  /// No description provided for @twLaStopRuleContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Playing'**
+  String get twLaStopRuleContinue;
+
+  /// No description provided for @twLaStopRuleSettle.
+  ///
+  /// In en, this message translates to:
+  /// **'Force Settle'**
+  String get twLaStopRuleSettle;
 
   /// No description provided for @twLaApplied.
   ///
@@ -3414,6 +3490,66 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Carry-over debt from previous round'**
   String get twLaCarryDebt;
+
+  /// No description provided for @twLaDebtTracker.
+  ///
+  /// In en, this message translates to:
+  /// **'La Debt Tracker (拉)'**
+  String get twLaDebtTracker;
+
+  /// No description provided for @twLaStreakWinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak Winner'**
+  String get twLaStreakWinner;
+
+  /// No description provided for @twLaDebtTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Debt'**
+  String get twLaDebtTotal;
+
+  /// No description provided for @twLaDebtApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Already Applied'**
+  String get twLaDebtApplied;
+
+  /// No description provided for @twLaDebtPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Settlement'**
+  String get twLaDebtPending;
+
+  /// No description provided for @twLaLosses.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} losses'**
+  String twLaLosses(int count);
+
+  /// No description provided for @twLaSettled.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled'**
+  String get twLaSettled;
+
+  /// No description provided for @twLaForceSettleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Force Settle'**
+  String get twLaForceSettleAction;
+
+  /// No description provided for @twLaNoActiveStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'No active La streak'**
+  String get twLaNoActiveStreak;
+
+  /// No description provided for @twLaStreakRounds.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} round streak'**
+  String twLaStreakRounds(int count);
 
   /// No description provided for @twDealerBonusTitle.
   ///
@@ -5316,6 +5452,450 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'In Taiwan mahjong, the La rule multiplies carry-over debts by 1.5× when the same player wins consecutively.'**
   String get tipDayContent10;
+
+  /// No description provided for @customFanValues.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Fan/Tai Values'**
+  String get customFanValues;
+
+  /// No description provided for @customFanValuesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize scoring values for individual rules'**
+  String get customFanValuesDesc;
+
+  /// No description provided for @customHkFan.
+  ///
+  /// In en, this message translates to:
+  /// **'Hong Kong Fan Values'**
+  String get customHkFan;
+
+  /// No description provided for @customTwTai.
+  ///
+  /// In en, this message translates to:
+  /// **'Taiwan Tai Values'**
+  String get customTwTai;
+
+  /// No description provided for @resetToDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to Default'**
+  String get resetToDefault;
+
+  /// No description provided for @resetFanConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset all custom fan/tai values to default?'**
+  String get resetFanConfirm;
+
+  /// No description provided for @customized.
+  ///
+  /// In en, this message translates to:
+  /// **'Customized'**
+  String get customized;
+
+  /// No description provided for @defaultValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Default: {value}'**
+  String defaultValue(int value);
+
+  /// No description provided for @gamePreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Game Preferences'**
+  String get gamePreferences;
+
+  /// No description provided for @displaySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Display Settings'**
+  String get displaySettings;
+
+  /// No description provided for @advancedSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Settings'**
+  String get advancedSettings;
+
+  /// No description provided for @accountSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountSettings;
+
+  /// No description provided for @noCustomizations.
+  ///
+  /// In en, this message translates to:
+  /// **'No customizations yet. Tap a rule to change its fan/tai value.'**
+  String get noCustomizations;
+
+  /// No description provided for @editFanValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Fan Value'**
+  String get editFanValue;
+
+  /// No description provided for @editTaiValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Tai Value'**
+  String get editTaiValue;
+
+  /// No description provided for @enterNewValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new value (0-13)'**
+  String get enterNewValue;
+
+  /// No description provided for @enterNewTaiValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new value (0-100)'**
+  String get enterNewTaiValue;
+
+  /// No description provided for @invalidValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number'**
+  String get invalidValue;
+
+  /// No description provided for @customFanSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom value saved'**
+  String get customFanSaved;
+
+  /// No description provided for @allReset.
+  ///
+  /// In en, this message translates to:
+  /// **'All values reset to default'**
+  String get allReset;
+
+  /// No description provided for @hkGameSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'HK Mahjong Settings'**
+  String get hkGameSettings;
+
+  /// No description provided for @twGameSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'TW Mahjong Settings'**
+  String get twGameSettings;
+
+  /// No description provided for @hkMinFan.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Fan'**
+  String get hkMinFan;
+
+  /// No description provided for @hkMaxFan.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum Fan'**
+  String get hkMaxFan;
+
+  /// No description provided for @twBaseTaiSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Base (底)'**
+  String get twBaseTaiSetting;
+
+  /// No description provided for @twTaiValueSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Value per Tai (每台)'**
+  String get twTaiValueSetting;
+
+  /// No description provided for @addRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Rule'**
+  String get addRule;
+
+  /// No description provided for @deleteRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Rule'**
+  String get deleteRule;
+
+  /// No description provided for @ruleName.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule Name'**
+  String get ruleName;
+
+  /// No description provided for @fanValueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fan Value'**
+  String get fanValueLabel;
+
+  /// No description provided for @taiValueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tai Value'**
+  String get taiValueLabel;
+
+  /// No description provided for @addCustomRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Custom Rule'**
+  String get addCustomRule;
+
+  /// No description provided for @deleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this rule?'**
+  String get deleteConfirm;
+
+  /// No description provided for @ruleDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule deleted'**
+  String get ruleDeleted;
+
+  /// No description provided for @ruleAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule added'**
+  String get ruleAdded;
+
+  /// No description provided for @ruleRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule restored'**
+  String get ruleRestored;
+
+  /// No description provided for @deletedRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted Rules'**
+  String get deletedRules;
+
+  /// No description provided for @restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restore;
+
+  /// No description provided for @customRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Rules'**
+  String get customRules;
+
+  /// No description provided for @builtInRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in Rules'**
+  String get builtInRules;
+
+  /// No description provided for @twPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'TW Real-time Payments'**
+  String get twPayments;
+
+  /// No description provided for @twPaymentsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure real-time payment items for TW Mahjong'**
+  String get twPaymentsDesc;
+
+  /// No description provided for @paymentName.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Name'**
+  String get paymentName;
+
+  /// No description provided for @paymentValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Value'**
+  String get paymentValue;
+
+  /// No description provided for @addPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Payment'**
+  String get addPayment;
+
+  /// No description provided for @editPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Payment'**
+  String get editPayment;
+
+  /// No description provided for @noPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment items configured'**
+  String get noPayments;
+
+  /// No description provided for @paymentSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment saved'**
+  String get paymentSaved;
+
+  /// No description provided for @paymentDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment deleted'**
+  String get paymentDeleted;
+
+  /// No description provided for @enterRuleName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter rule name'**
+  String get enterRuleName;
+
+  /// No description provided for @enterValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter value'**
+  String get enterValue;
+
+  /// No description provided for @instantPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Instant Payment'**
+  String get instantPayment;
+
+  /// No description provided for @selectPayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Who pays?'**
+  String get selectPayer;
+
+  /// No description provided for @selectReceiver.
+  ///
+  /// In en, this message translates to:
+  /// **'Who receives?'**
+  String get selectReceiver;
+
+  /// No description provided for @selectPaymentItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Select payment item'**
+  String get selectPaymentItem;
+
+  /// No description provided for @paymentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get paymentAmount;
+
+  /// No description provided for @paymentApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment applied'**
+  String get paymentApplied;
+
+  /// No description provided for @allOtherPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'All other players'**
+  String get allOtherPlayers;
+
+  /// No description provided for @customAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom amount'**
+  String get customAmount;
+
+  /// No description provided for @achvTwInstantPay5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Pay'**
+  String get achvTwInstantPay5Title;
+
+  /// No description provided for @achvTwInstantPay5Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply 5 instant payments in TW mahjong'**
+  String get achvTwInstantPay5Desc;
+
+  /// No description provided for @achvTwInstantPay20Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Master'**
+  String get achvTwInstantPay20Title;
+
+  /// No description provided for @achvTwInstantPay20Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply 20 instant payments in TW mahjong'**
+  String get achvTwInstantPay20Desc;
+
+  /// No description provided for @userSetFan.
+  ///
+  /// In en, this message translates to:
+  /// **'User Set {f} Fan'**
+  String userSetFan(int f);
+
+  /// No description provided for @userSetTai.
+  ///
+  /// In en, this message translates to:
+  /// **'User Set {f} Tai'**
+  String userSetTai(int f);
+
+  /// No description provided for @roundHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Round History'**
+  String get roundHistory;
+
+  /// No description provided for @seatOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat Order'**
+  String get seatOrder;
+
+  /// No description provided for @dragToReorder.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold & drag to reorder seats'**
+  String get dragToReorder;
+
+  /// No description provided for @recentPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Players'**
+  String get recentPlayers;
+
+  /// No description provided for @duplicateNameWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate name detected'**
+  String get duplicateNameWarning;
+
+  /// No description provided for @windSeat.
+  ///
+  /// In en, this message translates to:
+  /// **'{wind} Seat'**
+  String windSeat(String wind);
+
+  /// No description provided for @tapToEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap name to edit'**
+  String get tapToEdit;
+
+  /// No description provided for @playerSetupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your table'**
+  String get playerSetupSubtitle;
+
+  /// No description provided for @clearName.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearName;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

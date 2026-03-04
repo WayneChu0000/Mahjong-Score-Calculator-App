@@ -61,9 +61,7 @@ class AchievementService {
       final doc = _achievementDoc(groupName, playerId);
       if (doc == null) return;
 
-      await doc.set({
-        'counters': counters.toJson(),
-      }, SetOptions(merge: true));
+      await doc.set({'counters': counters.toJson()}, SetOptions(merge: true));
     } catch (e) {
       debugPrint('Error saving achievement counters: $e');
     }
@@ -86,11 +84,14 @@ class AchievementService {
       final data = snap.data() as Map<String, dynamic>? ?? {};
       final progressRaw = data['progress'] as Map<String, dynamic>? ?? {};
 
-      return progressRaw.map((key, value) => MapEntry(
-            key,
-            AchievementProgress.fromJson(
-                value is Map<String, dynamic> ? value : {}),
-          ));
+      return progressRaw.map(
+        (key, value) => MapEntry(
+          key,
+          AchievementProgress.fromJson(
+            value is Map<String, dynamic> ? value : {},
+          ),
+        ),
+      );
     } catch (e) {
       debugPrint('Error loading achievement progress: $e');
       return {};
@@ -108,9 +109,7 @@ class AchievementService {
       if (doc == null) return;
 
       await doc.set({
-        'progress': progress.map(
-          (key, value) => MapEntry(key, value.toJson()),
-        ),
+        'progress': progress.map((key, value) => MapEntry(key, value.toJson())),
       }, SetOptions(merge: true));
     } catch (e) {
       debugPrint('Error saving achievement progress: $e');
@@ -120,8 +119,10 @@ class AchievementService {
   // ── Convenience ──────────────────────────────────────────────────
 
   /// Load everything needed for the achievement screen.
-  static Future<({AchievementCounters counters, Map<String, AchievementProgress> progress})>
-      loadAll(String groupName, String playerId) async {
+  static Future<
+    ({AchievementCounters counters, Map<String, AchievementProgress> progress})
+  >
+  loadAll(String groupName, String playerId) async {
     final counters = await loadCounters(groupName, playerId);
     final progress = await loadProgress(groupName, playerId);
     return (counters: counters, progress: progress);
@@ -140,9 +141,7 @@ class AchievementService {
 
       await doc.set({
         'counters': counters.toJson(),
-        'progress': progress.map(
-          (key, value) => MapEntry(key, value.toJson()),
-        ),
+        'progress': progress.map((key, value) => MapEntry(key, value.toJson())),
       }, SetOptions(merge: true));
     } catch (e) {
       debugPrint('Error saving achievement data: $e');

@@ -1,4 +1,4 @@
-﻿import '../logic/hand_patterns.dart';
+import '../logic/hand_patterns.dart';
 import '../localization/app_localizations.dart';
 import 'rule.dart';
 
@@ -67,7 +67,9 @@ List<Rule> get twRules => [
     fanValue: 2,
     explanation: AppLocalizations.explTwDragonPong,
     validator: null,
-    exampleTiles: [['5z', '5z', '5z']],
+    exampleTiles: [
+      ['5z', '5z', '5z'],
+    ],
   ),
   // 無字 – No Honors (1 Tai)
   Rule(
@@ -892,11 +894,19 @@ List<Rule> get twInstantPayRules => [
     exampleTiles: [],
   ),
   Rule(
-    name: AppLocalizations.twFlowerSetPay,
-    description: AppLocalizations.twFlowerSetPayDesc,
+    name: AppLocalizations.twFlowerSeasonSetPay,
+    description: AppLocalizations.twFlowerSeasonSetPayDesc,
     fan: '',
     fanValue: 0,
-    explanation: AppLocalizations.twFlowerSetPayDesc,
+    explanation: AppLocalizations.twFlowerSeasonSetPayDesc,
+    exampleTiles: [],
+  ),
+  Rule(
+    name: AppLocalizations.twFlowerGroupPay,
+    description: AppLocalizations.twFlowerGroupPayDesc,
+    fan: '',
+    fanValue: 0,
+    explanation: AppLocalizations.twFlowerGroupPayDesc,
     exampleTiles: [],
   ),
   Rule(
@@ -981,6 +991,14 @@ List<Rule> get twLaSettlementRules => [
     explanation: AppLocalizations.twLaReductionDesc,
     exampleTiles: [],
   ),
+  Rule(
+    name: AppLocalizations.twLaStopRule,
+    description: AppLocalizations.twLaStopRuleDesc,
+    fan: '',
+    fanValue: 0,
+    explanation: AppLocalizations.twLaStopRuleDesc,
+    exampleTiles: [],
+  ),
 ];
 
 /// Dealer bonus rules (莊家加成規則)
@@ -990,7 +1008,8 @@ List<Rule> get twDealerBonusRules => [
     description: AppLocalizations.twDealerBonusFormula,
     fan: '',
     fanValue: 0,
-    explanation: '${AppLocalizations.twDealerBonusExample1}\n${AppLocalizations.twDealerBonusExample2}\n${AppLocalizations.twDealerBonusExample3}\n\n${AppLocalizations.twDealerBonusResponsibility}',
+    explanation:
+        '${AppLocalizations.twDealerBonusExample1}\n${AppLocalizations.twDealerBonusExample2}\n${AppLocalizations.twDealerBonusExample3}\n\n${AppLocalizations.twDealerBonusResponsibility}',
     exampleTiles: [],
   ),
 ];

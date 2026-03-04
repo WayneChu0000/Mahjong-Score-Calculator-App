@@ -15,7 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
-  
+
   bool _isLogin = true;
   bool _isLoading = false;
   String? _errorMessage;
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 48),
-                
+
                 // Error Message
                 if (_errorMessage != null)
                   Container(
@@ -180,8 +180,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         )
                       : Text(
-                          _isLogin ? AppLocalizations.loginButton : AppLocalizations.createAccountButton,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          _isLogin
+                              ? AppLocalizations.loginButton
+                              : AppLocalizations.createAccountButton,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                 ),
                 const SizedBox(height: 16),
@@ -199,7 +204,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? AppLocalizations.noAccountText
                         : AppLocalizations.hasAccountText,
                     style: TextStyle(
-                      color: isDark ? Colors.green.shade300 : Colors.green.shade700,
+                      color: isDark
+                          ? Colors.green.shade300
+                          : Colors.green.shade700,
                     ),
                   ),
                 ),

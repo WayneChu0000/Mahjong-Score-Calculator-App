@@ -63,10 +63,9 @@ void main() {
     });
 
     test('isGameEnd returns false for unlimited rounds (totalRounds=0)', () {
-      service.initGame(
-        [Player(id: 0, name: 'Alice', score: 0)],
-        totalRounds: 0,
-      );
+      service.initGame([
+        Player(id: 0, name: 'Alice', score: 0),
+      ], totalRounds: 0);
       for (int i = 0; i < 100; i++) {
         service.incrementRound();
       }
@@ -83,10 +82,7 @@ void main() {
     });
 
     test('scoreStream emits on updateScores', () {
-      expectLater(
-        service.scoreStream,
-        emits(isA<Map<String, dynamic>>()),
-      );
+      expectLater(service.scoreStream, emits(isA<Map<String, dynamic>>()));
       service.updateScores({'0': 10});
     });
   });

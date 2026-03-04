@@ -63,8 +63,7 @@ class _AchievementScreenState extends State<AchievementScreen>
 
   @override
   Widget build(BuildContext context) {
-    final unlockedCount =
-        _progress.values.where((p) => p.isUnlocked).length;
+    final unlockedCount = _progress.values.where((p) => p.isUnlocked).length;
     final totalCount = AchievementRegistry.totalCount;
 
     return Scaffold(
@@ -177,7 +176,9 @@ class _AchievementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isUnlocked = progress?.isUnlocked == true;
     final currentValue = progress?.progress ?? 0;
-    final fraction = def.target > 0 ? (currentValue / def.target).clamp(0.0, 1.0) : 0.0;
+    final fraction = def.target > 0
+        ? (currentValue / def.target).clamp(0.0, 1.0)
+        : 0.0;
     final tierColor = AchievementRegistry.tierColor(def.tier);
 
     return Card(
@@ -250,7 +251,9 @@ class _AchievementCard extends StatelessWidget {
                             child: LinearProgressIndicator(
                               value: fraction,
                               minHeight: 6,
-                              backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                              backgroundColor: Colors.grey.withValues(
+                                alpha: 0.2,
+                              ),
                               color: isUnlocked ? tierColor : Colors.grey,
                             ),
                           ),
@@ -272,10 +275,7 @@ class _AchievementCard extends StatelessWidget {
                           AppLocalizations.achvUnlockedAt(
                             _formatDate(progress!.unlockedAt!),
                           ),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: tierColor,
-                          ),
+                          style: TextStyle(fontSize: 11, color: tierColor),
                         ),
                       ),
                   ],

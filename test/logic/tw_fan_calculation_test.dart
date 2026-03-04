@@ -33,8 +33,11 @@ void main() {
 
     test('every rule has fanValue >= 0', () {
       for (final rule in rules) {
-        expect(rule.fanValue, greaterThanOrEqualTo(0),
-            reason: '${rule.name} has invalid fanValue ${rule.fanValue}');
+        expect(
+          rule.fanValue,
+          greaterThanOrEqualTo(0),
+          reason: '${rule.name} has invalid fanValue ${rule.fanValue}',
+        );
       }
     });
 
@@ -46,22 +49,31 @@ void main() {
 
     test('every rule has non-empty description', () {
       for (final rule in rules) {
-        expect(rule.description, isNotEmpty,
-            reason: '${rule.name} has empty description');
+        expect(
+          rule.description,
+          isNotEmpty,
+          reason: '${rule.name} has empty description',
+        );
       }
     });
 
     test('every rule has non-empty explanation', () {
       for (final rule in rules) {
-        expect(rule.explanation, isNotEmpty,
-            reason: '${rule.name} has empty explanation');
+        expect(
+          rule.explanation,
+          isNotEmpty,
+          reason: '${rule.name} has empty explanation',
+        );
       }
     });
 
     test('every rule has non-empty fan display string', () {
       for (final rule in rules) {
-        expect(rule.fan, isNotEmpty,
-            reason: '${rule.name} has empty fan display');
+        expect(
+          rule.fan,
+          isNotEmpty,
+          reason: '${rule.name} has empty fan display',
+        );
       }
     });
   });
@@ -433,75 +445,270 @@ void main() {
   group('Validator: isPingHu (All Chows)', () {
     test('all-chow hand (14 tiles) → true', () {
       // 1m2m3m 4p5p6p 7s8s9s 1m2m3m + 5m5m pair
-      final hand = ['1m', '2m', '3m', '4p', '5p', '6p', '7s', '8s', '9s', '1m', '2m', '3m', '5m', '5m'];
+      final hand = [
+        '1m',
+        '2m',
+        '3m',
+        '4p',
+        '5p',
+        '6p',
+        '7s',
+        '8s',
+        '9s',
+        '1m',
+        '2m',
+        '3m',
+        '5m',
+        '5m',
+      ];
       expect(HandPatterns.isPingHu(hand), isTrue);
     });
 
     test('hand with pong → false', () {
-      final hand = ['1m', '1m', '1m', '4p', '5p', '6p', '7s', '8s', '9s', '1s', '2s', '3s', '5m', '5m'];
+      final hand = [
+        '1m',
+        '1m',
+        '1m',
+        '4p',
+        '5p',
+        '6p',
+        '7s',
+        '8s',
+        '9s',
+        '1s',
+        '2s',
+        '3s',
+        '5m',
+        '5m',
+      ];
       expect(HandPatterns.isPingHu(hand), isFalse);
     });
   });
 
   group('Validator: isPureHand (Full Flush)', () {
     test('pure bamboo hand → true', () {
-      final hand = ['1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '1s', '2s', '3s', '7s', '7s'];
+      final hand = [
+        '1s',
+        '2s',
+        '3s',
+        '4s',
+        '5s',
+        '6s',
+        '7s',
+        '8s',
+        '9s',
+        '1s',
+        '2s',
+        '3s',
+        '7s',
+        '7s',
+      ];
       expect(HandPatterns.isPureHand(hand), isTrue);
     });
 
     test('mixed suit hand → false', () {
-      final hand = ['1m', '2m', '3m', '4p', '5p', '6p', '7s', '8s', '9s', '1m', '2m', '3m', '5m', '5m'];
+      final hand = [
+        '1m',
+        '2m',
+        '3m',
+        '4p',
+        '5p',
+        '6p',
+        '7s',
+        '8s',
+        '9s',
+        '1m',
+        '2m',
+        '3m',
+        '5m',
+        '5m',
+      ];
       expect(HandPatterns.isPureHand(hand), isFalse);
     });
 
     test('honors only → false (isPureHand requires numbered suit)', () {
-      final hand = ['1z', '1z', '1z', '2z', '2z', '2z', '3z', '3z', '3z', '4z', '4z', '4z', '5z', '5z'];
+      final hand = [
+        '1z',
+        '1z',
+        '1z',
+        '2z',
+        '2z',
+        '2z',
+        '3z',
+        '3z',
+        '3z',
+        '4z',
+        '4z',
+        '4z',
+        '5z',
+        '5z',
+      ];
       expect(HandPatterns.isPureHand(hand), isFalse);
     });
   });
 
   group('Validator: isMixedOneSuit (Half Flush)', () {
     test('one suit + honors → true', () {
-      final hand = ['1m', '2m', '3m', '4m', '5m', '6m', '1m', '2m', '3m', '1z', '1z', '1z', '5m', '5m'];
+      final hand = [
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+        '5m',
+        '6m',
+        '1m',
+        '2m',
+        '3m',
+        '1z',
+        '1z',
+        '1z',
+        '5m',
+        '5m',
+      ];
       expect(HandPatterns.isMixedOneSuit(hand), isTrue);
     });
 
     test('pure hand (no honors) → false', () {
-      final hand = ['1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '1s', '2s', '3s', '7s', '7s'];
+      final hand = [
+        '1s',
+        '2s',
+        '3s',
+        '4s',
+        '5s',
+        '6s',
+        '7s',
+        '8s',
+        '9s',
+        '1s',
+        '2s',
+        '3s',
+        '7s',
+        '7s',
+      ];
       expect(HandPatterns.isMixedOneSuit(hand), isFalse);
     });
 
     test('two suits + honors → false', () {
-      final hand = ['1m', '2m', '3m', '4p', '5p', '6p', '1z', '1z', '1z', '2z', '2z', '2z', '5z', '5z'];
+      final hand = [
+        '1m',
+        '2m',
+        '3m',
+        '4p',
+        '5p',
+        '6p',
+        '1z',
+        '1z',
+        '1z',
+        '2z',
+        '2z',
+        '2z',
+        '5z',
+        '5z',
+      ];
       expect(HandPatterns.isMixedOneSuit(hand), isFalse);
     });
   });
 
   group('Validator: isAllPongs', () {
     test('all-pong hand → true', () {
-      final hand = ['1m', '1m', '1m', '5p', '5p', '5p', '9s', '9s', '9s', '3z', '3z', '3z', '7m', '7m'];
+      final hand = [
+        '1m',
+        '1m',
+        '1m',
+        '5p',
+        '5p',
+        '5p',
+        '9s',
+        '9s',
+        '9s',
+        '3z',
+        '3z',
+        '3z',
+        '7m',
+        '7m',
+      ];
       expect(HandPatterns.isAllPongs(hand), isTrue);
     });
 
     test('hand with chow → false', () {
-      final hand = ['1m', '2m', '3m', '5p', '5p', '5p', '9s', '9s', '9s', '3z', '3z', '3z', '7m', '7m'];
+      final hand = [
+        '1m',
+        '2m',
+        '3m',
+        '5p',
+        '5p',
+        '5p',
+        '9s',
+        '9s',
+        '9s',
+        '3z',
+        '3z',
+        '3z',
+        '7m',
+        '7m',
+      ];
       expect(HandPatterns.isAllPongs(hand), isFalse);
     });
   });
 
   group('Validator: isAllSimples', () {
     test('no terminals, no honors → true', () {
-      final hand = ['2m', '3m', '4m', '5p', '6p', '7p', '3s', '4s', '5s', '6m', '7m', '8m', '5s', '5s'];
+      final hand = [
+        '2m',
+        '3m',
+        '4m',
+        '5p',
+        '6p',
+        '7p',
+        '3s',
+        '4s',
+        '5s',
+        '6m',
+        '7m',
+        '8m',
+        '5s',
+        '5s',
+      ];
       expect(HandPatterns.isAllSimples(hand), isTrue);
     });
 
     test('has terminal 1m → false', () {
-      final hand = ['1m', '2m', '3m', '5p', '6p', '7p', '3s', '4s', '5s', '6m', '7m', '8m', '5s', '5s'];
+      final hand = [
+        '1m',
+        '2m',
+        '3m',
+        '5p',
+        '6p',
+        '7p',
+        '3s',
+        '4s',
+        '5s',
+        '6m',
+        '7m',
+        '8m',
+        '5s',
+        '5s',
+      ];
       expect(HandPatterns.isAllSimples(hand), isFalse);
     });
 
     test('has honor tile → false', () {
-      final hand = ['2m', '3m', '4m', '5p', '6p', '7p', '3s', '4s', '5s', '1z', '1z', '1z', '5s', '5s'];
+      final hand = [
+        '2m',
+        '3m',
+        '4m',
+        '5p',
+        '6p',
+        '7p',
+        '3s',
+        '4s',
+        '5s',
+        '1z',
+        '1z',
+        '1z',
+        '5s',
+        '5s',
+      ];
       expect(HandPatterns.isAllSimples(hand), isFalse);
     });
   });
@@ -509,113 +716,397 @@ void main() {
   group('Validator: isBigThreeDragons', () {
     test('three dragon pongs → true', () {
       // 5z=green, 6z=red, 7z=white
-      final hand = ['5z', '5z', '5z', '6z', '6z', '6z', '7z', '7z', '7z', '1m', '2m', '3m', '5s', '5s'];
+      final hand = [
+        '5z',
+        '5z',
+        '5z',
+        '6z',
+        '6z',
+        '6z',
+        '7z',
+        '7z',
+        '7z',
+        '1m',
+        '2m',
+        '3m',
+        '5s',
+        '5s',
+      ];
       expect(HandPatterns.isBigThreeDragons(hand), isTrue);
     });
 
     test('two dragon pongs + one dragon pair → false (that is Small)', () {
-      final hand = ['5z', '5z', '5z', '6z', '6z', '6z', '7z', '7z', '1m', '1m', '1m', '2m', '3m', '4m'];
+      final hand = [
+        '5z',
+        '5z',
+        '5z',
+        '6z',
+        '6z',
+        '6z',
+        '7z',
+        '7z',
+        '1m',
+        '1m',
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+      ];
       expect(HandPatterns.isBigThreeDragons(hand), isFalse);
     });
   });
 
   group('Validator: isSmallThreeDragons', () {
     test('two dragon pongs + one dragon pair → true', () {
-      final hand = ['5z', '5z', '5z', '6z', '6z', '6z', '7z', '7z', '1m', '1m', '1m', '2m', '3m', '4m'];
+      final hand = [
+        '5z',
+        '5z',
+        '5z',
+        '6z',
+        '6z',
+        '6z',
+        '7z',
+        '7z',
+        '1m',
+        '1m',
+        '1m',
+        '2m',
+        '3m',
+        '4m',
+      ];
       expect(HandPatterns.isSmallThreeDragons(hand), isTrue);
     });
 
     test('three dragon pongs → false (that is Big)', () {
-      final hand = ['5z', '5z', '5z', '6z', '6z', '6z', '7z', '7z', '7z', '1m', '2m', '3m', '5s', '5s'];
+      final hand = [
+        '5z',
+        '5z',
+        '5z',
+        '6z',
+        '6z',
+        '6z',
+        '7z',
+        '7z',
+        '7z',
+        '1m',
+        '2m',
+        '3m',
+        '5s',
+        '5s',
+      ];
       expect(HandPatterns.isSmallThreeDragons(hand), isFalse);
     });
   });
 
   group('Validator: isBigFourWinds', () {
     test('four wind pongs → true', () {
-      final hand = ['1z', '1z', '1z', '2z', '2z', '2z', '3z', '3z', '3z', '4z', '4z', '4z', '1m', '1m'];
+      final hand = [
+        '1z',
+        '1z',
+        '1z',
+        '2z',
+        '2z',
+        '2z',
+        '3z',
+        '3z',
+        '3z',
+        '4z',
+        '4z',
+        '4z',
+        '1m',
+        '1m',
+      ];
       expect(HandPatterns.isBigFourWinds(hand), isTrue);
     });
 
     test('three wind pongs + one wind pair → false', () {
-      final hand = ['1z', '1z', '1z', '2z', '2z', '2z', '3z', '3z', '3z', '4z', '4z', '1m', '1m', '1m'];
+      final hand = [
+        '1z',
+        '1z',
+        '1z',
+        '2z',
+        '2z',
+        '2z',
+        '3z',
+        '3z',
+        '3z',
+        '4z',
+        '4z',
+        '1m',
+        '1m',
+        '1m',
+      ];
       expect(HandPatterns.isBigFourWinds(hand), isFalse);
     });
   });
 
   group('Validator: isSmallFourWinds', () {
     test('three wind pongs + one wind pair → true', () {
-      final hand = ['1z', '1z', '1z', '2z', '2z', '2z', '3z', '3z', '3z', '4z', '4z', '1m', '1m', '1m'];
+      final hand = [
+        '1z',
+        '1z',
+        '1z',
+        '2z',
+        '2z',
+        '2z',
+        '3z',
+        '3z',
+        '3z',
+        '4z',
+        '4z',
+        '1m',
+        '1m',
+        '1m',
+      ];
       expect(HandPatterns.isSmallFourWinds(hand), isTrue);
     });
 
     test('four wind pongs → also true (controller handles exclusion)', () {
       // isSmallFourWinds returns true even for Big Four Winds;
       // the controller is responsible for excluding the lower pattern.
-      final hand = ['1z', '1z', '1z', '2z', '2z', '2z', '3z', '3z', '3z', '4z', '4z', '4z', '1m', '1m'];
+      final hand = [
+        '1z',
+        '1z',
+        '1z',
+        '2z',
+        '2z',
+        '2z',
+        '3z',
+        '3z',
+        '3z',
+        '4z',
+        '4z',
+        '4z',
+        '1m',
+        '1m',
+      ];
       expect(HandPatterns.isSmallFourWinds(hand), isTrue);
     });
   });
 
   group('Validator: isThirteenOrphans', () {
     test('valid thirteen orphans → true', () {
-      final hand = ['1m', '9m', '1p', '9p', '1s', '9s', '1z', '2z', '3z', '4z', '5z', '6z', '7z', '1m'];
+      final hand = [
+        '1m',
+        '9m',
+        '1p',
+        '9p',
+        '1s',
+        '9s',
+        '1z',
+        '2z',
+        '3z',
+        '4z',
+        '5z',
+        '6z',
+        '7z',
+        '1m',
+      ];
       expect(HandPatterns.isThirteenOrphans(hand), isTrue);
     });
 
     test('missing one orphan → false', () {
-      final hand = ['1m', '9m', '1p', '9p', '1s', '9s', '1z', '2z', '3z', '4z', '5z', '6z', '2m', '2m'];
+      final hand = [
+        '1m',
+        '9m',
+        '1p',
+        '9p',
+        '1s',
+        '9s',
+        '1z',
+        '2z',
+        '3z',
+        '4z',
+        '5z',
+        '6z',
+        '2m',
+        '2m',
+      ];
       expect(HandPatterns.isThirteenOrphans(hand), isFalse);
     });
 
     test('wrong tile count → false', () {
-      final hand = ['1m', '9m', '1p', '9p', '1s', '9s', '1z', '2z', '3z', '4z', '5z', '6z', '7z'];
+      final hand = [
+        '1m',
+        '9m',
+        '1p',
+        '9p',
+        '1s',
+        '9s',
+        '1z',
+        '2z',
+        '3z',
+        '4z',
+        '5z',
+        '6z',
+        '7z',
+      ];
       expect(HandPatterns.isThirteenOrphans(hand), isFalse);
     });
   });
 
   group('Validator: isPureTerminals', () {
     test('all 1s and 9s → true', () {
-      final hand = ['1m', '1m', '1m', '9m', '9m', '9m', '1p', '1p', '1p', '9s', '9s', '9s', '1s', '1s'];
+      final hand = [
+        '1m',
+        '1m',
+        '1m',
+        '9m',
+        '9m',
+        '9m',
+        '1p',
+        '1p',
+        '1p',
+        '9s',
+        '9s',
+        '9s',
+        '1s',
+        '1s',
+      ];
       expect(HandPatterns.isPureTerminals(hand), isTrue);
     });
 
     test('has honor → false', () {
-      final hand = ['1m', '1m', '1m', '9m', '9m', '9m', '1p', '1p', '1p', '1z', '1z', '1z', '1s', '1s'];
+      final hand = [
+        '1m',
+        '1m',
+        '1m',
+        '9m',
+        '9m',
+        '9m',
+        '1p',
+        '1p',
+        '1p',
+        '1z',
+        '1z',
+        '1z',
+        '1s',
+        '1s',
+      ];
       expect(HandPatterns.isPureTerminals(hand), isFalse);
     });
 
     test('has middle tile → false', () {
-      final hand = ['1m', '1m', '1m', '5m', '5m', '5m', '1p', '1p', '1p', '9s', '9s', '9s', '1s', '1s'];
+      final hand = [
+        '1m',
+        '1m',
+        '1m',
+        '5m',
+        '5m',
+        '5m',
+        '1p',
+        '1p',
+        '1p',
+        '9s',
+        '9s',
+        '9s',
+        '1s',
+        '1s',
+      ];
       expect(HandPatterns.isPureTerminals(hand), isFalse);
     });
   });
 
   group('Validator: isMixedTerminals', () {
     test('terminals + honors, all pongs → true', () {
-      final hand = ['1m', '1m', '1m', '9p', '9p', '9p', '5z', '5z', '5z', '1z', '1z', '1z', '9s', '9s'];
+      final hand = [
+        '1m',
+        '1m',
+        '1m',
+        '9p',
+        '9p',
+        '9p',
+        '5z',
+        '5z',
+        '5z',
+        '1z',
+        '1z',
+        '1z',
+        '9s',
+        '9s',
+      ];
       expect(HandPatterns.isMixedTerminals(hand), isTrue);
     });
 
     test('has middle tile → false', () {
-      final hand = ['1m', '1m', '1m', '5m', '5m', '5m', '5z', '5z', '5z', '1z', '1z', '1z', '9s', '9s'];
+      final hand = [
+        '1m',
+        '1m',
+        '1m',
+        '5m',
+        '5m',
+        '5m',
+        '5z',
+        '5z',
+        '5z',
+        '1z',
+        '1z',
+        '1z',
+        '9s',
+        '9s',
+      ];
       expect(HandPatterns.isMixedTerminals(hand), isFalse);
     });
 
     test('only terminals no honors → false', () {
-      final hand = ['1m', '1m', '1m', '9m', '9m', '9m', '1p', '1p', '1p', '9s', '9s', '9s', '1s', '1s'];
+      final hand = [
+        '1m',
+        '1m',
+        '1m',
+        '9m',
+        '9m',
+        '9m',
+        '1p',
+        '1p',
+        '1p',
+        '9s',
+        '9s',
+        '9s',
+        '1s',
+        '1s',
+      ];
       expect(HandPatterns.isMixedTerminals(hand), isFalse);
     });
   });
 
   group('Validator: isAllHonors', () {
     test('all honor tiles → true', () {
-      final hand = ['1z', '1z', '1z', '2z', '2z', '2z', '3z', '3z', '3z', '5z', '5z', '5z', '7z', '7z'];
+      final hand = [
+        '1z',
+        '1z',
+        '1z',
+        '2z',
+        '2z',
+        '2z',
+        '3z',
+        '3z',
+        '3z',
+        '5z',
+        '5z',
+        '5z',
+        '7z',
+        '7z',
+      ];
       expect(HandPatterns.isAllHonors(hand), isTrue);
     });
 
     test('has numbered tile → false', () {
-      final hand = ['1z', '1z', '1z', '2z', '2z', '2z', '3z', '3z', '3z', '5z', '5z', '5z', '1m', '1m'];
+      final hand = [
+        '1z',
+        '1z',
+        '1z',
+        '2z',
+        '2z',
+        '2z',
+        '3z',
+        '3z',
+        '3z',
+        '5z',
+        '5z',
+        '5z',
+        '1m',
+        '1m',
+      ];
       expect(HandPatterns.isAllHonors(hand), isFalse);
     });
   });
@@ -623,38 +1114,128 @@ void main() {
   group('Validator: isEightPairs (嚦咕嚦咕)', () {
     test('17 tiles with 8 pairs → true', () {
       final hand = [
-        '1m', '1m', '3m', '3m', '5p', '5p', '9p', '9p',
-        '2s', '2s', '7s', '7s', '1z', '1z', '3z', '3z', '5z',
+        '1m',
+        '1m',
+        '3m',
+        '3m',
+        '5p',
+        '5p',
+        '9p',
+        '9p',
+        '2s',
+        '2s',
+        '7s',
+        '7s',
+        '1z',
+        '1z',
+        '3z',
+        '3z',
+        '5z',
       ];
       expect(HandPatterns.isEightPairs(hand), isTrue);
     });
 
     test('14 tiles → false', () {
-      final hand = ['1m', '1m', '3m', '3m', '5p', '5p', '9p', '9p', '2s', '2s', '7s', '7s', '1z', '1z'];
+      final hand = [
+        '1m',
+        '1m',
+        '3m',
+        '3m',
+        '5p',
+        '5p',
+        '9p',
+        '9p',
+        '2s',
+        '2s',
+        '7s',
+        '7s',
+        '1z',
+        '1z',
+      ];
       expect(HandPatterns.isEightPairs(hand), isFalse);
     });
   });
 
   group('Validator: isConcealedDragon (暗龍)', () {
     test('has 1-9 of bamboo → true', () {
-      final hand = ['1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '1m', '2m', '3m', '5m', '5m'];
+      final hand = [
+        '1s',
+        '2s',
+        '3s',
+        '4s',
+        '5s',
+        '6s',
+        '7s',
+        '8s',
+        '9s',
+        '1m',
+        '2m',
+        '3m',
+        '5m',
+        '5m',
+      ];
       expect(HandPatterns.isConcealedDragon(hand), isTrue);
     });
 
     test('missing 5s → false', () {
-      final hand = ['1s', '2s', '3s', '4s', '6s', '7s', '8s', '9s', '1s', '1m', '2m', '3m', '5m', '5m'];
+      final hand = [
+        '1s',
+        '2s',
+        '3s',
+        '4s',
+        '6s',
+        '7s',
+        '8s',
+        '9s',
+        '1s',
+        '1m',
+        '2m',
+        '3m',
+        '5m',
+        '5m',
+      ];
       expect(HandPatterns.isConcealedDragon(hand), isFalse);
     });
   });
 
   group('Validator: hasEyeOf258', () {
     test('pair of 5m in chow hand → true', () {
-      final hand = ['1m', '2m', '3m', '4p', '5p', '6p', '7s', '8s', '9s', '1m', '2m', '3m', '5m', '5m'];
+      final hand = [
+        '1m',
+        '2m',
+        '3m',
+        '4p',
+        '5p',
+        '6p',
+        '7s',
+        '8s',
+        '9s',
+        '1m',
+        '2m',
+        '3m',
+        '5m',
+        '5m',
+      ];
       expect(HandPatterns.hasEyeOf258(hand), isTrue);
     });
 
     test('pair of 1m (not 2/5/8) → false', () {
-      final hand = ['1m', '2m', '3m', '4p', '5p', '6p', '7s', '8s', '9s', '4m', '5m', '6m', '1m', '1m'];
+      final hand = [
+        '1m',
+        '2m',
+        '3m',
+        '4p',
+        '5p',
+        '6p',
+        '7s',
+        '8s',
+        '9s',
+        '4m',
+        '5m',
+        '6m',
+        '1m',
+        '1m',
+      ];
       expect(HandPatterns.hasEyeOf258(hand), isFalse);
     });
   });

@@ -807,10 +807,7 @@ void main() {
       var counters = const AchievementCounters(hkGames: 10, twGames: 9);
       final r = runCheck(
         counters: counters,
-        ctx: const RoundContext(
-          gameMode: GameMode.taiwan,
-          playerId: 'Alice',
-        ),
+        ctx: const RoundContext(gameMode: GameMode.taiwan, playerId: 'Alice'),
       );
       expect(r.counters.twGames, equals(10));
       expect(r.newlyUnlocked, contains('ms_dual_mode'));
@@ -820,10 +817,7 @@ void main() {
       var counters = const AchievementCounters(hkGames: 10, twGames: 5);
       final r = runCheck(
         counters: counters,
-        ctx: const RoundContext(
-          gameMode: GameMode.taiwan,
-          playerId: 'Alice',
-        ),
+        ctx: const RoundContext(gameMode: GameMode.taiwan, playerId: 'Alice'),
       );
       expect(r.newlyUnlocked, isNot(contains('ms_dual_mode')));
     });
@@ -851,7 +845,10 @@ void main() {
     test('not-yet-unlocked achievement has isUnlocked false', () {
       final r = runCheck(ctx: hkCtx);
       expect(r.progress['gen_hundred_games']?.isUnlocked, isFalse);
-      expect(r.progress['gen_hundred_games']?.progress, equals(1)); // 1 total game
+      expect(
+        r.progress['gen_hundred_games']?.progress,
+        equals(1),
+      ); // 1 total game
     });
 
     test('progress value is correct for partial achievements', () {
@@ -933,10 +930,7 @@ void main() {
 
   group('RoundContext', () {
     test('default values', () {
-      const ctx = RoundContext(
-        gameMode: GameMode.hongKong,
-        playerId: 'Test',
-      );
+      const ctx = RoundContext(gameMode: GameMode.hongKong, playerId: 'Test');
       expect(ctx.isWinner, isFalse);
       expect(ctx.isSelfDraw, isFalse);
       expect(ctx.dealtIn, isFalse);

@@ -123,10 +123,13 @@ class AchievementChecker {
       if (existing != null && existing.isUnlocked) continue;
 
       // Skip achievements that require a different game mode.
-      if (def.requiredMode != null && def.requiredMode != ctx.gameMode) continue;
+      if (def.requiredMode != null && def.requiredMode != ctx.gameMode)
+        continue;
 
       // Evaluate progress.
       final currentValue = _evaluate(def, counters, ctx);
+      // Skip externally-managed achievements (return -1 sentinel).
+      if (currentValue < 0) continue;
       final reachedTarget = currentValue >= def.target;
 
       if (reachedTarget) {
@@ -159,9 +162,7 @@ class AchievementChecker {
     AchievementCounters c,
     RoundContext ctx,
   ) {
-    int newConsecutiveWins = ctx.isWinner
-        ? c.currentConsecutiveWins + 1
-        : 0;
+    int newConsecutiveWins = ctx.isWinner ? c.currentConsecutiveWins + 1 : 0;
     int newMaxConsecutiveWins = newConsecutiveWins > c.maxConsecutiveWins
         ? newConsecutiveWins
         : c.maxConsecutiveWins;
@@ -169,8 +170,10 @@ class AchievementChecker {
     var updated = c.copyWith(
       totalGames: c.totalGames + 1,
       totalWins: c.totalWins + (ctx.isWinner ? 1 : 0),
-      totalSelfDrawn: c.totalSelfDrawn + (ctx.isWinner && ctx.isSelfDraw ? 1 : 0),
-      totalDealerWins: c.totalDealerWins + (ctx.isDealer && ctx.isWinner ? 1 : 0),
+      totalSelfDrawn:
+          c.totalSelfDrawn + (ctx.isWinner && ctx.isSelfDraw ? 1 : 0),
+      totalDealerWins:
+          c.totalDealerWins + (ctx.isDealer && ctx.isWinner ? 1 : 0),
       totalFangChong: c.totalFangChong + (ctx.dealtIn ? 1 : 0),
       currentConsecutiveWins: newConsecutiveWins,
       maxConsecutiveWins: newMaxConsecutiveWins,
@@ -188,23 +191,32 @@ class AchievementChecker {
         hkMaxFan: (ctx.fanCount ?? 0) > c.hkMaxFan
             ? (ctx.fanCount ?? 0)
             : c.hkMaxFan,
-        hkConcealedHand: c.hkConcealedHand +
+        hkConcealedHand:
+            c.hkConcealedHand +
             (ctx.isWinner && ctx.patterns.contains('concealedHand') ? 1 : 0),
-        hkAllOneSuit: c.hkAllOneSuit +
+        hkAllOneSuit:
+            c.hkAllOneSuit +
             (ctx.isWinner && ctx.patterns.contains('allOneSuit') ? 1 : 0),
-        hkAllPongs: c.hkAllPongs +
+        hkAllPongs:
+            c.hkAllPongs +
             (ctx.isWinner && ctx.patterns.contains('allPongs') ? 1 : 0),
-        hkBigThreeDragons: c.hkBigThreeDragons +
+        hkBigThreeDragons:
+            c.hkBigThreeDragons +
             (ctx.isWinner && ctx.patterns.contains('bigThreeDragons') ? 1 : 0),
-        hkBigFourWinds: c.hkBigFourWinds +
+        hkBigFourWinds:
+            c.hkBigFourWinds +
             (ctx.isWinner && ctx.patterns.contains('bigFourWinds') ? 1 : 0),
-        hkThirteenOrphans: c.hkThirteenOrphans +
+        hkThirteenOrphans:
+            c.hkThirteenOrphans +
             (ctx.isWinner && ctx.patterns.contains('thirteenOrphans') ? 1 : 0),
-        hkNineGates: c.hkNineGates +
+        hkNineGates:
+            c.hkNineGates +
             (ctx.isWinner && ctx.patterns.contains('nineGates') ? 1 : 0),
-        hkLastTileWin: c.hkLastTileWin +
+        hkLastTileWin:
+            c.hkLastTileWin +
             (ctx.isWinner && ctx.patterns.contains('lastTileWin') ? 1 : 0),
-        hkRobbingKong: c.hkRobbingKong +
+        hkRobbingKong:
+            c.hkRobbingKong +
             (ctx.isWinner && ctx.patterns.contains('robbingKong') ? 1 : 0),
       );
     } else if (ctx.gameMode == GameMode.taiwan) {
@@ -214,24 +226,35 @@ class AchievementChecker {
         twMaxTai: (ctx.taiCount ?? 0) > c.twMaxTai
             ? (ctx.taiCount ?? 0)
             : c.twMaxTai,
-        twCommonHand: c.twCommonHand +
+        twCommonHand:
+            c.twCommonHand +
             (ctx.isWinner && ctx.patterns.contains('commonHand') ? 1 : 0),
-        twConcealedSelfDrawn: c.twConcealedSelfDrawn +
-            (ctx.isWinner && ctx.patterns.contains('concealedSelfDrawn') ? 1 : 0),
-        twMaxConsecutiveDealer: ctx.consecutiveDealerCount > c.twMaxConsecutiveDealer
+        twConcealedSelfDrawn:
+            c.twConcealedSelfDrawn +
+            (ctx.isWinner && ctx.patterns.contains('concealedSelfDrawn')
+                ? 1
+                : 0),
+        twMaxConsecutiveDealer:
+            ctx.consecutiveDealerCount > c.twMaxConsecutiveDealer
             ? ctx.consecutiveDealerCount
             : c.twMaxConsecutiveDealer,
-        twKongWin: c.twKongWin +
+        twKongWin:
+            c.twKongWin +
             (ctx.isWinner && ctx.patterns.contains('kongWin') ? 1 : 0),
-        twFlowerWin: c.twFlowerWin +
+        twFlowerWin:
+            c.twFlowerWin +
             (ctx.isWinner && ctx.patterns.contains('flowerWin') ? 1 : 0),
-        twSevenRobOne: c.twSevenRobOne +
+        twSevenRobOne:
+            c.twSevenRobOne +
             (ctx.isWinner && ctx.patterns.contains('sevenRobOne') ? 1 : 0),
-        twHeavenlyListen: c.twHeavenlyListen +
+        twHeavenlyListen:
+            c.twHeavenlyListen +
             (ctx.isWinner && ctx.patterns.contains('heavenlyListen') ? 1 : 0),
-        twChickenHand: c.twChickenHand +
+        twChickenHand:
+            c.twChickenHand +
             (ctx.isWinner && ctx.patterns.contains('chickenHand') ? 1 : 0),
-        twLikuliku: c.twLikuliku +
+        twLikuliku:
+            c.twLikuliku +
             (ctx.isWinner && ctx.patterns.contains('likuliku') ? 1 : 0),
       );
     }
@@ -275,7 +298,9 @@ class AchievementChecker {
         }
         return 0;
       case 'gen_comeback':
-        return (ctx.isLastRound && ctx.wasLastPlace && ctx.isNowFirstPlace) ? 1 : 0;
+        return (ctx.isLastRound && ctx.wasLastPlace && ctx.isNowFirstPlace)
+            ? 1
+            : 0;
 
       // ── HK ─────────────────────────────────────────────────────
       case 'hk_first_win':
@@ -330,6 +355,12 @@ class AchievementChecker {
         return c.twChickenHand;
       case 'tw_likuliku':
         return c.twLikuliku >= 1 ? 1 : 0;
+      // Instant-payment achievements are tracked directly in the UI,
+      // not via counters. Return existing progress so the checker
+      // never accidentally resets them.
+      case 'tw_instant_pay_5':
+      case 'tw_instant_pay_20':
+        return -1; // sentinel: skip evaluation
 
       // ── Milestones ─────────────────────────────────────────────
       case 'ms_wins_100':

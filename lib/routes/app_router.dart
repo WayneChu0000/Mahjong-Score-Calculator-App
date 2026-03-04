@@ -14,6 +14,7 @@ import '../screens/settings_screen.dart';
 import '../screens/saved_groups_screen.dart';
 import '../screens/group_detail_screen.dart';
 import '../screens/achievement_screen.dart';
+import '../screens/custom_fan_editor_screen.dart';
 
 /// Centralized route generator.
 ///
@@ -85,6 +86,9 @@ class AppRouter {
           settings,
         );
 
+      case AppRoutes.customFanEditor:
+        return _build(const CustomFanEditorScreen(), settings);
+
       case AppRoutes.scoreRecording:
         final args = settings.arguments as ScoreRecordingArgs;
         return _build(
@@ -142,7 +146,10 @@ class AppRouter {
     }
   }
 
-  static MaterialPageRoute<dynamic> _build(Widget page, RouteSettings settings) {
+  static MaterialPageRoute<dynamic> _build(
+    Widget page,
+    RouteSettings settings,
+  ) {
     return MaterialPageRoute(builder: (_) => page, settings: settings);
   }
 }

@@ -33,10 +33,7 @@ class ScoreSummaryCard extends StatelessWidget {
           children: [
             Text(
               AppLocalizations.scoreCalculation,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             // Score details table
@@ -47,52 +44,74 @@ class ScoreSummaryCard extends StatelessWidget {
               ],
               rows: [
                 // Matched Rules
-                ...displayRules.map((rule) => DataRow(cells: [
+                ...displayRules.map(
+                  (rule) => DataRow(
+                    cells: [
                       DataCell(Text(rule['name'])),
-                      DataCell(Text(gameMode == GameMode.taiwan
-                          ? AppLocalizations.taiCount(rule['fan'] as int)
-                          : AppLocalizations.fan(rule['fan'] as int))),
-                    ])),
+                      DataCell(
+                        Text(
+                          gameMode == GameMode.taiwan
+                              ? AppLocalizations.taiCount(rule['fan'] as int)
+                              : AppLocalizations.fan(rule['fan'] as int),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
                 // Total Fan/Tai
-                DataRow(cells: [
-                  DataCell(Text(
-                    gameMode == GameMode.taiwan
-                        ? AppLocalizations.totalTai
-                        : AppLocalizations.totalFan,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  )),
-                  DataCell(Text(
-                    gameMode == GameMode.taiwan
-                        ? AppLocalizations.taiCount(effectiveFan)
-                        : AppLocalizations.fan(effectiveFan) +
-                            ((maxFan != 999 && effectiveFan >= maxFan) ||
-                                    effectiveFan >= 13
-                                ? ' (${AppLocalizations.limit})'
-                                : ''),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  )),
-                ]),
-
-                // Total Score
-                DataRow(cells: [
-                  DataCell(Text(AppLocalizations.totalScore,
-                      style: const TextStyle(fontWeight: FontWeight.bold))),
-                  DataCell(
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 180),
-                      child: Text(
-                        isSelfDraw
-                            ? '$totalPoints${AppLocalizations.perPerson} ${AppLocalizations.totalWin(totalPoints * (playerCount - 1))}'
-                            : '$totalPoints ${AppLocalizations.points}',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.green),
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
+                DataRow(
+                  cells: [
+                    DataCell(
+                      Text(
+                        gameMode == GameMode.taiwan
+                            ? AppLocalizations.totalTai
+                            : AppLocalizations.totalFan,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ),
-                ]),
+                    DataCell(
+                      Text(
+                        gameMode == GameMode.taiwan
+                            ? AppLocalizations.taiCount(effectiveFan)
+                            : AppLocalizations.fan(effectiveFan) +
+                                  ((maxFan != 999 && effectiveFan >= maxFan) ||
+                                          effectiveFan >= 13
+                                      ? ' (${AppLocalizations.limit})'
+                                      : ''),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Total Score
+                DataRow(
+                  cells: [
+                    DataCell(
+                      Text(
+                        AppLocalizations.totalScore,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataCell(
+                      Container(
+                        constraints: const BoxConstraints(maxWidth: 180),
+                        child: Text(
+                          isSelfDraw
+                              ? '$totalPoints${AppLocalizations.perPerson} ${AppLocalizations.totalWin(totalPoints * (playerCount - 1))}'
+                              : '$totalPoints ${AppLocalizations.points}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ],

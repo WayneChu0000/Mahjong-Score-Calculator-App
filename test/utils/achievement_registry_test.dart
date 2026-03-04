@@ -11,7 +11,10 @@ void main() {
     });
 
     test('totalCount matches all.length', () {
-      expect(AchievementRegistry.totalCount, equals(AchievementRegistry.all.length));
+      expect(
+        AchievementRegistry.totalCount,
+        equals(AchievementRegistry.all.length),
+      );
     });
 
     test('all achievements have unique IDs', () {
@@ -21,8 +24,16 @@ void main() {
 
     test('all achievements have non-empty title and description keys', () {
       for (final def in AchievementRegistry.all) {
-        expect(def.titleKey, isNotEmpty, reason: '${def.id} has empty titleKey');
-        expect(def.descriptionKey, isNotEmpty, reason: '${def.id} has empty descriptionKey');
+        expect(
+          def.titleKey,
+          isNotEmpty,
+          reason: '${def.id} has empty titleKey',
+        );
+        expect(
+          def.descriptionKey,
+          isNotEmpty,
+          reason: '${def.id} has empty descriptionKey',
+        );
       }
     });
 
@@ -52,7 +63,9 @@ void main() {
     });
 
     test('general category count', () {
-      final general = AchievementRegistry.byCategory(AchievementCategory.general);
+      final general = AchievementRegistry.byCategory(
+        AchievementCategory.general,
+      );
       expect(general.length, greaterThanOrEqualTo(10));
     });
 
@@ -74,24 +87,35 @@ void main() {
     test('hk achievements require hongKong mode', () {
       final hk = AchievementRegistry.byCategory(AchievementCategory.hk);
       for (final def in hk) {
-        expect(def.requiredMode, equals(GameMode.hongKong),
-            reason: '${def.id} should require HK mode');
+        expect(
+          def.requiredMode,
+          equals(GameMode.hongKong),
+          reason: '${def.id} should require HK mode',
+        );
       }
     });
 
     test('tw achievements require taiwan mode', () {
       final tw = AchievementRegistry.byCategory(AchievementCategory.tw);
       for (final def in tw) {
-        expect(def.requiredMode, equals(GameMode.taiwan),
-            reason: '${def.id} should require TW mode');
+        expect(
+          def.requiredMode,
+          equals(GameMode.taiwan),
+          reason: '${def.id} should require TW mode',
+        );
       }
     });
 
     test('general achievements have no required mode', () {
-      final general = AchievementRegistry.byCategory(AchievementCategory.general);
+      final general = AchievementRegistry.byCategory(
+        AchievementCategory.general,
+      );
       for (final def in general) {
-        expect(def.requiredMode, isNull,
-            reason: '${def.id} should not require a mode');
+        expect(
+          def.requiredMode,
+          isNull,
+          reason: '${def.id} should not require a mode',
+        );
       }
     });
 

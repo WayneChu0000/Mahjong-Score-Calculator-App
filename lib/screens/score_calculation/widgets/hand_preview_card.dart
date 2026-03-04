@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../localization/app_localizations.dart';
 
-/// Card widget for hand preview (tile display, flower selection, camera/manual buttons).
+/// Card widget for hand preview (tile display, flower selection, camera/upload/manual buttons).
 class HandPreviewCard extends StatelessWidget {
   final bool isAnalyzing;
   final File? capturedImage;
@@ -10,6 +10,7 @@ class HandPreviewCard extends StatelessWidget {
   final Map<String, bool> selectedFlowers;
   final VoidCallback onSelectHand;
   final VoidCallback onCaptureImage;
+  final VoidCallback onUploadImage;
   final void Function(String key) onFlowerToggled;
   final String Function(String tile) getAssetPath;
 
@@ -21,6 +22,7 @@ class HandPreviewCard extends StatelessWidget {
     required this.selectedFlowers,
     required this.onSelectHand,
     required this.onCaptureImage,
+    required this.onUploadImage,
     required this.onFlowerToggled,
     required this.getAssetPath,
   });
@@ -30,13 +32,16 @@ class HandPreviewCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Camera / Manual selection buttons
+        // Camera / Upload / Manual selection buttons
         Row(
           children: [
             Expanded(
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.camera_alt),
-                label: Text(AppLocalizations.scanTiles),
+                icon: const Icon(Icons.camera_alt, size: 18),
+                label: Text(
+                  AppLocalizations.scanTiles,
+                  style: const TextStyle(fontSize: 12),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.white,
@@ -45,11 +50,30 @@ class HandPreviewCard extends StatelessWidget {
                 onPressed: onCaptureImage,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.grid_view),
-                label: Text(AppLocalizations.selectHand),
+                icon: const Icon(Icons.photo_library, size: 18),
+                label: Text(
+                  AppLocalizations.uploadPhoto,
+                  style: const TextStyle(fontSize: 12),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                onPressed: onUploadImage,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.grid_view, size: 18),
+                label: Text(
+                  AppLocalizations.selectHand,
+                  style: const TextStyle(fontSize: 12),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
@@ -78,10 +102,7 @@ class HandPreviewCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                InkWell(
-                  onTap: onSelectHand,
-                  child: _buildHandPreview(),
-                ),
+                InkWell(onTap: onSelectHand, child: _buildHandPreview()),
 
                 const SizedBox(height: 24),
                 Text(
@@ -164,7 +185,7 @@ class HandPreviewCard extends StatelessWidget {
                 height: 42,
                 fit: BoxFit.contain,
               );
-            })
+            }),
           ].toList(),
         ),
       );

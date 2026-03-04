@@ -159,7 +159,8 @@ class GameTableLayout extends StatelessWidget {
           if (gameMode == GameMode.taiwan && currentDealerGameCount > 1)
             Text(
               AppLocalizations.consecutiveDealerCount(
-                  currentDealerGameCount - 1),
+                currentDealerGameCount - 1,
+              ),
               style: const TextStyle(
                 color: AppColors.accent,
                 fontSize: 11,

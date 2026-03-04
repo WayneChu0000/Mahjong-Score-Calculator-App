@@ -5,17 +5,15 @@ class TileGroup extends StatelessWidget {
   final List<String> tiles;
   final bool isHighlighted;
 
-  const TileGroup({
-    super.key, 
-    required this.tiles, 
-    this.isHighlighted = false,
-  });
+  const TileGroup({super.key, required this.tiles, this.isHighlighted = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: isHighlighted ? Colors.yellow.withValues(alpha: 0.3) : Colors.transparent,
+        color: isHighlighted
+            ? Colors.yellow.withValues(alpha: 0.3)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(4),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),

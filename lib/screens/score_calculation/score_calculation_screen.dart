@@ -45,6 +45,8 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
 
   // Image state (needs context for Navigator / SnackBar)
   File? _capturedImage;
+  final ImagePicker _picker = ImagePicker();
+  bool _isPickingImage = false;
 
   @override
   void initState() {
@@ -77,61 +79,96 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   // =============================================
 
   Future<void> _captureImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
+    if (_isPickingImage) return;
+    _isPickingImage = true;
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        await _processPickedImage(File(image.path));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Camera error: $e')));
+      }
+    } finally {
+      _isPickingImage = false;
+    }
+  }
 
-    if (image != null) {
-      setState(() {
-        _capturedImage = File(image.path);
-        _ctrl.selectedTiles.clear();
+  Future<void> _uploadImage() async {
+    if (_isPickingImage) return;
+    _isPickingImage = true;
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        await _processPickedImage(File(image.path));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gallery error: $e')));
+      }
+    } finally {
+      _isPickingImage = false;
+    }
+  }
+
+  Future<void> _processPickedImage(File imageFile) async {
+    setState(() {
+      _capturedImage = imageFile;
+      _ctrl.selectedTiles.clear();
+    });
+    _ctrl.setAnalyzing(true);
+
+    try {
+      final detectedTiles = await VisionService.analyzeImage(_capturedImage!);
+
+      detectedTiles.sort((a, b) {
+        if (a.length < 2 || b.length < 2) return a.compareTo(b);
+        final suitA = a.substring(a.length - 1);
+        final suitB = b.substring(b.length - 1);
+        final valA = a.substring(0, a.length - 1);
+        final valB = b.substring(0, b.length - 1);
+
+        if (suitA != suitB) {
+          const order = ['m', 'p', 's', 'z', 'f'];
+          int idxA = order.indexOf(suitA);
+          int idxB = order.indexOf(suitB);
+          if (idxA == -1) idxA = 99;
+          if (idxB == -1) idxB = 99;
+          return idxA.compareTo(idxB);
+        }
+        return valA.compareTo(valB);
       });
-      _ctrl.setAnalyzing(true);
 
-      try {
-        final detectedTiles = await VisionService.analyzeImage(_capturedImage!);
-
-        detectedTiles.sort((a, b) {
-          if (a.length < 2 || b.length < 2) return a.compareTo(b);
-          final suitA = a.substring(a.length - 1);
-          final suitB = b.substring(b.length - 1);
-          final valA = a.substring(0, a.length - 1);
-          final valB = b.substring(0, b.length - 1);
-
-          if (suitA != suitB) {
-            const order = ['m', 'p', 's', 'z', 'f'];
-            int idxA = order.indexOf(suitA);
-            int idxB = order.indexOf(suitB);
-            if (idxA == -1) idxA = 99;
-            if (idxB == -1) idxB = 99;
-            return idxA.compareTo(idxB);
-          }
-          return valA.compareTo(valB);
-        });
-
-        if (mounted) {
-          _ctrl.setAnalyzing(false);
-          _ctrl.setSelectedTiles(detectedTiles);
-        }
-      } catch (e) {
-        if (mounted) {
-          _ctrl.setAnalyzing(false);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to analyze tiles: $e')),
-          );
-        }
+      if (mounted) {
+        _ctrl.setAnalyzing(false);
+        _ctrl.setSelectedTiles(detectedTiles);
+      }
+    } catch (e) {
+      if (mounted) {
+        _ctrl.setAnalyzing(false);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to analyze tiles: $e')));
       }
     }
   }
 
   Future<void> _selectHand() async {
-    final result = await Navigator.pushNamed(
-      context,
-      AppRoutes.tileSelection,
-      arguments: TileSelectionArgs(
-        initialTiles: _ctrl.selectedTiles,
-        gameMode: widget.gameMode,
-      ),
-    ) as List<String>?;
+    final result =
+        await Navigator.pushNamed(
+              context,
+              AppRoutes.tileSelection,
+              arguments: TileSelectionArgs(
+                initialTiles: _ctrl.selectedTiles,
+                gameMode: widget.gameMode,
+              ),
+            )
+            as List<String>?;
 
     if (result != null) {
       setState(() {
@@ -145,9 +182,9 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
     final result = _ctrl.buildSubmitResult();
     if (result == null) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Score updated, next round')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Score updated, next round')));
     Navigator.pop(context, result);
   }
 
@@ -217,6 +254,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
               selectedFlowers: _ctrl.selectedFlowers,
               onSelectHand: _selectHand,
               onCaptureImage: _captureImage,
+              onUploadImage: _uploadImage,
               onFlowerToggled: (key) => _ctrl.toggleFlower(key),
               getAssetPath: _ctrl.getAssetPath,
             ),
@@ -247,8 +285,10 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                       padding: AppDimens.paddingVerticalLg,
                     ),
                     onPressed: _submitScore,
-                    child: Text(AppLocalizations.nextRound,
-                        style: const TextStyle(fontSize: 15)),
+                    child: Text(
+                      AppLocalizations.nextRound,
+                      style: const TextStyle(fontSize: 15),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -257,21 +297,22 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor:
                           Theme.of(context).brightness == Brightness.dark
-                              ? AppColors.white
-                              : AppColors.black,
+                          ? AppColors.white
+                          : AppColors.black,
                       side: BorderSide(
-                        color:
-                            Theme.of(context).brightness == Brightness.dark
-                                ? AppColors.grey600
-                                : AppColors.grey300,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppColors.grey600
+                            : AppColors.grey300,
                       ),
                       padding: AppDimens.paddingVerticalLg,
                     ),
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text(AppLocalizations.cancel,
-                        style: const TextStyle(fontSize: 15)),
+                    child: Text(
+                      AppLocalizations.cancel,
+                      style: const TextStyle(fontSize: 15),
+                    ),
                   ),
                 ),
               ],

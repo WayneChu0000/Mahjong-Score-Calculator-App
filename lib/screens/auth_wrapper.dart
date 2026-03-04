@@ -11,7 +11,7 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // If the stream is waiting, we could show a loading spinner, 
+        // If the stream is waiting, we could show a loading spinner,
         // but usually auth state is available quickly.
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(

@@ -46,8 +46,7 @@ class PlayerTableCard extends StatelessWidget {
         borderRadius: AppDimens.borderRadiusMd,
         border: isDealer
             ? Border.all(color: AppColors.destructive, width: 2)
-            : Border.all(
-                color: isDark ? AppColors.grey700 : AppColors.grey300),
+            : Border.all(color: isDark ? AppColors.grey700 : AppColors.grey300),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -56,48 +55,55 @@ class PlayerTableCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: isDealer
-                  ? AppColors.destructive
-                  : (isDark ? AppColors.grey800 : AppColors.grey200),
-              borderRadius: AppDimens.borderRadiusSm,
-            ),
-            child: Text(
-              isDealer ? AppLocalizations.dealer : windName,
-              style: TextStyle(
-                color: isDealer
-                    ? AppColors.white
-                    : (isDark ? AppColors.grey300 : Colors.black54),
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: isDealer
+                      ? AppColors.destructive
+                      : (isDark ? AppColors.grey800 : AppColors.grey200),
+                  borderRadius: AppDimens.borderRadiusSm,
+                ),
+                child: Text(
+                  isDealer ? AppLocalizations.dealer : windName,
+                  style: TextStyle(
+                    color: isDealer
+                        ? AppColors.white
+                        : (isDark ? AppColors.grey300 : Colors.black54),
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(height: 2),
+              Text(
+                player.name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  color: isDark ? AppColors.white : AppColors.black,
+                ),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                '$currentScore',
+                style: TextStyle(
+                  color: AppColors.scoreColor(currentScore),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            player.name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-              color: isDark ? AppColors.white : AppColors.black,
-            ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            '$currentScore',
-            style: TextStyle(
-              color: AppColors.scoreColor(currentScore),
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

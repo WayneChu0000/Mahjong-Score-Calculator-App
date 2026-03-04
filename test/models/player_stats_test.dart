@@ -21,7 +21,11 @@ void main() {
     });
 
     test('winningRate calculated correctly', () {
-      final s = PlayerStats(playerName: 'Alice', totalGamesPlayed: 10, totalWins: 3);
+      final s = PlayerStats(
+        playerName: 'Alice',
+        totalGamesPlayed: 10,
+        totalWins: 3,
+      );
       expect(s.winningRate, closeTo(0.3, 0.001));
     });
 

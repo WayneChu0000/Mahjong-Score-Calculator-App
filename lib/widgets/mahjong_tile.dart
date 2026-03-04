@@ -17,10 +17,10 @@ class MahjongTile extends StatelessWidget {
   String _getImagePath() {
     // Parse tile face: e.g., '1m' -> value='1', suit='m'
     if (tile.length < 2) return 'assets/images/tiles/back.png';
-    
+
     final value = tile.substring(0, tile.length - 1);
     final suit = tile.substring(tile.length - 1);
-    
+
     switch (suit) {
       case 'm': // Character tiles
         return 'assets/images/tiles/characters/${value}m.png';
@@ -41,10 +41,10 @@ class MahjongTile extends StatelessWidget {
 
   String _getTileName() {
     if (tile.length < 2) return tile;
-    
+
     final value = tile.substring(0, tile.length - 1);
     final suit = tile.substring(tile.length - 1);
-    
+
     switch (suit) {
       case 'm':
         return '$value萬';
@@ -54,26 +54,43 @@ class MahjongTile extends StatelessWidget {
         return '$value索';
       case 'z':
         switch (value) {
-          case '1': return '東';
-          case '2': return '南';
-          case '3': return '西';
-          case '4': return '北';
-          case '5': return '白';
-          case '6': return '發';
-          case '7': return '中';
-          default: return tile;
+          case '1':
+            return '東';
+          case '2':
+            return '南';
+          case '3':
+            return '西';
+          case '4':
+            return '北';
+          case '5':
+            return '白';
+          case '6':
+            return '發';
+          case '7':
+            return '中';
+          default:
+            return tile;
         }
       case 'f':
         switch (value) {
-          case '1': return '梅';
-          case '2': return '蘭';
-          case '3': return '菊';
-          case '4': return '竹';
-          case '5': return '春';
-          case '6': return '夏';
-          case '7': return '秋';
-          case '8': return '冬';
-          default: return '花';
+          case '1':
+            return '梅';
+          case '2':
+            return '蘭';
+          case '3':
+            return '菊';
+          case '4':
+            return '竹';
+          case '5':
+            return '春';
+          case '6':
+            return '夏';
+          case '7':
+            return '秋';
+          case '8':
+            return '冬';
+          default:
+            return '花';
         }
       default:
         return tile;

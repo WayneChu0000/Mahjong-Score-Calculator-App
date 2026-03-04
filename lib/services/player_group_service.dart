@@ -13,7 +13,7 @@ class PlayerGroupService {
         .doc(user.uid)
         .collection('player_groups');
   }
-  
+
   // Get all saved player groups
   static Future<List<PlayerGroup>> getSavedGroups() async {
     try {
@@ -30,7 +30,7 @@ class PlayerGroupService {
       return [];
     }
   }
-  
+
   // Save player group
   static Future<bool> saveGroup(PlayerGroup group) async {
     try {
@@ -45,7 +45,7 @@ class PlayerGroupService {
       return false;
     }
   }
-  
+
   // Delete player group
   static Future<bool> deleteGroup(String groupName) async {
     try {
@@ -59,7 +59,7 @@ class PlayerGroupService {
       return false;
     }
   }
-  
+
   // Load specific group
   static Future<PlayerGroup?> loadGroup(String groupName) async {
     try {

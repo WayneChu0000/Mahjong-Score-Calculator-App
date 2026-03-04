@@ -5,37 +5,35 @@ import 'config/env_config.dart';
 import 'routes/app_routes.dart';
 import 'routes/app_router.dart';
 import 'services/settings_service.dart';
-import 'services/score_service.dart'; 
+import 'services/score_service.dart';
 import 'localization/app_localizations.dart';
 import 'theme/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Load environment variables from .env file
   await EnvConfig.init();
-  
+
   // Initialize Firebase first to avoid "No Firebase App" errors
   await Firebase.initializeApp();
-  
+
   // Initialize settings
   await SettingsService.instance.init();
-  
+
   // Sync l10n with persisted language preference
   AppLocalizations.setLocale(SettingsService.instance.language);
-  
+
   // Initialize score service
   ScoreService();
-  
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<SettingsService>.value(
           value: SettingsService.instance,
         ),
-        ChangeNotifierProvider<ScoreService>.value(
-          value: ScoreService(),
-        ),
+        ChangeNotifierProvider<ScoreService>.value(value: ScoreService()),
       ],
       child: const MyApp(),
     ),

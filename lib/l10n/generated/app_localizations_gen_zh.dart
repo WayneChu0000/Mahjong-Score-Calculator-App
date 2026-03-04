@@ -281,13 +281,16 @@ class L10nZh extends L10n {
   String get scanTiles => '掃描牌型';
 
   @override
+  String get uploadPhoto => '上傳照片';
+
+  @override
   String get selectHand => '選擇牌型';
 
   @override
   String get analyzingTiles => '正在分析牌型...';
 
   @override
-  String get takePhotoHint => '拍照或點擊以選擇牌型';
+  String get takePhotoHint => '拍照、上傳照片或點擊以選擇牌型';
 
   @override
   String get item => '項目';
@@ -1625,6 +1628,21 @@ class L10nZh extends L10n {
   String get twFlowerSetPayDesc => '一台草：其他三家每人給半個底。一台花：其他三家每人給一個底。拿了花之後不能再拿草。';
 
   @override
+  String get twFlowerSeasonSetPay => '一台草即付';
+
+  @override
+  String get twFlowerSeasonSetPayDesc => '集齊春夏秋冬四張花牌，其他三家每人支付指定金額。';
+
+  @override
+  String get twFlowerGroupPay => '一台花即付';
+
+  @override
+  String get twFlowerGroupPayDesc => '集齊梅蘭竹菊四張花牌，其他三家每人支付指定金額。';
+
+  @override
+  String get builtInPayment => '內建';
+
+  @override
   String get twFalseWinPay => '詐胡';
 
   @override
@@ -1679,20 +1697,45 @@ class L10nZh extends L10n {
   String get twLaSettlementTitle => '「拉」結算規則';
 
   @override
-  String get twLaSettlementDesc => '影響連續局數輸贏金額的累積結算方式。';
+  String get twLaSettlementDesc => '影響連續局數輸贏金額的累積結算方式。欠款於同一人連贏期間累積，轉手時才結算。';
 
   @override
-  String get twLaMultiplier => '加乘效果';
+  String get twLaMultiplier => '加乘效果（×1.5）';
 
   @override
   String get twLaMultiplierDesc =>
-      '若上一舖胡家在此舖又胡牌，上一舖輸錢的玩家欠款先乘以 1.5 倍，再加上此舖新輸的錢。';
+      '若同一人連續胡牌，之前輸錢的玩家欠款先乘以 1.5 倍，再加上新一局輸的錢。自摸：全部人乘大；出沖：只有出沖者乘大。';
 
   @override
-  String get twLaReduction => '扣減補償';
+  String get twLaReduction => '扣減補償（÷2）';
 
   @override
-  String get twLaReductionDesc => '若前一舖輸錢的人在此舖自摸，或前一舖的胡家在此舖出沖，輸家原本累積的債務可以扣回一半。';
+  String get twLaReductionDesc => '結算時：若上家（贏家）出沖，或欠債者自摸，只有該玩家的欠款減半。其他欠債者照付全額。';
+
+  @override
+  String get twLaStopRule => '逼停規則';
+
+  @override
+  String get twLaStopRuleDesc =>
+      '若同一人連續輸給同一贏家 3、6、9 或 12 次，可選擇強制結算（照付全額，無扣減機會）。';
+
+  @override
+  String get twLaStopRuleTitle => '逼停（強制結算）';
+
+  @override
+  String twLaStopRuleMessage(
+    String playerName,
+    int lossCount,
+    String streakWinnerName,
+  ) {
+    return '$playerName 已連續輸給 $streakWinnerName $lossCount 次。是否立即強制結算（無扣減機會）？';
+  }
+
+  @override
+  String get twLaStopRuleContinue => '繼續打';
+
+  @override
+  String get twLaStopRuleSettle => '強制結算';
 
   @override
   String get twLaApplied => '拉（累計結算）';
@@ -1705,6 +1748,40 @@ class L10nZh extends L10n {
 
   @override
   String get twLaCarryDebt => '上舖累計欠款';
+
+  @override
+  String get twLaDebtTracker => '拉 欠款追蹤';
+
+  @override
+  String get twLaStreakWinner => '連勝者';
+
+  @override
+  String get twLaDebtTotal => '累計欠款';
+
+  @override
+  String get twLaDebtApplied => '已套用';
+
+  @override
+  String get twLaDebtPending => '待結算差額';
+
+  @override
+  String twLaLosses(int count) {
+    return '連輸 $count 次';
+  }
+
+  @override
+  String get twLaSettled => '已結清';
+
+  @override
+  String get twLaForceSettleAction => '強制結算';
+
+  @override
+  String get twLaNoActiveStreak => '目前無拉';
+
+  @override
+  String twLaStreakRounds(int count) {
+    return '連贏 $count 局';
+  }
 
   @override
   String get twDealerBonusTitle => '莊家加成規則';
@@ -2663,4 +2740,234 @@ class L10nZh extends L10n {
 
   @override
   String get tipDayContent10 => '台式麻將中，拉規則會將前一局的欠款乘以 1.5 倍，當同一玩家連續胡牠時生效。';
+
+  @override
+  String get customFanValues => '自訂番數/台數';
+
+  @override
+  String get customFanValuesDesc => '自訂個別牌型的計分數值';
+
+  @override
+  String get customHkFan => '港式番數設定';
+
+  @override
+  String get customTwTai => '台式台數設定';
+
+  @override
+  String get resetToDefault => '重設為預設值';
+
+  @override
+  String get resetFanConfirm => '確定要將所有自訂番數/台數重設為預設值嗎？';
+
+  @override
+  String get customized => '已自訂';
+
+  @override
+  String defaultValue(int value) {
+    return '預設：$value';
+  }
+
+  @override
+  String get gamePreferences => '遊戲偏好';
+
+  @override
+  String get displaySettings => '顯示設定';
+
+  @override
+  String get advancedSettings => '進階設定';
+
+  @override
+  String get accountSettings => '帳號';
+
+  @override
+  String get noCustomizations => '尚未自訂。點擊規則即可修改番數/台數。';
+
+  @override
+  String get editFanValue => '修改番數';
+
+  @override
+  String get editTaiValue => '修改台數';
+
+  @override
+  String get enterNewValue => '輸入新數值 (0-13)';
+
+  @override
+  String get enterNewTaiValue => '輸入新數值 (0-100)';
+
+  @override
+  String get invalidValue => '請輸入有效數字';
+
+  @override
+  String get customFanSaved => '自訂數值已儲存';
+
+  @override
+  String get allReset => '所有數值已重設為預設值';
+
+  @override
+  String get hkGameSettings => '港式麻將設定';
+
+  @override
+  String get twGameSettings => '台式麻將設定';
+
+  @override
+  String get hkMinFan => '最低番數';
+
+  @override
+  String get hkMaxFan => '最高番數';
+
+  @override
+  String get twBaseTaiSetting => '底 (底)';
+
+  @override
+  String get twTaiValueSetting => '每台價值 (每台)';
+
+  @override
+  String get addRule => '新增規則';
+
+  @override
+  String get deleteRule => '刪除規則';
+
+  @override
+  String get ruleName => '規則名稱';
+
+  @override
+  String get fanValueLabel => '番數';
+
+  @override
+  String get taiValueLabel => '台數';
+
+  @override
+  String get addCustomRule => '新增自訂規則';
+
+  @override
+  String get deleteConfirm => '確定要刪除此規則嗎？';
+
+  @override
+  String get ruleDeleted => '規則已刪除';
+
+  @override
+  String get ruleAdded => '規則已新增';
+
+  @override
+  String get ruleRestored => '規則已復原';
+
+  @override
+  String get deletedRules => '已刪除的規則';
+
+  @override
+  String get restore => '復原';
+
+  @override
+  String get customRules => '自訂規則';
+
+  @override
+  String get builtInRules => '內建規則';
+
+  @override
+  String get twPayments => '台式即付項目';
+
+  @override
+  String get twPaymentsDesc => '設定台式麻將的即時支付項目';
+
+  @override
+  String get paymentName => '項目名稱';
+
+  @override
+  String get paymentValue => '項目金額';
+
+  @override
+  String get addPayment => '新增項目';
+
+  @override
+  String get editPayment => '編輯項目';
+
+  @override
+  String get noPayments => '尚未設定任何即付項目';
+
+  @override
+  String get paymentSaved => '項目已儲存';
+
+  @override
+  String get paymentDeleted => '項目已刪除';
+
+  @override
+  String get enterRuleName => '輸入規則名稱';
+
+  @override
+  String get enterValue => '輸入數值';
+
+  @override
+  String get instantPayment => '即時付錢';
+
+  @override
+  String get selectPayer => '由誰支付？';
+
+  @override
+  String get selectReceiver => '由誰收取？';
+
+  @override
+  String get selectPaymentItem => '選擇付款項目';
+
+  @override
+  String get paymentAmount => '金額';
+
+  @override
+  String get paymentApplied => '付款已套用';
+
+  @override
+  String get allOtherPlayers => '其他所有玩家';
+
+  @override
+  String get customAmount => '自訂金額';
+
+  @override
+  String get achvTwInstantPay5Title => '快速支付';
+
+  @override
+  String get achvTwInstantPay5Desc => '在台灣麻將中使用 5 次即時付款';
+
+  @override
+  String get achvTwInstantPay20Title => '支付達人';
+
+  @override
+  String get achvTwInstantPay20Desc => '在台灣麻將中使用 20 次即時付款';
+
+  @override
+  String userSetFan(int f) {
+    return '玩家設定 $f 番';
+  }
+
+  @override
+  String userSetTai(int f) {
+    return '玩家設定 $f 台';
+  }
+
+  @override
+  String get roundHistory => '每局記錄';
+
+  @override
+  String get seatOrder => '座位順序';
+
+  @override
+  String get dragToReorder => '長按拖拽可調整座位';
+
+  @override
+  String get recentPlayers => '最近使用';
+
+  @override
+  String get duplicateNameWarning => '名稱重複';
+
+  @override
+  String windSeat(String wind) {
+    return '$wind風位';
+  }
+
+  @override
+  String get tapToEdit => '點擊名稱以編輯';
+
+  @override
+  String get playerSetupSubtitle => '設定您的牌桌';
+
+  @override
+  String get clearName => '清除';
 }
