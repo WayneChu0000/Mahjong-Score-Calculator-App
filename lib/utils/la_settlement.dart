@@ -220,7 +220,7 @@ class LaSettlement {
     return adjustments;
   }
 
-  /// Reset all La state (e.g. at game start or after a draw round).
+  /// Reset all La state (e.g. at game start).
   void reset() {
     _streakWinnerId = null;
     _columns.clear();
@@ -228,9 +228,36 @@ class LaSettlement {
   }
 
   /// Call this when a round ends with no result (流局).
-  /// La debts are cleared without settlement.
+  /// La debts are preserved — the streak continues unchanged
+  /// so that debt carries into the next round.
   void onNoResult() {
-    reset();
+    // Intentionally do nothing. La debts persist through draws.
+  }
+
+  // ── Serialization ────────────────────────────
+
+  /// Serialize the current La state to a JSON-compatible map for Firebase.
+  Map<String, dynamic> toJson() {
+    return {
+      'streakWinnerId': _streakWinnerId,
+      'streakRounds': _streakRounds,
+      'columns': _columns.map(
+        (k, v) => MapEntry(k, v.toJson()),
+      ),
+    };
+  }
+
+  /// Restore La state from a JSON map (e.g. loaded from Firebase).
+  void restoreFromJson(Map<String, dynamic> json) {
+    _streakWinnerId = json['streakWinnerId'] as String?;
+    _streakRounds = json['streakRounds'] as int? ?? 0;
+    _columns.clear();
+    final cols = json['columns'] as Map<String, dynamic>?;
+    if (cols != null) {
+      cols.forEach((k, v) {
+        _columns[k] = _LaColumn.fromJson(v as Map<String, dynamic>);
+      });
+    }
   }
 
   // ── Private helpers ──────────────────────────
@@ -360,6 +387,18 @@ class _LaColumn {
   int lastAskedAt;
 
   _LaColumn({this.debt = 0, this.marks = 0, this.lastAskedAt = 0});
+
+  Map<String, dynamic> toJson() => {
+    'debt': debt,
+    'marks': marks,
+    'lastAskedAt': lastAskedAt,
+  };
+
+  factory _LaColumn.fromJson(Map<String, dynamic> json) => _LaColumn(
+    debt: json['debt'] ?? 0,
+    marks: json['marks'] ?? 0,
+    lastAskedAt: json['lastAskedAt'] ?? 0,
+  );
 }
 
 /// Result of applying La settlement to a round.

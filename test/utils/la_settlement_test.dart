@@ -435,7 +435,7 @@ void main() {
   });
 
   group('LaSettlement - reset & no result', () {
-    test('onNoResult clears all state', () {
+    test('onNoResult preserves La state (debts persist through draws)', () {
       la.apply(
         rawScoreChanges: {'E': 30, 'S': -10, 'W': -10, 'N': -10},
         winnerId: 'E',
@@ -444,9 +444,10 @@ void main() {
 
       la.onNoResult();
 
-      expect(la.streakWinnerId, isNull);
-      expect(la.debts, isEmpty);
-      expect(la.hasActiveStreak, isFalse);
+      // State should be unchanged — La carries over through draws
+      expect(la.streakWinnerId, 'E');
+      expect(la.debts, {'S': 10, 'W': 10, 'N': 10});
+      expect(la.hasActiveStreak, isTrue);
     });
 
     test('reset clears all state', () {
@@ -462,7 +463,7 @@ void main() {
       expect(la.debts, isEmpty);
     });
 
-    test('after onNoResult, next round starts fresh (deferred)', () {
+    test('after onNoResult, same winner continues streak (compounds)', () {
       la.apply(
         rawScoreChanges: {'E': 30, 'S': -10, 'W': -10, 'N': -10},
         winnerId: 'E',
@@ -470,7 +471,7 @@ void main() {
       );
       la.onNoResult();
 
-      // Same player wins but should start a new streak (deferred)
+      // Same player wins again — streak continues (compounds, deferred)
       final result = la.apply(
         rawScoreChanges: {'E': 30, 'S': -10, 'W': -10, 'N': -10},
         winnerId: 'E',
@@ -479,6 +480,37 @@ void main() {
 
       expect(result.adjustedScoreChanges, {'E': 0, 'S': 0, 'W': 0, 'N': 0});
       expect(result.descriptions, isEmpty);
+      // Debt should compound: 10 * 1.5 + 10 = 25
+      expect(la.debts['S'], 25);
+      expect(la.debts['W'], 25);
+      expect(la.debts['N'], 25);
+    });
+
+    test('after onNoResult, different winner settles the streak', () {
+      la.apply(
+        rawScoreChanges: {'E': 30, 'S': -10, 'W': -10, 'N': -10},
+        winnerId: 'E',
+        isSelfDraw: true,
+      );
+      la.onNoResult();
+
+      // Different player wins — settles the old streak
+      final result = la.apply(
+        rawScoreChanges: {'S': 20, 'E': -20},
+        winnerId: 'S',
+        isSelfDraw: false,
+        discarderId: 'E',
+      );
+
+      // S was a debtor ($10 to E), but E discarded → S gets ÷2 = $5
+      // W and N still owe $10 each
+      // E receives: 5 + 10 + 10 = 25
+      // Settlement: S pays 5, W pays 10, N pays 10, E receives 25
+      // Plus new round deferred
+      expect(result.adjustedScoreChanges['E'], 25);
+      expect(result.adjustedScoreChanges['S'], -5);
+      expect(result.adjustedScoreChanges['W'], -10);
+      expect(result.adjustedScoreChanges['N'], -10);
     });
   });
 

@@ -9,6 +9,7 @@ import '../screens/player_setup.dart';
 import '../screens/score_recording/score_recording_screen.dart';
 import '../screens/score_calculation/score_calculation_screen.dart';
 import '../screens/tile_selection_screen.dart';
+import '../screens/tw_tile_selection_screen.dart';
 import '../screens/rules_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/saved_groups_screen.dart';
@@ -133,6 +134,13 @@ class AppRouter {
             initialTiles: args?.initialTiles ?? const [],
             gameMode: args?.gameMode ?? GameMode.hongKong,
           ),
+          settings,
+        );
+
+      case AppRoutes.twTileSelection:
+        final args = settings.arguments as TwTileSelectionArgs?;
+        return _build(
+          TwTileSelectionScreen(initialHand: args?.initialHand),
           settings,
         );
 

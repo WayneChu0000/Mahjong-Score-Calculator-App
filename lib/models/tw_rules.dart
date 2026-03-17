@@ -105,9 +105,9 @@ List<Rule> get twRules => [
   // ═══════════════════════════════════════════════════════════
   // 2️⃣  基礎牌型與胡牌方式 (Basic Patterns & Win Methods)
   // ═══════════════════════════════════════════════════════════
-  // 聽牌 – Declared Ready (5 Tai)
+  // 叮 – Ding Bonus (5 Tai)
   Rule(
-    name: AppLocalizations.twDeclaredReady,
+    name: AppLocalizations.twDingBonus,
     description: AppLocalizations.descDeclaredReady,
     fan: AppLocalizations.taiCount(5),
     fanValue: 5,
@@ -125,12 +125,12 @@ List<Rule> get twRules => [
     validator: null,
     exampleTiles: [],
   ),
-  // 對碰 – Double Pong Wait (1 Tai)
+  // 對碰 – Double Pong Wait (2 Tai)
   Rule(
     name: AppLocalizations.twDoublePong,
     description: AppLocalizations.twDescDoublePong,
-    fan: AppLocalizations.taiCount(1),
-    fanValue: 1,
+    fan: AppLocalizations.taiCount(2),
+    fanValue: 2,
     explanation: AppLocalizations.twExplDoublePong,
     validator: null,
     exampleTiles: [],
@@ -339,6 +339,16 @@ List<Rule> get twRules => [
     validator: HandPatterns.isAllPongs,
     exampleTiles: [],
   ),
+  // 間間胡 – Concealed All Pongs Self-Draw (100 Tai)
+  Rule(
+    name: AppLocalizations.twJianJianHu,
+    description: AppLocalizations.descJianJianHu,
+    fan: AppLocalizations.taiCount(100),
+    fanValue: 100,
+    explanation: AppLocalizations.explJianJianHu,
+    validator: null,
+    exampleTiles: [],
+  ),
   // 一般高 – Two Identical Sequences (3 Tai)
   Rule(
     name: AppLocalizations.twIdenticalSequenceTwo,
@@ -369,12 +379,12 @@ List<Rule> get twRules => [
     validator: null,
     exampleTiles: [],
   ),
-  // 二相逢 – Mixed Double Sequence (2 Tai)
+  // 二相逢 – Mixed Double Sequence (1 Tai)
   Rule(
     name: AppLocalizations.twMixedDoubleSeq,
     description: AppLocalizations.twDescMixedDoubleSeq,
-    fan: AppLocalizations.taiCount(2),
-    fanValue: 2,
+    fan: AppLocalizations.taiCount(1),
+    fanValue: 1,
     explanation: AppLocalizations.twExplMixedDoubleSeq,
     validator: null,
     exampleTiles: [],
@@ -503,22 +513,22 @@ List<Rule> get twRules => [
     validator: HandPatterns.isConcealedDragon,
     exampleTiles: [],
   ),
-  // 明雜龍 – Exposed Mixed Dragon (8 Tai)
+  // 明雜龍 – Exposed Mixed Dragon (5 Tai)
   Rule(
     name: AppLocalizations.twExposedMixedDragon,
     description: AppLocalizations.twDescExposedMixedDragon,
-    fan: AppLocalizations.taiCount(8),
-    fanValue: 8,
+    fan: AppLocalizations.taiCount(5),
+    fanValue: 5,
     explanation: AppLocalizations.twExplExposedMixedDragon,
     validator: null,
     exampleTiles: [],
   ),
-  // 暗雜龍 – Concealed Mixed Dragon (15 Tai)
+  // 暗雜龍 – Concealed Mixed Dragon (10 Tai)
   Rule(
     name: AppLocalizations.twConcealedMixedDragon,
     description: AppLocalizations.twDescConcealedMixedDragon,
-    fan: AppLocalizations.taiCount(15),
-    fanValue: 15,
+    fan: AppLocalizations.taiCount(10),
+    fanValue: 10,
     explanation: AppLocalizations.twExplConcealedMixedDragon,
     validator: null,
     exampleTiles: [],
@@ -750,6 +760,26 @@ List<Rule> get twRules => [
     fan: AppLocalizations.taiCount(15),
     fanValue: 15,
     explanation: AppLocalizations.twExplPureTerminalChows,
+    validator: null,
+    exampleTiles: [],
+  ),
+  // 全混么 – Pure Terminal Groups (15 Tai)
+  Rule(
+    name: AppLocalizations.twQuanHunYao,
+    description: AppLocalizations.twDescQuanHunYao,
+    fan: AppLocalizations.taiCount(15),
+    fanValue: 15,
+    explanation: AppLocalizations.twExplQuanHunYao,
+    validator: null,
+    exampleTiles: [],
+  ),
+  // 半帶混么 – Mixed Terminal Groups (10 Tai)
+  Rule(
+    name: AppLocalizations.twBanDaiHunYao,
+    description: AppLocalizations.twDescBanDaiHunYao,
+    fan: AppLocalizations.taiCount(10),
+    fanValue: 10,
+    explanation: AppLocalizations.twExplBanDaiHunYao,
     validator: null,
     exampleTiles: [],
   ),

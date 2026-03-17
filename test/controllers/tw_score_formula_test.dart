@@ -5,10 +5,10 @@ import 'package:flutter_application_1/models/game_mode.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 
 /// Tests for TW total score formula:
-///   totalPoints = baseTai + (effectiveFan × taiValue)
+///   totalPoints = baseTai + effectiveFan
 /// where:
-///   baseTai  = minFan (default 10)
-///   taiValue = maxFan (default 5)
+///   baseTai = minFan (default 10)
+///   taiValue = always 1 (each fan = 1 score)
 ///   effectiveFan = fanCount + flowers + specialCondition + dealerBonus
 ///
 /// Also tests self-draw payment distribution and discard payment.
@@ -69,31 +69,32 @@ void main() {
   // ═══════════════════════════════════════════════════════════
   // Basic formula: baseTai + (effectiveFan × taiValue)
   // ═══════════════════════════════════════════════════════════
-  group('TW score formula: baseTai + (effectiveFan × taiValue)', () {
-    test('fanCount=0, wrong flower → effectiveFan=1 → 10+(1×5)=15', () {
+  group('TW score formula: baseTai + effectiveFan × taiValue', () {
+    test('fanCount=0, wrong flower → effectiveFan=1 → 10+1=11', () {
       final ctrl = _tw(winningPlayer: 'Bob', flowers: {'1f': true});
       ctrl.fanCount = 0;
       ctrl.calculateScore();
       // effectiveFan = 0 + 1(wrong flower) = 1
-      expect(ctrl.totalPoints, equals(15));
+      // totalPoints = baseTai(10) + 1 = 11
+      expect(ctrl.totalPoints, equals(11));
     });
 
-    test('fanCount=3, wrong flower → effectiveFan=4 → 10+(4×5)=30', () {
+    test('fanCount=3, wrong flower → effectiveFan=4 → 10+4=14', () {
       final ctrl = _tw(winningPlayer: 'Bob', flowers: {'1f': true});
       ctrl.fanCount = 3;
       ctrl.calculateScore();
-      expect(ctrl.totalPoints, equals(30));
+      expect(ctrl.totalPoints, equals(14));
     });
 
-    test('fanCount=10, wrong flower → effectiveFan=11 → 10+(11×5)=65', () {
+    test('fanCount=10, wrong flower → effectiveFan=11 → 10+11=21', () {
       final ctrl = _tw(winningPlayer: 'Bob', flowers: {'1f': true});
       ctrl.fanCount = 10;
       ctrl.calculateScore();
-      expect(ctrl.totalPoints, equals(65));
+      expect(ctrl.totalPoints, equals(21));
     });
 
     test(
-      'Custom baseTai=20, taiValue=10, fanCount=5, wrong flower → 20+(6×10)=80',
+      'Custom baseTai=20, fanCount=5, wrong flower → 20+6=26',
       () {
         final ctrl = _tw(
           minFan: 20,
@@ -104,7 +105,8 @@ void main() {
         ctrl.fanCount = 5;
         ctrl.calculateScore();
         // effectiveFan = 5 + 1(wrong flower) = 6
-        expect(ctrl.totalPoints, equals(80));
+        // totalPoints = baseTai(20) + 6 = 26
+        expect(ctrl.totalPoints, equals(26));
       },
     );
   });
@@ -124,8 +126,8 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
       // effectiveFan = 3 + 2(proper flower) = 5
-      // totalPoints = 10 + (5*5) = 35
-      expect(ctrl.totalPoints, equals(35));
+      // totalPoints = baseTai(10) + 5 = 15
+      expect(ctrl.totalPoints, equals(15));
     });
 
     test('Bob with wrong flower 1f → +1 tai', () {
@@ -136,8 +138,8 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
       // effectiveFan = 3 + 1(wrong flower) = 4
-      // totalPoints = 10 + (4*5) = 30
-      expect(ctrl.totalPoints, equals(30));
+      // totalPoints = baseTai(10) + 4 = 14
+      expect(ctrl.totalPoints, equals(14));
     });
 
     test('No flowers selected → manual mode, totalPoints = fanCount', () {
@@ -157,8 +159,8 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
       // effectiveFan = 3 + 2(proper) + 1(wrong) + 1(wrong) = 7
-      // totalPoints = 10 + (7*5) = 45
-      expect(ctrl.totalPoints, equals(45));
+      // totalPoints = baseTai(10) + 7 = 17
+      expect(ctrl.totalPoints, equals(17));
     });
   });
 
@@ -175,8 +177,8 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
       // effectiveFan = 3 + 1(no flowers) + 3(MQQ) = 7
-      // totalPoints = 10 + (7*5) = 45
-      expect(ctrl.totalPoints, equals(45));
+      // totalPoints = baseTai(10) + 7 = 17
+      expect(ctrl.totalPoints, equals(17));
     });
 
     test(
@@ -191,20 +193,21 @@ void main() {
         ctrl.calculateScore();
         // Concealed Self-Draw (5) + separate Self-Draw (1) + noFlowers (1) = 7 extra
         // effectiveFan = 3 + 5 + 1 + 1 = 10
-        // totalPoints = 10 + (10*5) = 60
-        expect(ctrl.totalPoints, equals(60));
+        // totalPoints = baseTai(10) + 10 = 20
+        expect(ctrl.totalPoints, equals(20));
       },
     );
 
-    test('Declared Ready → +5 tai', () {
+    test('Kong on Kong/Flower → +1 tai (duplicate check)', () {
       final ctrl = _tw(
         winningPlayer: 'Bob',
-        specialCondition: 'Declared Ready',
+        specialCondition: 'Kong on Kong/Flower',
       );
       ctrl.fanCount = 3;
       ctrl.calculateScore();
-      // effectiveFan = 3 + 1(no flowers) + 5(declared ready) = 9
-      expect(ctrl.totalPoints, equals(55));
+      // effectiveFan = 3 + 1(no flowers) + 1(kong on kong) = 5
+      // totalPoints = baseTai(10) + 5 = 15
+      expect(ctrl.totalPoints, equals(15));
     });
 
     test('Kong on Kong/Flower → +1 tai', () {
@@ -215,7 +218,8 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
       // effectiveFan = 3 + 1(no flowers) + 1(kong on kong) = 5
-      expect(ctrl.totalPoints, equals(35));
+      // totalPoints = baseTai(10) + 5 = 15
+      expect(ctrl.totalPoints, equals(15));
     });
 
     test('Under the Sea → +20 tai', () {
@@ -223,7 +227,8 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
       // effectiveFan = 3 + 1(no flowers) + 20(under the sea) = 24
-      expect(ctrl.totalPoints, equals(130));
+      // totalPoints = baseTai(10) + 24 = 34
+      expect(ctrl.totalPoints, equals(34));
     });
 
     test('Heavenly Hand → +100 tai', () {
@@ -231,7 +236,8 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
       // effectiveFan = 3 + 1(no flowers) + 100(heavenly hand) = 104
-      expect(ctrl.totalPoints, equals(530));
+      // totalPoints = baseTai(10) + 104 = 114
+      expect(ctrl.totalPoints, equals(114));
     });
 
     test('Earthly Hand → +80 tai', () {
@@ -239,7 +245,8 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
       // effectiveFan = 3 + 1(no flowers) + 80(earthly hand) = 84
-      expect(ctrl.totalPoints, equals(430));
+      // totalPoints = baseTai(10) + 84 = 94
+      expect(ctrl.totalPoints, equals(94));
     });
   });
 
@@ -324,8 +331,8 @@ void main() {
       ctrl.calculateScore();
 
       // 8 Immortals: effective fan is set to 8
-      // totalPoints = baseTai + (8 * taiValue) = 10 + (8*5) = 50
-      expect(ctrl.totalPoints, equals(50));
+      // totalPoints = baseTai(10) + 8 = 18
+      expect(ctrl.totalPoints, equals(18));
       expect(
         ctrl.displayRules.any(
           (r) => (r['name'] as String).contains(

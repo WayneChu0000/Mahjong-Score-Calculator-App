@@ -690,17 +690,6 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                         const SizedBox(width: 8),
                       ],
                       Expanded(
-                        child: OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            padding: AppDimens.paddingVerticalMd,
-                          ),
-                          icon: const Icon(Icons.save_outlined, size: 18),
-                          onPressed: _saveAndExit,
-                          label: Text(AppLocalizations.save),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
                         flex: 2,
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(

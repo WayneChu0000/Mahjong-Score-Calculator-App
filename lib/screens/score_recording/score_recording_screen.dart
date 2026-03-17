@@ -154,11 +154,18 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
   Future<void> _loadRoundHistory() async {
     if (widget.groupName != null) {
       final group = await PlayerGroupService.loadGroup(widget.groupName!);
-      if (group != null && group.roundHistory != null) {
-        setState(() {
+      if (group != null) {
+        if (group.roundHistory != null) {
           _roundHistory = List.from(group.roundHistory!);
+        }
+        // Restore La (拉) settlement state from Firebase
+        if (group.laState != null && widget.gameMode == GameMode.taiwan) {
+          _laSettlement.restoreFromJson(group.laState!);
+        }
+        setState(() {
           _isRoundHistoryLoaded = true;
         });
+        return;
       }
     }
     setState(() {
@@ -724,10 +731,8 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       noChangeScores[player.id.toString()] = 0;
     }
 
-    // Reset La carry-over on draw rounds (Taiwan Mahjong)
-    if (widget.gameMode == GameMode.taiwan) {
-      _laSettlement.onNoResult();
-    }
+    // La carry-over persists through draw rounds (Taiwan Mahjong).
+    // No action needed — debts remain unchanged.
 
     widget.onScoreSubmitted(noChangeScores);
 
@@ -940,6 +945,9 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         currentDealerGameCount: _currentDealerGameCount,
         totalWindRounds: _totalWindRounds,
         roundHistory: _roundHistory,
+        laState: widget.gameMode == GameMode.taiwan
+            ? _laSettlement.toJson()
+            : null,
       );
 
       await PlayerGroupService.saveGroup(updatedGroup);

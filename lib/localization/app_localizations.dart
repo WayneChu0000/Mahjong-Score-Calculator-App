@@ -144,6 +144,9 @@ class AppLocalizations {
   static String get twFiveConcealedPongs => _l10n.twFiveConcealedPongs;
   static String get descFiveConcealedPongs => _l10n.descFiveConcealedPongs;
   static String get explFiveConcealedPongs => _l10n.explFiveConcealedPongs;
+  static String get twJianJianHu => _l10n.twJianJianHu;
+  static String get descJianJianHu => _l10n.descJianJianHu;
+  static String get explJianJianHu => _l10n.explJianJianHu;
   static String get twDeclaredReady => _l10n.twDeclaredReady;
   static String get descDeclaredReady => _l10n.descDeclaredReady;
   static String get explDeclaredReady => _l10n.explDeclaredReady;
@@ -485,6 +488,8 @@ class AppLocalizations {
   static String get invalidTileCount => _l10n.invalidTileCount;
   static String get winningHandThirteenOrphans =>
       _l10n.winningHandThirteenOrphans;
+  static String get winningHandSixteenNonMatching =>
+      _l10n.winningHandSixteenNonMatching;
   static String get winningHand => _l10n.winningHand;
   static String get winningHandInvalid => _l10n.winningHandInvalid;
   static String get gameHistoryTitle => _l10n.gameHistoryTitle;
@@ -627,6 +632,7 @@ class AppLocalizations {
   static String get twDealerBonusTitle => _l10n.twDealerBonusTitle;
   static String get twDealerBonusDesc => _l10n.twDealerBonusDesc;
   static String get twDealerBonusBase => _l10n.twDealerBonusBase;
+  static String get twDealerPaysExtra => _l10n.twDealerPaysExtra;
   static String get twDealerBonusFormula => _l10n.twDealerBonusFormula;
   static String get twDealerBonusExample1 => _l10n.twDealerBonusExample1;
   static String get twDealerBonusExample2 => _l10n.twDealerBonusExample2;
@@ -813,6 +819,12 @@ class AppLocalizations {
   static String get twPureTerminalChows => _l10n.twPureTerminalChows;
   static String get twDescPureTerminalChows => _l10n.twDescPureTerminalChows;
   static String get twExplPureTerminalChows => _l10n.twExplPureTerminalChows;
+  static String get twQuanHunYao => _l10n.twQuanHunYao;
+  static String get twDescQuanHunYao => _l10n.twDescQuanHunYao;
+  static String get twExplQuanHunYao => _l10n.twExplQuanHunYao;
+  static String get twBanDaiHunYao => _l10n.twBanDaiHunYao;
+  static String get twDescBanDaiHunYao => _l10n.twDescBanDaiHunYao;
+  static String get twExplBanDaiHunYao => _l10n.twExplBanDaiHunYao;
   static String get twHumanWin => _l10n.twHumanWin;
   static String get twDescHumanWin => _l10n.twDescHumanWin;
   static String get twExplHumanWin => _l10n.twExplHumanWin;
@@ -1164,4 +1176,31 @@ class AppLocalizations {
   static String get tapToEdit => _l10n.tapToEdit;
   static String get playerSetupSubtitle => _l10n.playerSetupSubtitle;
   static String get clearName => _l10n.clearName;
+
+  // ── Tile selection screen ──
+  static String get tileSelectionTitle => _l10n.tileSelectionTitle;
+  static String get concealedTarget => _l10n.concealedTarget;
+  static String get winTarget => _l10n.winTarget;
+  static String get dingLabel => _l10n.dingLabel;
+  static String get chowButton => _l10n.chowButton;
+  static String get pongButton => _l10n.pongButton;
+  static String get exposedKongButton => _l10n.exposedKongButton;
+  static String get concealedKongButton => _l10n.concealedKongButton;
+  static String get exposedZoneLabel => _l10n.exposedZoneLabel;
+  static String get concealedZoneLabel => _l10n.concealedZoneLabel;
+  static String get winningTileZoneLabel => _l10n.winningTileZoneLabel;
+  static String get noExposedMelds => _l10n.noExposedMelds;
+  static String get noConcealedTiles => _l10n.noConcealedTiles;
+  static String get tapWinToPickTile => _l10n.tapWinToPickTile;
+  static String get selectWinningTileMsg => _l10n.selectWinningTileMsg;
+  static String get selectAtLeastTilesMsg => _l10n.selectAtLeastTilesMsg;
+  static String needTilesMsg(int expected, int current) => _l10n.needTilesMsg(expected, current);
+  static String buildingMeld(String type, int count, int needed) => _l10n.buildingMeld(type, count, needed);
+  static String get invalidMeld => _l10n.invalidMeld;
+  static String get chowName => _l10n.chowName;
+  static String get pongName => _l10n.pongName;
+  static String get kongName => _l10n.kongName;
+  static String get exposedKongName => _l10n.exposedKongName;
+  static String get concealedKongName => _l10n.concealedKongName;
+  static String get twDingBonus => _l10n.twDingBonus;
 }

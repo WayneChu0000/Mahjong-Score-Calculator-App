@@ -27,8 +27,8 @@ void main() {
   // 1️⃣  Structural sanity checks
   // ═══════════════════════════════════════════════════════════
   group('TW rules: structural sanity', () {
-    test('total number of TW scoring rules is 84', () {
-      expect(rules.length, equals(84));
+    test('total number of TW scoring rules is 87', () {
+      expect(rules.length, equals(87));
     });
 
     test('every rule has fanValue >= 0', () {
@@ -123,16 +123,16 @@ void main() {
   // 3️⃣  基礎牌型與胡牌方式 — fan values
   // ═══════════════════════════════════════════════════════════
   group('Category 2: Basic Patterns fan values', () {
-    test('Declared Ready (聽牌) = 5 Tai', () {
-      expect(_findRule('Declared Ready').fanValue, equals(5));
+    test('Ding bonus (叮) = 5 Tai', () {
+      expect(_findRule('Ding').fanValue, equals(5));
     });
 
     test('Chicken Hand (雞胡) = 10 Tai', () {
       expect(_findRule('Chicken Hand').fanValue, equals(10));
     });
 
-    test('Double Pong Wait (對碰) = 1 Tai', () {
-      expect(_findRule('Double Pong').fanValue, equals(1));
+    test('Double Pong Wait (對碰) = 2 Tai', () {
+      expect(_findRule('Double Pong').fanValue, equals(2));
     });
 
     test('Fake Single Wait (假獨) = 1 Tai', () {
@@ -224,16 +224,16 @@ void main() {
       expect(_findRule('Two Identical').fanValue, equals(3));
     });
 
-    test('Three Identical Sequences (三般高) = 15 Tai', () {
-      expect(_findRule('Three Identical').fanValue, equals(15));
+    test('Second Identical Sequences (二般高) = 15 Tai', () {
+      expect(_findRule('Second Identical').fanValue, equals(15));
     });
 
-    test('Four Identical Sequences (四般高) = 30 Tai', () {
-      expect(_findRule('Four Identical').fanValue, equals(30));
+    test('Third Identical Sequences (三般高) = 30 Tai', () {
+      expect(_findRule('Third Identical').fanValue, equals(30));
     });
 
-    test('Mixed Double Sequence (二相逢) = 2 Tai', () {
-      expect(_findRule('Two Mixed').fanValue, equals(2));
+    test('Mixed Double Sequence (二相逢) = 1 Tai', () {
+      expect(_findRule('Two Mixed').fanValue, equals(1));
     });
 
     test('Mixed Triple Sequence (三相逢) = 15 Tai', () {
@@ -289,12 +289,12 @@ void main() {
       expect(_findRule('Concealed Dragon').fanValue, equals(20));
     });
 
-    test('Exposed Mixed Dragon (明雜龍) = 8 Tai', () {
-      expect(_findRule('Exposed Mixed Dragon').fanValue, equals(8));
+    test('Exposed Mixed Dragon (明雜龍) = 5 Tai', () {
+      expect(_findRule('Exposed Mixed Dragon').fanValue, equals(5));
     });
 
-    test('Concealed Mixed Dragon (暗雜龍) = 15 Tai', () {
-      expect(_findRule('Concealed Mixed Dragon').fanValue, equals(15));
+    test('Concealed Mixed Dragon (暗雜龍) = 10 Tai', () {
+      expect(_findRule('Concealed Mixed Dragon').fanValue, equals(10));
     });
 
     test('Five Gates (五門齊) = 5 Tai', () {
@@ -314,7 +314,11 @@ void main() {
     });
 
     test('All Pongs (對對胡) = 30 Tai', () {
-      expect(_findRule('All Pongs').fanValue, equals(30));
+      final rule = rules.firstWhere(
+        (r) => r.name == 'All Pongs' || r.name == '對對胡',
+        orElse: () => throw StateError('Rule not found: All Pongs'),
+      );
+      expect(rule.fanValue, equals(30));
     });
 
     test('All Revealed (全求人) = 15 Tai', () {

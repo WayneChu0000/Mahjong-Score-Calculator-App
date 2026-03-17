@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import '../models/player.dart';
 import '../models/rule.dart';
 import '../models/game_mode.dart';
+import '../models/tw_hand.dart';
+import '../logic/tw_pattern_evaluator.dart';
 import '../localization/app_localizations.dart';
 
 /// Controller that holds all state and business logic for score calculation.
@@ -52,9 +54,10 @@ class ScoreCalculationController extends ChangeNotifier {
 
   final List<String> twSpecialConditions = const [
     'None',
-    'Men Qian Qing',
-    'Declared Ready',
-    'Kong on Kong/Flower',
+    'Flower Win',
+    'Kong Win',
+    'Last 7 Tiles',
+    'Last 10 Tiles',
     'Under the Sea',
     'Heavenly Hand',
     'Earthly Hand',
@@ -65,10 +68,12 @@ class ScoreCalculationController extends ChangeNotifier {
 
   bool isAnalyzing = false;
   List<String> selectedTiles = [];
+  TwHand? twHand;
   List<Map<String, dynamic>> matchedRulesDetails = [];
   List<Map<String, dynamic>> displayRules = [];
 
   int totalPoints = 0;
+  int _dealerBonusTai = 0; // Tracks 連莊 tai for dealer-pays scenarios
   final Map<String, int> playerScores = {};
 
   // =============================================
@@ -155,14 +160,20 @@ class ScoreCalculationController extends ChangeNotifier {
         return AppLocalizations.ruleHaidilao;
       case 'Kong on Kong/Flower':
         return AppLocalizations.ruleKongOnKong;
+      case 'Flower Win':
+        return AppLocalizations.twFlowerWin;
+      case 'Kong Win':
+        return AppLocalizations.twKongWin;
       case 'Heavenly Hand':
         return AppLocalizations.ruleHeavenlyHand;
       case 'Earthly Hand':
         return AppLocalizations.ruleEarthlyHand;
-      case 'Declared Ready':
-        return AppLocalizations.twDeclaredReady;
       case 'Under the Sea':
         return AppLocalizations.twUnderTheSea;
+      case 'Last 7 Tiles':
+        return AppLocalizations.twLastSevenTiles;
+      case 'Last 10 Tiles':
+        return AppLocalizations.twLastTenTiles;
       default:
         return condition;
     }
@@ -187,14 +198,20 @@ class ScoreCalculationController extends ChangeNotifier {
   //  Public mutation methods (called by UI)
   // =============================================
 
+  /// Recalculate fan using the appropriate method for the current mode.
+  void _recalculateFan() {
+    if (twHand != null) {
+      calculateFanFromTwHand();
+    } else if (selectedTiles.isNotEmpty) {
+      calculateFanFromTiles();
+    }
+  }
+
   void setSelfDraw(bool value) {
     if (value == isSelfDraw) return;
     isSelfDraw = value;
     _ensureValidDiscardPlayer();
-    if (selectedTiles.isNotEmpty) {
-      // Only auto-adjust fan for tile-based analysis; manual mode keeps raw count
-      calculateFanFromTiles();
-    }
+    _recalculateFan();
     calculateScore();
     notifyListeners();
   }
@@ -204,7 +221,7 @@ class ScoreCalculationController extends ChangeNotifier {
     winningPlayer = newValue;
     _updateSeatWind();
     _ensureValidDiscardPlayer();
-    calculateFanFromTiles();
+    _recalculateFan();
     calculateScore();
     notifyListeners();
   }
@@ -212,13 +229,15 @@ class ScoreCalculationController extends ChangeNotifier {
   void setDiscardPlayer(String? newValue) {
     if (newValue == null) return;
     discardPlayer = newValue;
+    _recalculateFan();
+    calculateScore();
     notifyListeners();
   }
 
   void setRoundWind(String? newValue) {
     if (newValue == null) return;
     roundWind = newValue;
-    calculateFanFromTiles();
+    _recalculateFan();
     calculateScore();
     notifyListeners();
   }
@@ -226,7 +245,7 @@ class ScoreCalculationController extends ChangeNotifier {
   void setSeatWind(String? newValue) {
     if (newValue == null) return;
     seatWind = newValue;
-    calculateFanFromTiles();
+    _recalculateFan();
     calculateScore();
     notifyListeners();
   }
@@ -254,6 +273,7 @@ class ScoreCalculationController extends ChangeNotifier {
 
   void toggleFlower(String key) {
     selectedFlowers[key] = !(selectedFlowers[key] ?? false);
+    _recalculateFan();
     calculateScore();
     notifyListeners();
   }
@@ -261,6 +281,15 @@ class ScoreCalculationController extends ChangeNotifier {
   void setSelectedTiles(List<String> tiles) {
     selectedTiles = tiles;
     calculateFanFromTiles();
+    calculateScore();
+    notifyListeners();
+  }
+
+  void setTwHand(TwHand hand) {
+    twHand = hand;
+    // Also set selectedTiles for backward compatibility (flower display, etc.)
+    selectedTiles = hand.allTiles;
+    calculateFanFromTwHand();
     calculateScore();
     notifyListeners();
   }
@@ -412,6 +441,205 @@ class ScoreCalculationController extends ChangeNotifier {
     matchedRulesDetails = matchedRules;
   }
 
+  /// Calculate fan/tai from TwHand using the TwPatternEvaluator.
+  void calculateFanFromTwHand() {
+    if (twHand == null) return;
+    final hand = twHand!;
+
+    // Determine flower context
+    int flowerCount = selectedFlowers.values.where((v) => v).length;
+    int seatIndex = _seatIndex();
+    String properFlower = '${seatIndex}f';
+    String properSeason = '${seatIndex + 4}f';
+    int properFlowerCount = 0;
+    int wrongFlowerCount = 0;
+    for (final entry in selectedFlowers.entries) {
+      if (!entry.value) continue;
+      if (entry.key == properFlower || entry.key == properSeason) {
+        properFlowerCount++;
+      } else {
+        wrongFlowerCount++;
+      }
+    }
+
+    // Determine if one or two flower sets are complete
+    bool hasSpring = true, hasSeasons = true;
+    for (int i = 1; i <= 4; i++) {
+      if (selectedFlowers['${i}f'] != true) hasSpring = false;
+    }
+    for (int i = 5; i <= 8; i++) {
+      if (selectedFlowers['${i}f'] != true) hasSeasons = false;
+    }
+    bool hasOneFlowerSet = hasSpring || hasSeasons;
+    bool hasTwoFlowerSets = hasSpring && hasSeasons;
+
+    // When a flower set is complete, its individual flowers do NOT
+    // count separately — only the set bonus (一台花 / 兩台花) applies.
+    // Flowers outside the complete set still count individually.
+    if (hasSpring) {
+      for (int i = 1; i <= 4; i++) {
+        final key = '${i}f';
+        if (selectedFlowers[key] == true) {
+          if (key == properFlower || key == properSeason) {
+            properFlowerCount--;
+          } else {
+            wrongFlowerCount--;
+          }
+        }
+      }
+    }
+    if (hasSeasons) {
+      for (int i = 5; i <= 8; i++) {
+        final key = '${i}f';
+        if (selectedFlowers[key] == true) {
+          if (key == properFlower || key == properSeason) {
+            properFlowerCount--;
+          } else {
+            wrongFlowerCount--;
+          }
+        }
+      }
+    }
+
+    final result = TwPatternEvaluator.evaluate(
+      hand: hand,
+      isSelfDraw: isSelfDraw,
+      seatWind: seatWind,
+      roundWind: roundWind,
+      flowerCount: flowerCount,
+      properFlowerCount: properFlowerCount,
+      wrongFlowerCount: wrongFlowerCount,
+      hasOneFlowerSet: hasOneFlowerSet,
+      hasTwoFlowerSets: hasTwoFlowerSets,
+      specialCondition: selectedSpecialCondition,
+      concealedKongCount: hand.concealedKongCount,
+    );
+
+    // Convert to display format
+    List<Map<String, dynamic>> matchedRules = [];
+    for (final m in result.finalMatches) {
+      matchedRules.add({
+        'name': _resolvePatternName(m.nameKey),
+        'fan': m.tai,
+      });
+    }
+
+    fanCount = result.totalTai;
+    matchedRulesDetails = matchedRules;
+  }
+
+  int _seatIndex() {
+    if (seatWind == 'East') return 1;
+    if (seatWind == 'South') return 2;
+    if (seatWind == 'West') return 3;
+    if (seatWind == 'North') return 4;
+    return 1;
+  }
+
+  bool _shouldShowDealerPaysExtra({required bool winnerIsDealer}) {
+    if (winnerIsDealer) return false;
+    if (isSelfDraw) return true;
+    if (discardPlayer == null) return false;
+
+    final discardIdx = players.indexWhere((p) => p.name == discardPlayer);
+    return discardIdx == dealerIndex;
+  }
+
+  /// Convert a flower key like '1f' to a human-readable name.
+  String _flowerKeyToName(String key) {
+    const names = {
+      '1f': '春 Spring',
+      '2f': '夏 Summer',
+      '3f': '秋 Autumn',
+      '4f': '冬 Winter',
+      '5f': '梅 Plum',
+      '6f': '蘭 Orchid',
+      '7f': '菊 Chrysanthemum',
+      '8f': '竹 Bamboo',
+    };
+    return names[key] ?? key;
+  }
+
+  /// Resolve a pattern nameKey to its localized display name.
+  String _resolvePatternName(String key) {
+    // Map pattern nameKeys to AppLocalizations getters
+    final map = <String, String>{
+      'ruleNoFlowers': AppLocalizations.ruleNoFlowers,
+      'twProperFlower': AppLocalizations.twProperFlower,
+      'twWrongFlower': AppLocalizations.twWrongFlower,
+      'twOneFlowerSet': AppLocalizations.twOneFlowerSet,
+      'twTwoFlowerSets': AppLocalizations.twTwoFlowerSets,
+      'twDragonPong': AppLocalizations.twDragonPong,
+      'twProperWind': AppLocalizations.twProperWind,
+      'twOrdinaryWind': AppLocalizations.twOrdinaryWind,
+      'twNoHonors': AppLocalizations.twNoHonors,
+      'twNoHonorsNoFlowers': AppLocalizations.twNoHonorsNoFlowers,
+      'ruleSelfDraw': AppLocalizations.ruleSelfDraw,
+      'ruleMenQianQing': AppLocalizations.ruleMenQianQing,
+      'twConcealedSelfDraw': AppLocalizations.twConcealedSelfDraw,
+      'ruleAllChows': AppLocalizations.ruleAllChows,
+      'twNoHonorsNoFlowersPingHu': AppLocalizations.twNoHonorsNoFlowersPingHu,
+      'twEyeOf258': AppLocalizations.twEyeOf258,
+      'twDoublePong': AppLocalizations.twDoublePong,
+      'twTrueSingle': AppLocalizations.twTrueSingle,
+      'twDingBonus': AppLocalizations.twDingBonus,
+      'twExposedKong': AppLocalizations.twExposedKong,
+      'twConcealedKongTai': AppLocalizations.twConcealedKongTai,
+      'twTwoConcealedPongs': AppLocalizations.twTwoConcealedPongs,
+      'twThreeConcealedPongs': AppLocalizations.twThreeConcealedPongs,
+      'twFourConcealedPongs': AppLocalizations.twFourConcealedPongs,
+      'twFiveConcealedPongs': AppLocalizations.twFiveConcealedPongs,
+      'twIdenticalSequenceTwo': AppLocalizations.twIdenticalSequenceTwo,
+      'twIdenticalSequenceThree': AppLocalizations.twIdenticalSequenceThree,
+      'twIdenticalSequenceFour': AppLocalizations.twIdenticalSequenceFour,
+      'twFiveIdenticalSeq': AppLocalizations.twFiveIdenticalSeq,
+      'twMixedDoubleSeq': AppLocalizations.twMixedDoubleSeq,
+      'twMixedTripleSeq': AppLocalizations.twMixedTripleSeq,
+      'twFourToOne': AppLocalizations.twFourToOne,
+      'twFourToTwo': AppLocalizations.twFourToTwo,
+      'twFourToFour': AppLocalizations.twFourToFour,
+      'twExposedDragon': AppLocalizations.twExposedDragon,
+      'twConcealedDragon': AppLocalizations.twConcealedDragon,
+      'twExposedMixedDragon': AppLocalizations.twExposedMixedDragon,
+      'twConcealedMixedDragon': AppLocalizations.twConcealedMixedDragon,
+      'twFiveGates': AppLocalizations.twFiveGates,
+      'twMissingOneSuit': AppLocalizations.twMissingOneSuit,
+      'ruleMixedOneSuit': AppLocalizations.ruleMixedOneSuit,
+      'rulePureOneSuit': AppLocalizations.rulePureOneSuit,
+      'ruleAllPongs': AppLocalizations.ruleAllPongs,
+      'twAllSimples': AppLocalizations.twAllSimples,
+      'twMixedTerminalChows': AppLocalizations.twMixedTerminalChows,
+      'twPureTerminalChows': AppLocalizations.twPureTerminalChows,
+      'twQuanHunYao': AppLocalizations.twQuanHunYao,
+      'twBanDaiHunYao': AppLocalizations.twBanDaiHunYao,
+      'twMixedTerminalsPongs': AppLocalizations.twMixedTerminalsPongs,
+      'twPureTerminalsTw': AppLocalizations.twPureTerminalsTw,
+      'ruleAllHonors': AppLocalizations.ruleAllHonors,
+      'ruleBigFourWinds': AppLocalizations.ruleBigFourWinds,
+      'ruleSmallFourWinds': AppLocalizations.ruleSmallFourWinds,
+      'twBigThreeWinds': AppLocalizations.twBigThreeWinds,
+      'twSmallThreeWinds': AppLocalizations.twSmallThreeWinds,
+      'ruleBigThreeDragons': AppLocalizations.ruleBigThreeDragons,
+      'ruleSmallThreeDragons': AppLocalizations.ruleSmallThreeDragons,
+      'twMiguiTw': AppLocalizations.twMiguiTw,
+      'ruleNineGates': AppLocalizations.ruleNineGates,
+      'ruleEighteenArhats': AppLocalizations.ruleEighteenArhats,
+      'ruleThirteenOrphans': AppLocalizations.ruleThirteenOrphans,
+      'twBigThreeBrothers': AppLocalizations.twBigThreeBrothers,
+      'twTwoBrothers': AppLocalizations.twTwoBrothers,
+      'twSmallThreeBrothers': AppLocalizations.twSmallThreeBrothers,
+      'twBigThreeSisters': AppLocalizations.twBigThreeSisters,
+      'twSmallThreeSisters': AppLocalizations.twSmallThreeSisters,
+      'twAllRevealed': AppLocalizations.twAllRevealed,
+      'twHalfRevealed': AppLocalizations.twHalfRevealed,
+      'twOldYoung': AppLocalizations.twOldYoung,
+      'twJianJianHu': AppLocalizations.twJianJianHu,
+      'twSixteenNonMatching': AppLocalizations.twSixteenNonMatching,
+      'twChickenHand': AppLocalizations.twChickenHand,
+    };
+    return map[key] ?? key;
+  }
+
   void calculateScore() {
     _calculateScoreInternal();
   }
@@ -424,6 +652,7 @@ class ScoreCalculationController extends ChangeNotifier {
 
     if (selectedTiles.isEmpty && !hasFlowers && !hasSpecialCondition) {
       effectiveFan = fanCount;
+      _dealerBonusTai = 0;
       displayRules = [
         {
           'name': gameMode == GameMode.taiwan
@@ -440,6 +669,152 @@ class ScoreCalculationController extends ChangeNotifier {
     // ── Tile-based calculation ──────────────────────────────────────
     int localEffectiveFan = fanCount;
     displayRules = List.from(matchedRulesDetails);
+
+    // ── TW evaluator path: when twHand is set, the evaluator already
+    //    computed all fans (flowers, special conditions, etc).
+    //    Only add individual flower display names + dealer bonus. ────
+    if (twHand != null && gameMode == GameMode.taiwan) {
+      // Rename flower entries in displayRules to include flower names
+      int flowerCount = selectedFlowers.values.where((v) => v).length;
+      if (flowerCount > 0) {
+        int seatIndex = _seatIndex();
+        String properFlower = '${seatIndex}f';
+        String properSeason = '${seatIndex + 4}f';
+
+        // Build ordered lists of flower names
+        final properNames = <String>[];
+        final wrongNames = <String>[];
+        for (var entry in selectedFlowers.entries) {
+          if (!entry.value) continue;
+          final flowerName = _flowerKeyToName(entry.key);
+          if (entry.key == properFlower || entry.key == properSeason) {
+            properNames.add(flowerName);
+          } else {
+            wrongNames.add(flowerName);
+          }
+        }
+
+        // Rename proper flower entries to include the flower name
+        int pi = 0;
+        for (int i = 0; i < displayRules.length && pi < properNames.length; i++) {
+          if (displayRules[i]['name'] == AppLocalizations.twProperFlower) {
+            displayRules[i] = Map<String, dynamic>.from(displayRules[i]);
+            displayRules[i]['name'] = '${AppLocalizations.twProperFlower} (${properNames[pi]})';
+            pi++;
+          }
+        }
+
+        // Rename wrong flower entries to include the flower name
+        int wi = 0;
+        for (int i = 0; i < displayRules.length && wi < wrongNames.length; i++) {
+          if (displayRules[i]['name'] == AppLocalizations.twWrongFlower) {
+            displayRules[i] = Map<String, dynamic>.from(displayRules[i]);
+            displayRules[i]['name'] = '${AppLocalizations.twWrongFlower} (${wrongNames[wi]})';
+            wi++;
+          }
+        }
+      }
+
+      // ── TW special winning conditions ──────────────────────────
+      if (selectedSpecialCondition != 'None') {
+        int specialFan = 0;
+        String? specialName;
+        if (selectedSpecialCondition == 'Flower Win') {
+          specialFan = 1;
+          specialName = AppLocalizations.twFlowerWin;
+        } else if (selectedSpecialCondition == 'Kong Win') {
+          specialFan = 1;
+          specialName = AppLocalizations.twKongWin;
+        } else if (selectedSpecialCondition == 'Kong on Kong/Flower') {
+          // Legacy alias for backward compatibility.
+          specialFan = 1;
+          specialName = AppLocalizations.ruleKongOnKong;
+        } else if (selectedSpecialCondition == 'Last 7 Tiles') {
+          specialFan = 20;
+          specialName = AppLocalizations.twLastSevenTiles;
+        } else if (selectedSpecialCondition == 'Last 10 Tiles') {
+          specialFan = 10;
+          specialName = AppLocalizations.twLastTenTiles;
+        } else if (selectedSpecialCondition == 'Under the Sea') {
+          specialFan = 20;
+          specialName = AppLocalizations.twUnderTheSea;
+        } else if (selectedSpecialCondition == 'Heavenly Hand') {
+          specialFan = 100;
+          specialName = AppLocalizations.ruleHeavenlyHand;
+        } else if (selectedSpecialCondition == 'Earthly Hand') {
+          specialFan = 80;
+          specialName = AppLocalizations.ruleEarthlyHand;
+        }
+        if (specialName != null) {
+          localEffectiveFan += specialFan;
+          displayRules.add({'name': specialName, 'fan': specialFan});
+        }
+      }
+
+      // ── 雞胡 — Chicken Hand ────────────────────────────────────
+      // If total fan (excluding dealer/base) is exactly 1 and win
+      // is by discard → fixed 10 tai payout, no base tai, no dealer.
+      if (!isSelfDraw && localEffectiveFan == 1) {
+        displayRules.add({
+          'name': _resolvePatternName('twChickenHand'),
+          'fan': 10,
+        });
+        effectiveFan = 10;
+        _dealerBonusTai = 0;
+        totalPoints = 10;
+        return;
+      }
+
+      // Dealer bonus (連莊)
+      bool winnerIsDealer = false;
+      if (dealerIndex != null && winningPlayer != null) {
+        int winnerIdx = players.indexWhere((p) => p.name == winningPlayer);
+        winnerIsDealer = (winnerIdx == dealerIndex);
+      }
+
+      int dealerBonusTai = 0;
+      if (dealerIndex != null) {
+        if (consecutiveDealerCount > 1) {
+          int n = consecutiveDealerCount - 1;
+          dealerBonusTai = (n * 2) + 1;
+        } else {
+          dealerBonusTai = 1;
+        }
+      }
+      _dealerBonusTai = dealerBonusTai;
+
+      if (winnerIsDealer && dealerBonusTai > 0) {
+        localEffectiveFan += dealerBonusTai;
+        displayRules.add({
+          'name': consecutiveDealerCount > 1
+              ? '${AppLocalizations.twConsecutiveDealer} (${AppLocalizations.consecutiveDealerCount(consecutiveDealerCount - 1)})'
+              : AppLocalizations.twDealerBonusBase,
+          'fan': dealerBonusTai,
+        });
+      } else if (!winnerIsDealer && dealerBonusTai > 0) {
+        if (_shouldShowDealerPaysExtra(winnerIsDealer: winnerIsDealer)) {
+          displayRules.add({
+            'name': consecutiveDealerCount > 1
+                ? '${AppLocalizations.twConsecutiveDealer} (${AppLocalizations.consecutiveDealerCount(consecutiveDealerCount - 1)}) [${AppLocalizations.twDealerPaysExtra}]'
+                : '${AppLocalizations.twDealerBonusBase} [${AppLocalizations.twDealerPaysExtra}]',
+            'fan': dealerBonusTai,
+          });
+        }
+      }
+
+      effectiveFan = localEffectiveFan;
+      int baseTai = minFan;
+      int taiValue = 1; // TW: 1 fan = 1 score
+      // Show base tai in the item list
+      displayRules.add({
+        'name': AppLocalizations.baseTai,
+        'fan': baseTai,
+      });
+      totalPoints = baseTai + (localEffectiveFan * taiValue);
+      return;
+    }
+
+    // ── Legacy path (HK mode or TW without twHand) ─────────────────
 
     // Check for Hidden Treasure combination
     bool hasAllPongs = displayRules.any(
@@ -474,7 +849,14 @@ class ScoreCalculationController extends ChangeNotifier {
       } else if (selectedSpecialCondition == 'Haidilao') {
         specialFan = 1;
         specialName = AppLocalizations.ruleHaidilao;
+      } else if (selectedSpecialCondition == 'Flower Win') {
+        specialFan = 1;
+        specialName = AppLocalizations.twFlowerWin;
+      } else if (selectedSpecialCondition == 'Kong Win') {
+        specialFan = 1;
+        specialName = AppLocalizations.twKongWin;
       } else if (selectedSpecialCondition == 'Kong on Kong/Flower') {
+        // Legacy alias for backward compatibility.
         specialFan = isTW ? 1 : 2;
         specialName = AppLocalizations.ruleKongOnKong;
       } else if (selectedSpecialCondition == 'Heavenly Hand') {
@@ -483,12 +865,15 @@ class ScoreCalculationController extends ChangeNotifier {
       } else if (selectedSpecialCondition == 'Earthly Hand') {
         specialFan = isTW ? 80 : 13;
         specialName = AppLocalizations.ruleEarthlyHand;
-      } else if (selectedSpecialCondition == 'Declared Ready') {
-        specialFan = 5;
-        specialName = AppLocalizations.twDeclaredReady;
       } else if (selectedSpecialCondition == 'Under the Sea') {
         specialFan = 20;
         specialName = AppLocalizations.twUnderTheSea;
+      } else if (selectedSpecialCondition == 'Last 7 Tiles') {
+        specialFan = 20;
+        specialName = AppLocalizations.twLastSevenTiles;
+      } else if (selectedSpecialCondition == 'Last 10 Tiles') {
+        specialFan = 10;
+        specialName = AppLocalizations.twLastTenTiles;
       }
 
       if (specialName != null) {
@@ -606,7 +991,7 @@ class ScoreCalculationController extends ChangeNotifier {
     // Calculate Score based on Mode
     if (gameMode == GameMode.taiwan) {
       int baseTai = minFan;
-      int taiValue = maxFan;
+      int taiValue = 1; // TW: 1 fan = 1 score
 
       bool winnerIsDealer = false;
       if (dealerIndex != null && winningPlayer != null) {
@@ -614,16 +999,20 @@ class ScoreCalculationController extends ChangeNotifier {
         winnerIsDealer = (winnerIdx == dealerIndex);
       }
 
+      // Always calculate dealer bonus tai (連莊)
       int dealerBonusTai = 0;
-      if (winnerIsDealer) {
+      if (dealerIndex != null) {
         if (consecutiveDealerCount > 1) {
-          // Formula: (consecutive count × 2) + 1
-          // e.g. 連一=3, 連二=5, 連五=11
           int n = consecutiveDealerCount - 1;
           dealerBonusTai = (n * 2) + 1;
         } else {
           dealerBonusTai = 1; // Base dealer bonus
         }
+      }
+      _dealerBonusTai = dealerBonusTai;
+
+      if (winnerIsDealer && dealerBonusTai > 0) {
+        // Dealer wins → bonus added to total (all losers pay more)
         localEffectiveFan += dealerBonusTai;
         displayRules.add({
           'name': consecutiveDealerCount > 1
@@ -631,10 +1020,26 @@ class ScoreCalculationController extends ChangeNotifier {
               : AppLocalizations.twDealerBonusBase,
           'fan': dealerBonusTai,
         });
+      } else if (!winnerIsDealer && dealerBonusTai > 0) {
+        // Dealer is NOT the winner → show info; dealer pays extra in buildSubmitResult
+        if (_shouldShowDealerPaysExtra(winnerIsDealer: winnerIsDealer)) {
+          displayRules.add({
+            'name': consecutiveDealerCount > 1
+                ? '${AppLocalizations.twConsecutiveDealer} (${AppLocalizations.consecutiveDealerCount(consecutiveDealerCount - 1)}) [${AppLocalizations.twDealerPaysExtra}]'
+                : '${AppLocalizations.twDealerBonusBase} [${AppLocalizations.twDealerPaysExtra}]',
+            'fan': dealerBonusTai,
+          });
+        }
       }
 
+      // Show base tai in the item list
+      displayRules.add({
+        'name': AppLocalizations.baseTai,
+        'fan': baseTai,
+      });
       totalPoints = baseTai + (localEffectiveFan * taiValue);
     } else {
+      _dealerBonusTai = 0; // HK mode: no dealer bonus
       int discardScore = _getScoreFromFan(localEffectiveFan);
 
       bool countsAsSelfDraw = isSelfDraw;
@@ -672,16 +1077,17 @@ class ScoreCalculationController extends ChangeNotifier {
     int flowerFan = 0;
     for (var entry in selectedFlowers.entries) {
       if (!entry.value) continue;
+      final flowerName = _flowerKeyToName(entry.key);
       if (entry.key == properFlower || entry.key == properSeason) {
         flowerFan += 2;
         displayRules.add({
-          'name': '${AppLocalizations.twProperFlower} (${entry.key})',
+          'name': '${AppLocalizations.twProperFlower} ($flowerName)',
           'fan': 2,
         });
       } else {
         flowerFan += 1;
         displayRules.add({
-          'name': '${AppLocalizations.twWrongFlower} (${entry.key})',
+          'name': '${AppLocalizations.twWrongFlower} ($flowerName)',
           'fan': 1,
         });
       }
@@ -694,14 +1100,20 @@ class ScoreCalculationController extends ChangeNotifier {
       int winnerIdx = players.indexWhere((p) => p.name == winningPlayer);
       winnerIsDealer = (winnerIdx == dealerIndex);
     }
-    if (winnerIsDealer) {
-      int dealerBonusTai;
+
+    // Always calculate dealer bonus tai (連莊)
+    int dealerBonusTai = 0;
+    if (dealerIndex != null) {
       if (consecutiveDealerCount > 1) {
         int n = consecutiveDealerCount - 1;
         dealerBonusTai = (n * 2) + 1;
       } else {
         dealerBonusTai = 1;
       }
+    }
+    _dealerBonusTai = dealerBonusTai;
+
+    if (winnerIsDealer && dealerBonusTai > 0) {
       localEffectiveFan += dealerBonusTai;
       displayRules.add({
         'name': consecutiveDealerCount > 1
@@ -709,12 +1121,26 @@ class ScoreCalculationController extends ChangeNotifier {
             : AppLocalizations.twDealerBonusBase,
         'fan': dealerBonusTai,
       });
+    } else if (!winnerIsDealer && dealerBonusTai > 0) {
+      if (_shouldShowDealerPaysExtra(winnerIsDealer: winnerIsDealer)) {
+        displayRules.add({
+          'name': consecutiveDealerCount > 1
+              ? '${AppLocalizations.twConsecutiveDealer} (${AppLocalizations.consecutiveDealerCount(consecutiveDealerCount - 1)}) [${AppLocalizations.twDealerPaysExtra}]'
+              : '${AppLocalizations.twDealerBonusBase} [${AppLocalizations.twDealerPaysExtra}]',
+          'fan': dealerBonusTai,
+        });
+      }
     }
 
     effectiveFan = localEffectiveFan;
 
     int baseTai = minFan;
-    int taiValue = maxFan;
+    int taiValue = 1; // TW: 1 fan = 1 score
+    // Show base tai in the item list
+    displayRules.add({
+      'name': AppLocalizations.baseTai,
+      'fan': baseTai,
+    });
     totalPoints = baseTai + (localEffectiveFan * taiValue);
   }
 
@@ -776,15 +1202,43 @@ class ScoreCalculationController extends ChangeNotifier {
     }
 
     if (isSelfDraw && winningPlayer != null) {
+      bool isTw = gameMode == GameMode.taiwan;
+      int winnerIdx = players.indexWhere((p) => p.name == winningPlayer);
+      bool winnerIsDealer =
+          dealerIndex != null && winnerIdx == dealerIndex;
+
+      int winnerTotal = 0;
       for (var player in players) {
         if (player.name != winningPlayer) {
-          scoreChanges[getId(player.name)] = -totalPoints;
+          int payment = totalPoints;
+          // TW: dealer pays extra 連莊 when NOT the winner
+          if (isTw && !winnerIsDealer && _dealerBonusTai > 0) {
+            int playerIdx = players.indexOf(player);
+            if (playerIdx == dealerIndex) {
+              payment += _dealerBonusTai * maxFan;
+            }
+          }
+          scoreChanges[getId(player.name)] = -payment;
+          winnerTotal += payment;
         }
       }
-      scoreChanges[getId(winningPlayer!)] = totalPoints * (players.length - 1);
+      scoreChanges[getId(winningPlayer!)] = winnerTotal;
     } else if (!isSelfDraw && winningPlayer != null && discardPlayer != null) {
-      scoreChanges[getId(discardPlayer!)] = -totalPoints;
-      scoreChanges[getId(winningPlayer!)] = totalPoints;
+      bool isTw = gameMode == GameMode.taiwan;
+      int discardIdx = players.indexWhere((p) => p.name == discardPlayer);
+      bool discardIsDealer =
+          dealerIndex != null && discardIdx == dealerIndex;
+      int winnerIdx = players.indexWhere((p) => p.name == winningPlayer);
+      bool winnerIsDealer =
+          dealerIndex != null && winnerIdx == dealerIndex;
+
+      int payment = totalPoints;
+      // TW: dealer pays extra 連莊 when dealing the winning tile to someone else
+      if (isTw && discardIsDealer && !winnerIsDealer && _dealerBonusTai > 0) {
+        payment += _dealerBonusTai * maxFan;
+      }
+      scoreChanges[getId(discardPlayer!)] = -payment;
+      scoreChanges[getId(winningPlayer!)] = payment;
     }
 
     return {
@@ -813,6 +1267,8 @@ class ScoreCalculationController extends ChangeNotifier {
       AppLocalizations.ruleHaidilao: 'lastTileWin',
       AppLocalizations.ruleRobbingKong: 'robbingKong',
       AppLocalizations.ruleKongOnKong: 'kongWin',
+      AppLocalizations.twKongWin: 'kongWin',
+      AppLocalizations.twFlowerWin: 'flowerWin',
       AppLocalizations.ruleHeavenlyHand: 'heavenlyHand',
       AppLocalizations.ruleEarthlyHand: 'earthlyHand',
       AppLocalizations.ruleBigThreeDragons: 'bigThreeDragons',

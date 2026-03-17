@@ -1,5 +1,6 @@
 import '../models/player.dart';
 import '../models/game_mode.dart';
+import '../models/tw_hand.dart';
 
 /// Centralized route name constants.
 ///
@@ -16,6 +17,7 @@ class AppRoutes {
   static const String scoreRecording = '/score-recording';
   static const String scoreCalculation = '/score-calculation';
   static const String tileSelection = '/tile-selection';
+  static const String twTileSelection = '/tw-tile-selection';
   static const String rules = '/rules';
   static const String settings = '/settings';
   static const String savedGroups = '/saved-groups';
@@ -124,6 +126,13 @@ class TileSelectionArgs {
     this.initialTiles = const [],
     this.gameMode = GameMode.hongKong,
   });
+}
+
+/// Arguments for [TwTileSelectionScreen].
+class TwTileSelectionArgs {
+  final TwHand? initialHand;
+
+  const TwTileSelectionArgs({this.initialHand});
 }
 
 /// Arguments for [AchievementScreen].

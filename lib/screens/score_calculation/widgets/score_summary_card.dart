@@ -59,7 +59,8 @@ class ScoreSummaryCard extends StatelessWidget {
                   ),
                 ),
 
-                // Total Fan/Tai
+                // Total Fan/Tai (hide for TW since 1 fan = 1 score, total score suffices)
+                if (gameMode != GameMode.taiwan)
                 DataRow(
                   cells: [
                     DataCell(

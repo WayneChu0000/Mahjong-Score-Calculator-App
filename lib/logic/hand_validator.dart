@@ -1,8 +1,10 @@
 import '../localization/app_localizations.dart';
 import '../models/game_mode.dart';
+import '../logic/tw_pattern_evaluator.dart';
 import 'hand_core.dart';
 import 'hand_patterns.dart';
 import 'tile_utils.dart';
+import '../models/tw_hand.dart';
 
 /// Validates whether a hand of tiles is a winning hand.
 class HandValidator {
@@ -57,6 +59,20 @@ class HandValidator {
             'valid': true,
             'message': AppLocalizations.winningHandThirteenOrphans,
           };
+        }
+      }
+
+      // TW special hands (17 tiles)
+      if (gameMode == GameMode.taiwan) {
+        // TW Thirteen Orphans (十三么): 13 orphans + pair + chow/pong
+        final twHand = TwHand(concealedTiles: tiles.sublist(0, tiles.length - 1), winningTile: tiles.last);
+        if (TwPatternEvaluator.isTwThirteenOrphans(twHand)) {
+          return {'valid': true, 'message': AppLocalizations.winningHandThirteenOrphans};
+        }
+
+        // Sixteen Non-Matching (十六不搭)
+        if (TwPatternEvaluator.isSixteenNonMatching(tiles)) {
+          return {'valid': true, 'message': AppLocalizations.winningHandSixteenNonMatching};
         }
       }
 

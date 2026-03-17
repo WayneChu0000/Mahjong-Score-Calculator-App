@@ -207,13 +207,12 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
-          // TW Base Tai & Tai Value
+          // TW Base Tai
           _buildSettingCard(
             icon: Icons.monetization_on,
-            title:
-                '${AppLocalizations.twBaseTaiSetting} / ${AppLocalizations.twTaiValueSetting}',
+            title: AppLocalizations.twBaseTaiSetting,
             subtitle:
-                '${AppLocalizations.twBaseTaiSetting}: ${settings.twBaseTai}  ·  ${AppLocalizations.twTaiValueSetting}: ${settings.twTaiValue}',
+                '${AppLocalizations.twBaseTaiSetting}: ${settings.twBaseTai}',
             onTap: () => _showTwTaiDialog(context),
           ),
           const SizedBox(height: 8),
@@ -410,11 +409,10 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  // ── TW Base Tai & Tai Value Dialog ──────────────────────────
+  // ── TW Base Tai Dialog ────────────────────────────────────
   void _showTwTaiDialog(BuildContext context) {
     final settings = context.read<SettingsService>();
     int baseTai = settings.twBaseTai;
-    int taiValue = settings.twTaiValue;
 
     showDialog(
       context: context,
@@ -452,34 +450,6 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              // Value per Tai
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(child: Text(AppLocalizations.twTaiValueSetting)),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove_circle_outline),
-                        onPressed: taiValue > 1
-                            ? () => setDialogState(() => taiValue--)
-                            : null,
-                      ),
-                      Text(
-                        '$taiValue',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add_circle_outline),
-                        onPressed: () => setDialogState(() => taiValue++),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
             ],
           ),
           actions: [
@@ -490,7 +460,6 @@ class SettingsScreen extends StatelessWidget {
             TextButton(
               onPressed: () async {
                 await settings.setTwBaseTai(baseTai);
-                await settings.setTwTaiValue(taiValue);
                 if (ctx.mounted) Navigator.pop(ctx);
               },
               child: Text(

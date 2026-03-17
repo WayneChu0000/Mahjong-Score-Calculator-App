@@ -292,7 +292,7 @@ void main() {
 
     test('activeSpecialConditions for TW mode', () {
       final c = _twController();
-      expect(c.activeSpecialConditions, contains('Declared Ready'));
+      expect(c.activeSpecialConditions, isNot(contains('Declared Ready')));
       expect(c.activeSpecialConditions, contains('Under the Sea'));
       expect(c.activeSpecialConditions, isNot(contains('Haidilao')));
     });
@@ -537,21 +537,41 @@ void main() {
       expect(c.totalPoints, equals(50));
     });
 
-    test('TW scoring with flowers uses formula: baseTai + fan * taiValue', () {
+    test('TW scoring with flowers uses formula: baseTai + effectiveFan', () {
       final c = _twController(minFan: 10, maxFan: 5);
       c.toggleFlower('2f'); // triggers non-manual path
-      // totalPoints = baseTai + effectiveFan * taiValue
-      expect(c.totalPoints, equals(10 + c.effectiveFan * 5));
+      // totalPoints = baseTai + effectiveFan = 10 + effectiveFan
+      expect(c.totalPoints, equals(10 + c.effectiveFan));
     });
 
-    test('TW Declared Ready adds 5 fan', () {
+    test('TW Kong on Kong/Flower adds 1 fan', () {
       final c = _twController();
-      c.setSpecialCondition('Declared Ready');
+      c.setSpecialCondition('Kong on Kong/Flower');
       final rule = c.displayRules.firstWhere(
-        (r) => r['name'] == AppLocalizations.twDeclaredReady,
+        (r) => r['name'] == AppLocalizations.ruleKongOnKong,
         orElse: () => {'fan': -1},
       );
-      expect(rule['fan'], equals(5));
+      expect(rule['fan'], equals(1));
+    });
+
+    test('TW Flower Win adds 1 fan', () {
+      final c = _twController();
+      c.setSpecialCondition('Flower Win');
+      final rule = c.displayRules.firstWhere(
+        (r) => r['name'] == AppLocalizations.twFlowerWin,
+        orElse: () => {'fan': -1},
+      );
+      expect(rule['fan'], equals(1));
+    });
+
+    test('TW Kong Win adds 1 fan', () {
+      final c = _twController();
+      c.setSpecialCondition('Kong Win');
+      final rule = c.displayRules.firstWhere(
+        (r) => r['name'] == AppLocalizations.twKongWin,
+        orElse: () => {'fan': -1},
+      );
+      expect(rule['fan'], equals(1));
     });
 
     test('TW Under the Sea adds 20 fan', () {

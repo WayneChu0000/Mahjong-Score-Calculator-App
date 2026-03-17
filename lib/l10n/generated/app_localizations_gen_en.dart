@@ -395,6 +395,16 @@ class L10nEn extends L10n {
       'Having five concealed Pungs in hand (no exposed melds). 80 Tai.';
 
   @override
+  String get twJianJianHu => 'Concealed All Pongs Self-Draw';
+
+  @override
+  String get descJianJianHu => 'Self-draw + Concealed + All Pongs.';
+
+  @override
+  String get explJianJianHu =>
+      'Win by self-draw with a fully concealed hand composed entirely of Pongs (All Pongs). 100 Tai. Does not count Self-Draw, Concealed Hand, All Pongs, or Five Concealed Pungs.';
+
+  @override
   String get twDeclaredReady => 'Declared Ready';
 
   @override
@@ -1516,6 +1526,10 @@ class L10nEn extends L10n {
   String get winningHandThirteenOrphans => 'Winning Hand (Thirteen Orphans)!';
 
   @override
+  String get winningHandSixteenNonMatching =>
+      'Winning Hand (Sixteen Non-Matching)!';
+
+  @override
   String get winningHand => 'Winning Hand!';
 
   @override
@@ -1884,6 +1898,9 @@ class L10nEn extends L10n {
   String get twDealerBonusBase => 'Being Dealer: +1 Tai';
 
   @override
+  String get twDealerPaysExtra => 'Dealer Pays Extra';
+
+  @override
   String get twDealerBonusFormula =>
       'Consecutive Dealer Formula: (Consecutive Count × 2) + 1';
 
@@ -1983,7 +2000,7 @@ class L10nEn extends L10n {
 
   @override
   String get twExplDoublePong =>
-      'Also known as a double-sided pong wait. 1 Tai.';
+      'Also known as a double-sided pong wait. 2 Tai.';
 
   @override
   String get twFakeSingle => 'Fake Single Wait';
@@ -2137,7 +2154,7 @@ class L10nEn extends L10n {
       'Two identical chows (same suit, same numbers). 3 Tai.';
 
   @override
-  String get twIdenticalSequenceThree => 'Three Identical Sequences';
+  String get twIdenticalSequenceThree => 'Second Identical Sequences';
 
   @override
   String get twDescIdenticalSequenceThree =>
@@ -2148,7 +2165,7 @@ class L10nEn extends L10n {
       'Three identical chows. Open: 15 Tai, Concealed: 20 Tai.';
 
   @override
-  String get twIdenticalSequenceFour => 'Four Identical Sequences';
+  String get twIdenticalSequenceFour => 'Third Identical Sequences';
 
   @override
   String get twDescIdenticalSequenceFour =>
@@ -2166,7 +2183,7 @@ class L10nEn extends L10n {
 
   @override
   String get twExplMixedDoubleSeq =>
-      'Two chows with same numbers in different suits. 2 Tai.';
+      'Two chows with same numbers in different suits. 1 Tai.';
 
   @override
   String get twMixedTripleSeq => 'Three Mixed Sequences';
@@ -2296,7 +2313,7 @@ class L10nEn extends L10n {
 
   @override
   String get twExplExposedMixedDragon =>
-      '1-9 run across suits with some tiles from others. 8 Tai.';
+      '1-9 run across suits with some tiles from others. 5 Tai.';
 
   @override
   String get twConcealedMixedDragon => 'Concealed Mixed Dragon';
@@ -2307,7 +2324,7 @@ class L10nEn extends L10n {
 
   @override
   String get twExplConcealedMixedDragon =>
-      '1-9 run across suits, entirely concealed. 15 Tai.';
+      '1-9 run across suits, entirely concealed. 10 Tai.';
 
   @override
   String get twFiveGates => 'Five Gates';
@@ -2451,22 +2468,44 @@ class L10nEn extends L10n {
 
   @override
   String get twDescMixedTerminalChows =>
-      'Every set contains a 1 or 9, plus honor tiles.';
+      'Every group contains a terminal (1/9) or honors, and honors must be present.';
 
   @override
   String get twExplMixedTerminalChows =>
-      'All sets include a terminal, with honors allowed. 10 Tai.';
+      'Every group (chow, pong, pair) includes a terminal or honors, with honors present. 10 Tai.';
 
   @override
   String get twPureTerminalChows => 'Pure Terminal Chows';
 
   @override
   String get twDescPureTerminalChows =>
-      'Every set contains a 1 or 9, no honor tiles.';
+      'Every group contains a terminal (1/9), with no honors.';
 
   @override
   String get twExplPureTerminalChows =>
-      'All sets include a terminal tile, no honors. 15 Tai.';
+      'Every group (chow, pong, pair) includes a terminal, with no honors. 15 Tai.';
+
+  @override
+  String get twQuanHunYao => 'Pure Terminal Groups';
+
+  @override
+  String get twDescQuanHunYao =>
+      'Every group contains a terminal (1 or 9), no honors. Any composition.';
+
+  @override
+  String get twExplQuanHunYao =>
+      'Every group (chow, pong, pair) includes a terminal tile, no honors. 15 Tai.';
+
+  @override
+  String get twBanDaiHunYao => 'Mixed Terminal Groups';
+
+  @override
+  String get twDescBanDaiHunYao =>
+      'Every group contains a terminal (1/9) or honor. Must have honors.';
+
+  @override
+  String get twExplBanDaiHunYao =>
+      'Every group includes a terminal or honor tile, with honors present. 10 Tai.';
 
   @override
   String get twHumanWin => 'Human Win';
@@ -3189,4 +3228,83 @@ class L10nEn extends L10n {
 
   @override
   String get clearName => 'Clear';
+
+  @override
+  String get tileSelectionTitle => 'Select Hand';
+
+  @override
+  String get concealedTarget => 'Concealed';
+
+  @override
+  String get winTarget => 'Win';
+
+  @override
+  String get dingLabel => 'Ding';
+
+  @override
+  String get chowButton => '+ Chow';
+
+  @override
+  String get pongButton => '+ Pong';
+
+  @override
+  String get exposedKongButton => '+ Exp Kong';
+
+  @override
+  String get concealedKongButton => '+ Con Kong';
+
+  @override
+  String get exposedZoneLabel => 'Exposed';
+
+  @override
+  String get concealedZoneLabel => 'Concealed';
+
+  @override
+  String get winningTileZoneLabel => 'Winning Tile';
+
+  @override
+  String get noExposedMelds => 'No exposed melds';
+
+  @override
+  String get noConcealedTiles => 'No concealed tiles';
+
+  @override
+  String get tapWinToPickTile => 'Tap Win then pick a tile';
+
+  @override
+  String get selectWinningTileMsg => 'Please select a winning tile';
+
+  @override
+  String get selectAtLeastTilesMsg => 'Select at least 17 tiles';
+
+  @override
+  String needTilesMsg(int expected, int current) {
+    return 'Need $expected tiles, have $current';
+  }
+
+  @override
+  String buildingMeld(String type, int count, int needed) {
+    return 'Building $type: $count/$needed tiles';
+  }
+
+  @override
+  String get invalidMeld => 'Invalid meld — please try again';
+
+  @override
+  String get chowName => 'Chow';
+
+  @override
+  String get pongName => 'Pong';
+
+  @override
+  String get kongName => 'Kong';
+
+  @override
+  String get exposedKongName => 'Exposed Kong';
+
+  @override
+  String get concealedKongName => 'Concealed Kong';
+
+  @override
+  String get twDingBonus => 'Ding Bonus';
 }

@@ -835,6 +835,24 @@ abstract class L10n {
   /// **'Having five concealed Pungs in hand (no exposed melds). 80 Tai.'**
   String get explFiveConcealedPongs;
 
+  /// No description provided for @twJianJianHu.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed All Pongs Self-Draw'**
+  String get twJianJianHu;
+
+  /// No description provided for @descJianJianHu.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-draw + Concealed + All Pongs.'**
+  String get descJianJianHu;
+
+  /// No description provided for @explJianJianHu.
+  ///
+  /// In en, this message translates to:
+  /// **'Win by self-draw with a fully concealed hand composed entirely of Pongs (All Pongs). 100 Tai. Does not count Self-Draw, Concealed Hand, All Pongs, or Five Concealed Pungs.'**
+  String get explJianJianHu;
+
   /// No description provided for @twDeclaredReady.
   ///
   /// In en, this message translates to:
@@ -2917,6 +2935,12 @@ abstract class L10n {
   /// **'Winning Hand (Thirteen Orphans)!'**
   String get winningHandThirteenOrphans;
 
+  /// No description provided for @winningHandSixteenNonMatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Winning Hand (Sixteen Non-Matching)!'**
+  String get winningHandSixteenNonMatching;
+
   /// No description provided for @winningHand.
   ///
   /// In en, this message translates to:
@@ -3569,6 +3593,12 @@ abstract class L10n {
   /// **'Being Dealer: +1 Tai'**
   String get twDealerBonusBase;
 
+  /// No description provided for @twDealerPaysExtra.
+  ///
+  /// In en, this message translates to:
+  /// **'Dealer Pays Extra'**
+  String get twDealerPaysExtra;
+
   /// No description provided for @twDealerBonusFormula.
   ///
   /// In en, this message translates to:
@@ -3734,7 +3764,7 @@ abstract class L10n {
   /// No description provided for @twExplDoublePong.
   ///
   /// In en, this message translates to:
-  /// **'Also known as a double-sided pong wait. 1 Tai.'**
+  /// **'Also known as a double-sided pong wait. 2 Tai.'**
   String get twExplDoublePong;
 
   /// No description provided for @twFakeSingle.
@@ -3992,7 +4022,7 @@ abstract class L10n {
   /// No description provided for @twIdenticalSequenceThree.
   ///
   /// In en, this message translates to:
-  /// **'Three Identical Sequences'**
+  /// **'Second Identical Sequences'**
   String get twIdenticalSequenceThree;
 
   /// No description provided for @twDescIdenticalSequenceThree.
@@ -4010,7 +4040,7 @@ abstract class L10n {
   /// No description provided for @twIdenticalSequenceFour.
   ///
   /// In en, this message translates to:
-  /// **'Four Identical Sequences'**
+  /// **'Third Identical Sequences'**
   String get twIdenticalSequenceFour;
 
   /// No description provided for @twDescIdenticalSequenceFour.
@@ -4040,7 +4070,7 @@ abstract class L10n {
   /// No description provided for @twExplMixedDoubleSeq.
   ///
   /// In en, this message translates to:
-  /// **'Two chows with same numbers in different suits. 2 Tai.'**
+  /// **'Two chows with same numbers in different suits. 1 Tai.'**
   String get twExplMixedDoubleSeq;
 
   /// No description provided for @twMixedTripleSeq.
@@ -4256,7 +4286,7 @@ abstract class L10n {
   /// No description provided for @twExplExposedMixedDragon.
   ///
   /// In en, this message translates to:
-  /// **'1-9 run across suits with some tiles from others. 8 Tai.'**
+  /// **'1-9 run across suits with some tiles from others. 5 Tai.'**
   String get twExplExposedMixedDragon;
 
   /// No description provided for @twConcealedMixedDragon.
@@ -4274,7 +4304,7 @@ abstract class L10n {
   /// No description provided for @twExplConcealedMixedDragon.
   ///
   /// In en, this message translates to:
-  /// **'1-9 run across suits, entirely concealed. 15 Tai.'**
+  /// **'1-9 run across suits, entirely concealed. 10 Tai.'**
   String get twExplConcealedMixedDragon;
 
   /// No description provided for @twFiveGates.
@@ -4520,13 +4550,13 @@ abstract class L10n {
   /// No description provided for @twDescMixedTerminalChows.
   ///
   /// In en, this message translates to:
-  /// **'Every set contains a 1 or 9, plus honor tiles.'**
+  /// **'Every group contains a terminal (1/9) or honors, and honors must be present.'**
   String get twDescMixedTerminalChows;
 
   /// No description provided for @twExplMixedTerminalChows.
   ///
   /// In en, this message translates to:
-  /// **'All sets include a terminal, with honors allowed. 10 Tai.'**
+  /// **'Every group (chow, pong, pair) includes a terminal or honors, with honors present. 10 Tai.'**
   String get twExplMixedTerminalChows;
 
   /// No description provided for @twPureTerminalChows.
@@ -4538,14 +4568,50 @@ abstract class L10n {
   /// No description provided for @twDescPureTerminalChows.
   ///
   /// In en, this message translates to:
-  /// **'Every set contains a 1 or 9, no honor tiles.'**
+  /// **'Every group contains a terminal (1/9), with no honors.'**
   String get twDescPureTerminalChows;
 
   /// No description provided for @twExplPureTerminalChows.
   ///
   /// In en, this message translates to:
-  /// **'All sets include a terminal tile, no honors. 15 Tai.'**
+  /// **'Every group (chow, pong, pair) includes a terminal, with no honors. 15 Tai.'**
   String get twExplPureTerminalChows;
+
+  /// No description provided for @twQuanHunYao.
+  ///
+  /// In en, this message translates to:
+  /// **'Pure Terminal Groups'**
+  String get twQuanHunYao;
+
+  /// No description provided for @twDescQuanHunYao.
+  ///
+  /// In en, this message translates to:
+  /// **'Every group contains a terminal (1 or 9), no honors. Any composition.'**
+  String get twDescQuanHunYao;
+
+  /// No description provided for @twExplQuanHunYao.
+  ///
+  /// In en, this message translates to:
+  /// **'Every group (chow, pong, pair) includes a terminal tile, no honors. 15 Tai.'**
+  String get twExplQuanHunYao;
+
+  /// No description provided for @twBanDaiHunYao.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixed Terminal Groups'**
+  String get twBanDaiHunYao;
+
+  /// No description provided for @twDescBanDaiHunYao.
+  ///
+  /// In en, this message translates to:
+  /// **'Every group contains a terminal (1/9) or honor. Must have honors.'**
+  String get twDescBanDaiHunYao;
+
+  /// No description provided for @twExplBanDaiHunYao.
+  ///
+  /// In en, this message translates to:
+  /// **'Every group includes a terminal or honor tile, with honors present. 10 Tai.'**
+  String get twExplBanDaiHunYao;
 
   /// No description provided for @twHumanWin.
   ///
@@ -5896,6 +5962,156 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Clear'**
   String get clearName;
+
+  /// No description provided for @tileSelectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Hand'**
+  String get tileSelectionTitle;
+
+  /// No description provided for @concealedTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed'**
+  String get concealedTarget;
+
+  /// No description provided for @winTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Win'**
+  String get winTarget;
+
+  /// No description provided for @dingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ding'**
+  String get dingLabel;
+
+  /// No description provided for @chowButton.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Chow'**
+  String get chowButton;
+
+  /// No description provided for @pongButton.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Pong'**
+  String get pongButton;
+
+  /// No description provided for @exposedKongButton.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Exp Kong'**
+  String get exposedKongButton;
+
+  /// No description provided for @concealedKongButton.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Con Kong'**
+  String get concealedKongButton;
+
+  /// No description provided for @exposedZoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exposed'**
+  String get exposedZoneLabel;
+
+  /// No description provided for @concealedZoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed'**
+  String get concealedZoneLabel;
+
+  /// No description provided for @winningTileZoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Winning Tile'**
+  String get winningTileZoneLabel;
+
+  /// No description provided for @noExposedMelds.
+  ///
+  /// In en, this message translates to:
+  /// **'No exposed melds'**
+  String get noExposedMelds;
+
+  /// No description provided for @noConcealedTiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No concealed tiles'**
+  String get noConcealedTiles;
+
+  /// No description provided for @tapWinToPickTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Win then pick a tile'**
+  String get tapWinToPickTile;
+
+  /// No description provided for @selectWinningTileMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a winning tile'**
+  String get selectWinningTileMsg;
+
+  /// No description provided for @selectAtLeastTilesMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least 17 tiles'**
+  String get selectAtLeastTilesMsg;
+
+  /// No description provided for @needTilesMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Need {expected} tiles, have {current}'**
+  String needTilesMsg(int expected, int current);
+
+  /// No description provided for @buildingMeld.
+  ///
+  /// In en, this message translates to:
+  /// **'Building {type}: {count}/{needed} tiles'**
+  String buildingMeld(String type, int count, int needed);
+
+  /// No description provided for @invalidMeld.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid meld — please try again'**
+  String get invalidMeld;
+
+  /// No description provided for @chowName.
+  ///
+  /// In en, this message translates to:
+  /// **'Chow'**
+  String get chowName;
+
+  /// No description provided for @pongName.
+  ///
+  /// In en, this message translates to:
+  /// **'Pong'**
+  String get pongName;
+
+  /// No description provided for @kongName.
+  ///
+  /// In en, this message translates to:
+  /// **'Kong'**
+  String get kongName;
+
+  /// No description provided for @exposedKongName.
+  ///
+  /// In en, this message translates to:
+  /// **'Exposed Kong'**
+  String get exposedKongName;
+
+  /// No description provided for @concealedKongName.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed Kong'**
+  String get concealedKongName;
+
+  /// No description provided for @twDingBonus.
+  ///
+  /// In en, this message translates to:
+  /// **'Ding Bonus'**
+  String get twDingBonus;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

@@ -77,7 +77,7 @@ void main() {
       expect(dealerRule['fan'], equals(1));
     });
 
-    test('Non-dealer wins → no dealer bonus', () {
+    test('Non-dealer wins → dealer bonus shown as "Dealer Pays Extra" (not added to totalPoints)', () {
       final ctrl = _twCtrl(
         dealerIndex: 0, // Alice is dealer
         winningPlayer: 'Bob', // Bob (index 1) wins
@@ -86,16 +86,20 @@ void main() {
       ctrl.fanCount = 3;
       ctrl.calculateScore();
 
-      final dealerRules = ctrl.displayRules.where(
+      // The dealer bonus display rule should exist but marked as dealer-pays-extra
+      final dealerExtraRules = ctrl.displayRules.where(
         (r) =>
-            (r['name'] as String).contains('Dealer') ||
-            (r['name'] as String).contains(AppLocalizations.twDealerBonusBase),
+            (r['name'] as String).contains(AppLocalizations.twDealerPaysExtra),
       );
       expect(
-        dealerRules.isEmpty,
+        dealerExtraRules.isNotEmpty,
         isTrue,
-        reason: 'Non-dealer should get no dealer bonus',
+        reason: 'Dealer pays extra note should be shown when non-dealer wins',
       );
+      // The bonus should NOT be added to totalPoints (base score)
+      // totalPoints = baseTai(10) + (fanCount(3) + selfDraw(1) + wrongFlower(1)) = 10+5 = 15
+      expect(ctrl.totalPoints, equals(15),
+          reason: 'Dealer bonus should not inflate base totalPoints');
     });
   });
 
@@ -148,7 +152,7 @@ void main() {
   group('Dealer bonus contribution to totalPoints', () {
     test('Score without dealer bonus vs with dealer bonus', () {
       // Non-dealer: fanCount=3 → effective=3 + noFlowers(1) = 4
-      // totalPoints = baseTai + (effectiveFan * taiValue) = 10 + (4*5) = 30
+      // totalPoints = baseTai(10) + effectiveFan = 10+4 = 14
       final nonDealer = _twCtrl(
         dealerIndex: 0,
         winningPlayer: 'Bob', // non-dealer
@@ -159,7 +163,7 @@ void main() {
       final nonDealerScore = nonDealer.totalPoints;
 
       // Dealer (count=1): fanCount=3 → effective=3 + noFlowers(1) + bonus(1) = 5
-      // totalPoints = 10 + (5*5) = 35
+      // totalPoints = 10+5 = 15
       final dealer = _twCtrl(
         dealerIndex: 0,
         winningPlayer: 'Alice', // dealer
@@ -169,14 +173,14 @@ void main() {
       dealer.calculateScore();
       final dealerScore = dealer.totalPoints;
 
-      // Difference should be exactly 1 * taiValue = 5
-      expect(dealerScore - nonDealerScore, equals(5));
+      // Difference should be exactly 1 (1 bonus tai × taiValue(1) = 1)
+      expect(dealerScore - nonDealerScore, equals(1));
     });
 
     test('Consecutive dealer count=3 adds 5 bonus tai to score', () {
       // Dealer consecutive(3): fanCount=3, selfDraw=false
       // effective = 3 + noFlowers(1) + dealerBonus(5) = 9
-      // totalPoints = 10 + (9*5) = 55
+      // totalPoints = baseTai(10) + 9 = 19
       final ctrl = _twCtrl(
         dealerIndex: 0,
         winningPlayer: 'Alice',
@@ -185,7 +189,7 @@ void main() {
       );
       ctrl.fanCount = 3;
       ctrl.calculateScore();
-      expect(ctrl.totalPoints, equals(55));
+      expect(ctrl.totalPoints, equals(19));
     });
   });
 
@@ -233,6 +237,234 @@ void main() {
         ),
       );
       expect(hasConsecutive, isTrue);
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // Dealer pays extra in buildSubmitResult (連莊 penalty)
+  // ═══════════════════════════════════════════════════════════
+  group('Dealer pays extra 連莊 in buildSubmitResult', () {
+    test('Changing discarder to dealer should refresh and show dealer-extra item', () {
+      final ctrl = ScoreCalculationController(
+        players: players,
+        minFan: 0,
+        maxFan: 1,
+        gameMode: GameMode.taiwan,
+        consecutiveDealerCount: 2,
+        dealerIndex: 0,
+      );
+      ctrl.winningPlayer = 'Bob';
+      ctrl.isSelfDraw = false;
+      for (var key in ctrl.selectedFlowers.keys.toList()) {
+        ctrl.selectedFlowers[key] = false;
+      }
+      ctrl.selectedFlowers['3f'] = true;
+      ctrl.fanCount = 1;
+
+      // Start from non-dealer discard: no dealer-extra item.
+      ctrl.setDiscardPlayer('Charlie');
+      var hasDealerExtraRule = ctrl.displayRules.any(
+        (r) =>
+            (r['name'] as String).contains(AppLocalizations.twDealerPaysExtra),
+      );
+      expect(hasDealerExtraRule, isFalse);
+
+      // Change to dealer discard: item should appear after recalculation.
+      ctrl.setDiscardPlayer('Alice');
+      hasDealerExtraRule = ctrl.displayRules.any(
+        (r) =>
+            (r['name'] as String).contains(AppLocalizations.twDealerPaysExtra),
+      );
+      expect(hasDealerExtraRule, isTrue,
+          reason: 'Dealer discarder should show dealer-extra item in calculation list');
+    });
+
+    test('Self-draw by non-dealer: dealer pays extra, others pay base', () {
+      // Player 1 (Bob) self-draws, dealer is Alice (index 0), 連莊 once.
+      // Dealer bonus: (1*2)+1 = 3 tai.
+      // minFan=0, maxFan=1 → taiValue=1
+      final ctrl = ScoreCalculationController(
+        players: players,
+        minFan: 0,
+        maxFan: 1,
+        gameMode: GameMode.taiwan,
+        consecutiveDealerCount: 2, // 連莊 once → bonus = 3
+        dealerIndex: 0,
+      );
+      ctrl.winningPlayer = 'Bob';
+      ctrl.isSelfDraw = true;
+      // Select one wrong flower so we go through TW flower path (not manual mode)
+      for (var key in ctrl.selectedFlowers.keys.toList()) {
+        ctrl.selectedFlowers[key] = false;
+      }
+      ctrl.selectedFlowers['3f'] = true; // wrong flower → +1
+      ctrl.fanCount = 1;
+      ctrl.calculateScore();
+
+      // totalPoints = 0 + (1 + selfDraw(1) + wrongFlower(1)) * 1 = 3
+      final base = ctrl.totalPoints;
+      expect(base, equals(3));
+
+      final result = ctrl.buildSubmitResult()!;
+      final scores = result['scores'] as Map<String, int>;
+
+      // Alice (dealer, id=0) should pay base + 3*1 = 6
+      expect(scores['0'], equals(-6),
+          reason: 'Dealer should pay base + dealerBonusTai × taiValue');
+      // Charlie (id=2) pays base = 3
+      expect(scores['2'], equals(-3),
+          reason: 'Non-dealer loser pays base only');
+      // Diana (id=3) pays base = 3
+      expect(scores['3'], equals(-3));
+      // Bob (winner, id=1) gets 6+3+3 = 12
+      expect(scores['1'], equals(12),
+          reason: 'Winner receives sum of all payments');
+    });
+
+    test('Dealer discards to non-dealer: dealer pays extra', () {
+      final ctrl = ScoreCalculationController(
+        players: players,
+        minFan: 0,
+        maxFan: 1,
+        gameMode: GameMode.taiwan,
+        consecutiveDealerCount: 2, // 連莊 once → bonus = 3
+        dealerIndex: 0,
+      );
+      ctrl.winningPlayer = 'Bob';
+      ctrl.isSelfDraw = false;
+      ctrl.discardPlayer = 'Alice'; // dealer discards
+      for (var key in ctrl.selectedFlowers.keys.toList()) {
+        ctrl.selectedFlowers[key] = false;
+      }
+      ctrl.selectedFlowers['3f'] = true; // wrong flower → +1
+      ctrl.fanCount = 1;
+      ctrl.calculateScore();
+
+      final base = ctrl.totalPoints;
+      // totalPoints = 0 + (1 + wrongFlower(1)) * 1 = 2 (no self-draw)
+      expect(base, equals(2));
+
+      final result = ctrl.buildSubmitResult()!;
+      final scores = result['scores'] as Map<String, int>;
+
+      // Alice (dealer, discarder) pays base + 3*1 = 5
+      expect(scores['0'], equals(-5),
+          reason: 'Dealer discarder pays base + dealerBonusTai × taiValue');
+      // Bob (winner) gets 5
+      expect(scores['1'], equals(5));
+    });
+
+    test('Non-dealer discards to non-dealer: dealer not involved, no extra', () {
+      final ctrl = ScoreCalculationController(
+        players: players,
+        minFan: 0,
+        maxFan: 1,
+        gameMode: GameMode.taiwan,
+        consecutiveDealerCount: 2, // 連莊 once → bonus = 3
+        dealerIndex: 0,
+      );
+      ctrl.winningPlayer = 'Bob';
+      ctrl.isSelfDraw = false;
+      ctrl.discardPlayer = 'Charlie'; // non-dealer discards
+      for (var key in ctrl.selectedFlowers.keys.toList()) {
+        ctrl.selectedFlowers[key] = false;
+      }
+      ctrl.selectedFlowers['3f'] = true; // wrong flower → +1
+      ctrl.fanCount = 1;
+      ctrl.calculateScore();
+
+        final hasDealerExtraRule = ctrl.displayRules.any(
+        (r) =>
+          (r['name'] as String).contains(AppLocalizations.twDealerPaysExtra),
+        );
+        expect(hasDealerExtraRule, isFalse,
+          reason: 'Dealer not involved in discard win should not show dealer-extra item');
+
+      final base = ctrl.totalPoints;
+      // totalPoints = 0 + (1 + wrongFlower(1)) * 1 = 2
+      expect(base, equals(2));
+
+      final result = ctrl.buildSubmitResult()!;
+      final scores = result['scores'] as Map<String, int>;
+
+      // Charlie (non-dealer discarder) pays base only
+      expect(scores['2'], equals(-2),
+          reason: 'Non-dealer discarder pays base only');
+      // Bob (winner) gets base
+      expect(scores['1'], equals(2));
+    });
+
+    test('Dealer self-draws: all losers pay totalPoints (includes bonus)', () {
+      final ctrl = ScoreCalculationController(
+        players: players,
+        minFan: 0,
+        maxFan: 1,
+        gameMode: GameMode.taiwan,
+        consecutiveDealerCount: 2,
+        dealerIndex: 0,
+      );
+      ctrl.winningPlayer = 'Alice'; // dealer self-draws
+      ctrl.isSelfDraw = true;
+      for (var key in ctrl.selectedFlowers.keys.toList()) {
+        ctrl.selectedFlowers[key] = false;
+      }
+      ctrl.selectedFlowers['3f'] = true; // wrong flower → +1
+      ctrl.fanCount = 1;
+      ctrl.calculateScore();
+
+      // totalPoints = 0 + (1 + selfDraw(1) + wrongFlower(1) + dealerBonus(3)) * 1 = 6
+      expect(ctrl.totalPoints, equals(6));
+
+      final result = ctrl.buildSubmitResult()!;
+      final scores = result['scores'] as Map<String, int>;
+
+      // All losers pay 6
+      expect(scores['1'], equals(-6));
+      expect(scores['2'], equals(-6));
+      expect(scores['3'], equals(-6));
+      // Alice (winner) gets 18
+      expect(scores['0'], equals(18));
+    });
+
+    test('User example: non-dealer self-draw, dealer 連莊 once, pays extra', () {
+      // Bob is dealer (index 1), 連莊 once (consecutiveDealerCount=2).
+      // Alice self-draws, fanCount=1, wrong flower=+1, selfDraw=+1.
+      // Base totalPoints = 0 + (1+1+1)*1 = 3
+      // Dealer bonus: (1*2)+1 = 3 tai → dealer extra = 3*1 = 3
+      // Bob pays 3+3 = 6, Charlie/Diana pay 3 each
+      // Alice gets 6+3+3 = 12
+      final ctrl = ScoreCalculationController(
+        players: players,
+        minFan: 0,
+        maxFan: 1,
+        gameMode: GameMode.taiwan,
+        consecutiveDealerCount: 2, // 連莊 once
+        dealerIndex: 1, // Bob is dealer
+      );
+      ctrl.winningPlayer = 'Alice';
+      ctrl.isSelfDraw = true;
+      for (var key in ctrl.selectedFlowers.keys.toList()) {
+        ctrl.selectedFlowers[key] = false;
+      }
+      ctrl.selectedFlowers['3f'] = true; // wrong flower → +1
+      ctrl.fanCount = 1;
+      ctrl.calculateScore();
+
+      final base = ctrl.totalPoints;
+      expect(base, equals(3));
+
+      final result = ctrl.buildSubmitResult()!;
+      final scores = result['scores'] as Map<String, int>;
+
+      // Bob (dealer, id=1) pays 3 + 3*1 = 6
+      expect(scores['1'], equals(-6),
+          reason: 'Dealer pays base + 連莊 bonus');
+      // Charlie (id=2) pays 3
+      expect(scores['2'], equals(-3));
+      // Diana (id=3) pays 3
+      expect(scores['3'], equals(-3));
+      // Alice (winner, id=0) gets 6+3+3 = 12
+      expect(scores['0'], equals(12));
     });
   });
 }

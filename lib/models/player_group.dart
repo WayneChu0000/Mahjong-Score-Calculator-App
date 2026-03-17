@@ -22,6 +22,9 @@ class PlayerGroup {
   final int maxFan;
   final GameMode gameMode;
 
+  /// Serialized La (拉) settlement state for TW mode persistence.
+  final Map<String, dynamic>? laState;
+
   PlayerGroup({
     required this.name,
     required this.players,
@@ -39,6 +42,7 @@ class PlayerGroup {
     this.minFan = 3,
     this.maxFan = 13,
     this.gameMode = GameMode.hongKong,
+    this.laState,
   }) : createdAt = createdAt ?? DateTime.now();
 
   // Create PlayerGroup from JSON
@@ -75,6 +79,9 @@ class PlayerGroup {
               orElse: () => GameMode.hongKong,
             )
           : GameMode.hongKong,
+      laState: json['laState'] != null
+          ? Map<String, dynamic>.from(json['laState'])
+          : null,
     );
   }
 
@@ -99,6 +106,7 @@ class PlayerGroup {
       'minFan': minFan,
       'maxFan': maxFan,
       'gameMode': gameMode.toString(),
+      'laState': laState,
     };
   }
 
@@ -120,6 +128,8 @@ class PlayerGroup {
     int? minFan,
     int? maxFan,
     GameMode? gameMode,
+    Map<String, dynamic>? laState,
+    bool clearLaState = false,
   }) {
     return PlayerGroup(
       name: name ?? this.name,
@@ -140,6 +150,7 @@ class PlayerGroup {
       minFan: minFan ?? this.minFan,
       maxFan: maxFan ?? this.maxFan,
       gameMode: gameMode ?? this.gameMode,
+      laState: clearLaState ? null : (laState ?? this.laState),
     );
   }
 }

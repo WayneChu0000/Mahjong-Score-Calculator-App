@@ -386,6 +386,16 @@ class L10nZh extends L10n {
   String get explFiveConcealedPongs => '手中擁有五組暗刻（不包括明碰、明槓），80 台。';
 
   @override
+  String get twJianJianHu => '間間胡';
+
+  @override
+  String get descJianJianHu => '自摸、門清、對對胡';
+
+  @override
+  String get explJianJianHu =>
+      '門清狀態下自摸胡牌，且手牌全部是刻子（對對胡），100 台。不另計自摸、門清、對對胡、五暗刻。';
+
+  @override
   String get twDeclaredReady => '聽牌';
 
   @override
@@ -429,7 +439,7 @@ class L10nZh extends L10n {
 
   @override
   String consecutiveDealerCount(int count) {
-    return '連 $count 拉';
+    return '連 $count 莊';
   }
 
   @override
@@ -1442,6 +1452,9 @@ class L10nZh extends L10n {
   String get winningHandThirteenOrphans => '胡牌 (十三么)！';
 
   @override
+  String get winningHandSixteenNonMatching => '胡牌 (十六不搭)！';
+
+  @override
   String get winningHand => '胡牌！';
 
   @override
@@ -1793,6 +1806,9 @@ class L10nZh extends L10n {
   String get twDealerBonusBase => '做莊：+1 台';
 
   @override
+  String get twDealerPaysExtra => '莊家額外支付';
+
+  @override
   String get twDealerBonusFormula => '連莊公式：(連莊次數 × 2) + 1';
 
   @override
@@ -1875,10 +1891,10 @@ class L10nZh extends L10n {
   String get twDescDoublePong => '胡牌時等待兩對中的其中一張成刻。';
 
   @override
-  String get twExplDoublePong => '又稱「對對倒」。1 台。';
+  String get twExplDoublePong => '又稱「對對碰」。2 台。';
 
   @override
-  String get twFakeSingle => '假獨 / 假碰';
+  String get twFakeSingle => '假獨';
 
   @override
   String get twDescFakeSingle => '可以胡兩頭卻選擇胡單騎或偏章。';
@@ -2004,7 +2020,7 @@ class L10nZh extends L10n {
   String get twExplIdenticalSequenceTwo => '同花色同數字的兩個順子。3 台。';
 
   @override
-  String get twIdenticalSequenceThree => '三般高';
+  String get twIdenticalSequenceThree => '二般高';
 
   @override
   String get twDescIdenticalSequenceThree => '三個完全一樣的順子。';
@@ -2013,7 +2029,7 @@ class L10nZh extends L10n {
   String get twExplIdenticalSequenceThree => '三個相同順子。明 15 台 / 暗 20 台。';
 
   @override
-  String get twIdenticalSequenceFour => '四般高';
+  String get twIdenticalSequenceFour => '三般高';
 
   @override
   String get twDescIdenticalSequenceFour => '四個完全一樣的順子。';
@@ -2028,7 +2044,7 @@ class L10nZh extends L10n {
   String get twDescMixedDoubleSeq => '兩個款式不同但數字一樣的順子。';
 
   @override
-  String get twExplMixedDoubleSeq => '不同花色但數字相同的兩個順子。2 台。';
+  String get twExplMixedDoubleSeq => '不同花色但數字相同的兩個順子。1 台。';
 
   @override
   String get twMixedTripleSeq => '三相逢';
@@ -2136,7 +2152,7 @@ class L10nZh extends L10n {
   String get twDescExposedMixedDragon => '一至九的龍由不同款式組成，部分是上來的。';
 
   @override
-  String get twExplExposedMixedDragon => '跨花色 1-9 順子，含有上碰來的牌。8 台。';
+  String get twExplExposedMixedDragon => '跨花色 1-9 順子，含有上碰來的牌。5 台。';
 
   @override
   String get twConcealedMixedDragon => '暗雜龍';
@@ -2145,7 +2161,7 @@ class L10nZh extends L10n {
   String get twDescConcealedMixedDragon => '一至九的龍由不同款式組成且全在手裡。';
 
   @override
-  String get twExplConcealedMixedDragon => '跨花色 1-9 順子，全部暗持。15 台。';
+  String get twExplConcealedMixedDragon => '跨花色 1-9 順子，全部暗持。10 台。';
 
   @override
   String get twFiveGates => '五門齊';
@@ -2268,19 +2284,37 @@ class L10nZh extends L10n {
   String get twMixedTerminalChows => '全帶混么';
 
   @override
-  String get twDescMixedTerminalChows => '每一組牌都含有一、九或字牌。';
+  String get twDescMixedTerminalChows => '牌型中每一組都含有一、九或字牌，且需有字牌。';
 
   @override
-  String get twExplMixedTerminalChows => '所有組合都包含么九或字牌。10 台。';
+  String get twExplMixedTerminalChows => '所有組合（順、刻、眼）都需帶么九或字牌，且牌型中必須有字牌。10 台。';
 
   @override
   String get twPureTerminalChows => '全帶么';
 
   @override
-  String get twDescPureTerminalChows => '每一組牌都含有一、九，且無字牌。';
+  String get twDescPureTerminalChows => '牌型中每一組都含有一、九，且無字牌。';
 
   @override
-  String get twExplPureTerminalChows => '所有組合都包含么九牌但無字牌。15 台。';
+  String get twExplPureTerminalChows => '所有組合（順、刻、眼）都需帶么九且不得有字牌。15 台。';
+
+  @override
+  String get twQuanHunYao => '全混么';
+
+  @override
+  String get twDescQuanHunYao => '每一組牌都包含一、九（無字牌），且不必全為順子。';
+
+  @override
+  String get twExplQuanHunYao => '所有組合（順、刻、眼）均含一、九但無字牌，不必全為順子。15 台。';
+
+  @override
+  String get twBanDaiHunYao => '半帶混么';
+
+  @override
+  String get twDescBanDaiHunYao => '每一組牌都含有字牌或一、九，且必須有字牌。';
+
+  @override
+  String get twExplBanDaiHunYao => '所有組合均含字牌或么九，且牌型中必須有字牌。10 台。';
 
   @override
   String get twHumanWin => '人胡';
@@ -2970,4 +3004,83 @@ class L10nZh extends L10n {
 
   @override
   String get clearName => '清除';
+
+  @override
+  String get tileSelectionTitle => '選擇手牌';
+
+  @override
+  String get concealedTarget => '暗';
+
+  @override
+  String get winTarget => '胡牌';
+
+  @override
+  String get dingLabel => '叮';
+
+  @override
+  String get chowButton => '+ 上';
+
+  @override
+  String get pongButton => '+ 碰';
+
+  @override
+  String get exposedKongButton => '+ 明槓';
+
+  @override
+  String get concealedKongButton => '+ 暗槓';
+
+  @override
+  String get exposedZoneLabel => '明';
+
+  @override
+  String get concealedZoneLabel => '暗';
+
+  @override
+  String get winningTileZoneLabel => '胡牌';
+
+  @override
+  String get noExposedMelds => '尚無明牌組合';
+
+  @override
+  String get noConcealedTiles => '尚無暗牌';
+
+  @override
+  String get tapWinToPickTile => '請點選「胡牌」再選擇一張牌';
+
+  @override
+  String get selectWinningTileMsg => '請選擇胡牌';
+
+  @override
+  String get selectAtLeastTilesMsg => '請至少選擇 17 張牌';
+
+  @override
+  String needTilesMsg(int expected, int current) {
+    return '需要 $expected 張，目前 $current 張';
+  }
+
+  @override
+  String buildingMeld(String type, int count, int needed) {
+    return '組合 $type：$count/$needed 張';
+  }
+
+  @override
+  String get invalidMeld => '組合無效，請重新選擇';
+
+  @override
+  String get chowName => '上';
+
+  @override
+  String get pongName => '碰';
+
+  @override
+  String get kongName => '槓';
+
+  @override
+  String get exposedKongName => '明槓';
+
+  @override
+  String get concealedKongName => '暗槓';
+
+  @override
+  String get twDingBonus => '叮';
 }

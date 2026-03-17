@@ -6,6 +6,7 @@ import '../../routes/app_routes.dart';
 import '../../services/vision_service.dart';
 import '../../localization/app_localizations.dart';
 import '../../models/game_mode.dart';
+import '../../models/tw_hand.dart';
 import '../../controllers/score_calculation_controller.dart';
 import 'widgets/win_setup_card.dart';
 import 'widgets/fan_setup_card.dart';
@@ -159,22 +160,37 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   }
 
   Future<void> _selectHand() async {
-    final result =
-        await Navigator.pushNamed(
-              context,
-              AppRoutes.tileSelection,
-              arguments: TileSelectionArgs(
-                initialTiles: _ctrl.selectedTiles,
-                gameMode: widget.gameMode,
-              ),
-            )
-            as List<String>?;
+    if (widget.gameMode == GameMode.taiwan) {
+      final result = await Navigator.pushNamed(
+        context,
+        AppRoutes.twTileSelection,
+        arguments: TwTileSelectionArgs(initialHand: _ctrl.twHand),
+      );
 
-    if (result != null) {
-      setState(() {
-        _capturedImage = null;
-      });
-      _ctrl.setSelectedTiles(result);
+      if (result != null && result is TwHand) {
+        setState(() {
+          _capturedImage = null;
+        });
+        _ctrl.setTwHand(result);
+      }
+    } else {
+      final result =
+          await Navigator.pushNamed(
+                context,
+                AppRoutes.tileSelection,
+                arguments: TileSelectionArgs(
+                  initialTiles: _ctrl.selectedTiles,
+                  gameMode: widget.gameMode,
+                ),
+              )
+              as List<String>?;
+
+      if (result != null) {
+        setState(() {
+          _capturedImage = null;
+        });
+        _ctrl.setSelectedTiles(result);
+      }
     }
   }
 
