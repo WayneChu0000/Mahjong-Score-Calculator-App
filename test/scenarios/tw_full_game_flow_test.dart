@@ -232,10 +232,10 @@ void main() {
       final result = ctrl.buildSubmitResult()!;
       final sc = result['scores'] as Map<String, int>;
 
-      // 莊家(南家)放銃 → 付基本分 + 連莊台數(1)
+      // 莊家(南家)放銃 → totalPoints 已包含連莊多賠
       final basePay = ctrl.totalPoints;
-      expect(sc['1'], equals(-(basePay + 1)), reason: '莊家放銃多付連莊1台');
-      expect(sc['0'], equals(basePay + 1), reason: '東家得分');
+      expect(sc['1'], equals(-basePay), reason: '莊家放銃總付應等於顯示總分');
+      expect(sc['0'], equals(basePay), reason: '東家得分應等於顯示總分');
 
       applyResult(sc, false);
       expect(dealerIndex, 2, reason: '西家成為莊');
@@ -363,9 +363,8 @@ void main() {
 
       // 莊家(北, P3)放銃多賠
       final basePay = ctrl.totalPoints;
-      final dealerExtra = 1; // 連莊次數 1
-      expect(sc['3'], equals(-(basePay + dealerExtra)), reason: '莊家放銃多賠');
-      expect(sc['1'], equals(basePay + dealerExtra), reason: '南家得分');
+      expect(sc['3'], equals(-basePay), reason: '莊家放銃總付應等於顯示總分');
+      expect(sc['1'], equals(basePay), reason: '南家得分應等於顯示總分');
 
       applyResult(sc, false);
       expect(dealerIndex, 0, reason: '東家成為莊');
@@ -628,11 +627,9 @@ void main() {
       final result = ctrl.buildSubmitResult()!;
       final sc = result['scores'] as Map<String, int>;
       final basePay = ctrl.totalPoints;
-      final dealerExtra = 1;
 
-      expect(sc['3'], equals(-(basePay + dealerExtra)),
-          reason: '莊家放銃多賠');
-      expect(sc['2'], equals(basePay + dealerExtra));
+        expect(sc['3'], equals(-basePay), reason: '莊家放銃總付應等於顯示總分');
+        expect(sc['2'], equals(basePay));
 
       applyResult(sc, false);
       expect(dealerIndex, 0, reason: '東家成為莊');
@@ -939,10 +936,9 @@ void main() {
       final result = ctrl.buildSubmitResult()!;
       final scores = result['scores'] as Map<String, int>;
       final basePay = ctrl.totalPoints;
-      final extra = dealerExtra(2);
 
-      expect(pick(scores, 0), -(basePay + extra));
-      expect(pick(scores, 1), basePay + extra);
+      expect(pick(scores, 0), -basePay);
+      expect(pick(scores, 1), basePay);
       expect(pick(scores, 2), 0);
       expect(pick(scores, 3), 0);
       expect(scores.values.fold(0, (a, b) => a + b), 0);

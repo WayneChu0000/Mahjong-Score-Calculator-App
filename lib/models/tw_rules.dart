@@ -175,12 +175,12 @@ List<Rule> get twRules => [
     validator: HandPatterns.hasEyeOf258,
     exampleTiles: [],
   ),
-  // 老少 – Old & Young (2 Tai)
+  // 老少 – Old & Young (3 Tai)
   Rule(
     name: AppLocalizations.twOldYoung,
     description: AppLocalizations.twDescOldYoung,
-    fan: AppLocalizations.taiCount(2),
-    fanValue: 2,
+    fan: AppLocalizations.taiCount(3),
+    fanValue: 3,
     explanation: AppLocalizations.twExplOldYoung,
     validator: null,
     exampleTiles: [],

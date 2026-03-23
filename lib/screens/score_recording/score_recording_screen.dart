@@ -57,6 +57,8 @@ class ScoreRecordingScreen extends StatefulWidget {
 }
 
 class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
+  static const int _laSettlementPayoutMultiplier = 2;
+
   int _dealerIndex = 0;
 
   int _prevalentWindIndex = 0;
@@ -457,10 +459,20 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     }
   }
 
+  Map<String, int> _applyLaSettlementMultiplier(Map<String, int> adjustments) {
+    if (adjustments.isEmpty) return adjustments;
+    return adjustments.map(
+      (playerId, delta) =>
+          MapEntry(playerId, delta * _laSettlementPayoutMultiplier),
+    );
+  }
+
   void _showGameEndDialog() {
     // Settle any remaining La debts at game end (TW Mahjong)
     if (widget.gameMode == GameMode.taiwan) {
-      final gameEndAdj = _laSettlement.settleAtGameEnd();
+      final gameEndAdj = _applyLaSettlementMultiplier(
+        _laSettlement.settleAtGameEnd(),
+      );
       if (gameEndAdj.isNotEmpty) {
         _scoreService.updateScores(gameEndAdj);
         setState(() {
@@ -565,6 +577,36 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         false;
   }
 
+  Map<String, int> _buildLaRawScoreChanges({
+    required String winnerId,
+    required bool isSelfDraw,
+    required int laUnit,
+    String? discarderId,
+  }) {
+    if (laUnit <= 0) return {};
+
+    final raw = <String, int>{};
+    if (isSelfDraw) {
+      int winnerGain = 0;
+      for (final player in widget.players) {
+        final pid = player.id.toString();
+        if (pid == winnerId) continue;
+        raw[pid] = -laUnit;
+        winnerGain += laUnit;
+      }
+      raw[winnerId] = winnerGain;
+      return raw;
+    }
+
+    if (discarderId == null || discarderId == winnerId) {
+      return {};
+    }
+
+    raw[discarderId] = -laUnit;
+    raw[winnerId] = laUnit;
+    return raw;
+  }
+
   void _openScoreCalculator() {
     _dealerWonInCurrentRound = false;
 
@@ -632,13 +674,25 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
             ? nameToId(discarderId)
             : null;
 
+        final laUnit = (taiCount ?? fanCount ?? 0);
+        final laRawScoreChanges = _buildLaRawScoreChanges(
+          winnerId: winnerIdStr,
+          isSelfDraw: isSelfDraw,
+          laUnit: laUnit,
+          discarderId: discarderIdStr,
+        );
+
         final laResult = _laSettlement.apply(
-          rawScoreChanges: scoreChanges,
+          rawScoreChanges: laRawScoreChanges.isNotEmpty
+              ? laRawScoreChanges
+              : scoreChanges,
           winnerId: winnerIdStr,
           isSelfDraw: isSelfDraw,
           discarderId: discarderIdStr,
         );
-        scoreChanges = laResult.adjustedScoreChanges;
+        scoreChanges = _applyLaSettlementMultiplier(
+          laResult.adjustedScoreChanges,
+        );
 
         // Handle stop rule (逼停)
         if (laResult.stopEligible.isNotEmpty && mounted) {
@@ -657,7 +711,9 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
               entry.value,
             );
             if (wantsToStop) {
-              final forceAdj = _laSettlement.forceSettle(entry.key);
+              final forceAdj = _applyLaSettlementMultiplier(
+                _laSettlement.forceSettle(entry.key),
+              );
               for (final adj in forceAdj.entries) {
                 scoreChanges[adj.key] =
                     (scoreChanges[adj.key] ?? 0) + adj.value;
@@ -1464,6 +1520,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
 
     // Show only this player's debt in the confirmation dialog
     final playerDebt = _laSettlement.debts[playerId] ?? 0;
+    final settlementDebt = playerDebt * _laSettlementPayoutMultiplier;
     final lossCount = _laSettlement.consecutiveLosses[playerId] ?? 0;
 
     showDialog(
@@ -1472,8 +1529,8 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         title: Text(AppLocalizations.twLaStopRuleTitle),
         content: Text(
           '${AppLocalizations.twLaStopRuleMessage(playerName, lossCount, streakWinnerName)}\n\n'
-          '${AppLocalizations.twLaDebtTotal}:\n  $playerName: $playerDebt\n\n'
-          '$streakWinnerName: +$playerDebt',
+          '${AppLocalizations.twLaDebtTotal}:\n  $playerName: $playerDebt × $_laSettlementPayoutMultiplier = $settlementDebt\n\n'
+          '$streakWinnerName: +$settlementDebt',
         ),
         actions: [
           TextButton(
@@ -1483,7 +1540,9 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
           FilledButton(
             onPressed: () {
               Navigator.pop(ctx);
-              final forceAdj = _laSettlement.forceSettle(playerId);
+              final forceAdj = _applyLaSettlementMultiplier(
+                _laSettlement.forceSettle(playerId),
+              );
               if (forceAdj.isNotEmpty) {
                 _scoreService.updateScores(forceAdj);
                 setState(() {

@@ -3226,7 +3226,7 @@ abstract class L10n {
   /// No description provided for @twScoringRulesDesc.
   ///
   /// In en, this message translates to:
-  /// **'Taiwan Mahjong uses a Tai (台) system. The total score = Base Tai + (Total Tai × Score per Tai). The ratio is usually 1 base : 1/5 per Tai (e.g., \$10 base, \$2 per Tai).'**
+  /// **'Taiwan Mahjong uses a Tai (台) system. In this app\'s TW calculator, each Tai is fixed at 1 point, so total payment points are Base Tai + Total Tai (plus dealer extra when applicable).'**
   String get twScoringRulesDesc;
 
   /// No description provided for @twTaiHeader.
@@ -3424,7 +3424,7 @@ abstract class L10n {
   /// No description provided for @twLaSettlementDesc.
   ///
   /// In en, this message translates to:
-  /// **'A carry-over settlement system that multiplies debt across consecutive rounds. Debts accumulate during a winning streak and are settled when the streak ends.'**
+  /// **'A carry-over settlement system where debt is tracked from each round\'s Tai/Fan-unit result (not a base-money formula). Debt accumulates during a winning streak and is settled when the streak ends.'**
   String get twLaSettlementDesc;
 
   /// No description provided for @twLaMultiplier.
@@ -3436,7 +3436,7 @@ abstract class L10n {
   /// No description provided for @twLaMultiplierDesc.
   ///
   /// In en, this message translates to:
-  /// **'If the same player wins consecutively, each loser\'s previous debt is multiplied by 1.5× before adding the new round\'s loss. Self-draw: all compound. Discard: only the discarder compounds.'**
+  /// **'If the same player wins consecutively, each debtor\'s previous debt is multiplied by 1.5× before adding the new round\'s Tai/Fan-unit loss. Self-draw: all debtors compound. Discard: only the discarder compounds.'**
   String get twLaMultiplierDesc;
 
   /// No description provided for @twLaReduction.
@@ -3460,7 +3460,7 @@ abstract class L10n {
   /// No description provided for @twLaStopRuleDesc.
   ///
   /// In en, this message translates to:
-  /// **'If a player loses to the same streak winner 3, 6, 9, or 12 times, they can force an immediate settlement at full debt (no reduction opportunity).'**
+  /// **'If a player loses to the same streak winner at any multiple of 3 (3, 6, 9, ...), they can force an immediate full-debt settlement (no reduction opportunity).'**
   String get twLaStopRuleDesc;
 
   /// No description provided for @twLaStopRuleTitle.
@@ -3632,7 +3632,7 @@ abstract class L10n {
   /// No description provided for @twNoStackRule.
   ///
   /// In en, this message translates to:
-  /// **'Note: Similar Tai cannot be stacked. For example, if you count \'Missing One Suit\' you cannot also count \'No Honors\'.'**
+  /// **'Note: Some Tai are mutually exclusive. For example, \'Missing One Suit\' cannot be stacked with \'Mixed One Suit\' or \'Pure One Suit\'.'**
   String get twNoStackRule;
 
   /// No description provided for @twScoringFormulaTitle.
@@ -3644,19 +3644,19 @@ abstract class L10n {
   /// No description provided for @twScoringFormulaDesc.
   ///
   /// In en, this message translates to:
-  /// **'Total Payment = (Total Tai × Score per Tai) + Base Amount'**
+  /// **'Total Payment Points = Base Tai + Total Tai (Tai value fixed at 1)'**
   String get twScoringFormulaDesc;
 
   /// No description provided for @twScoringExample.
   ///
   /// In en, this message translates to:
-  /// **'Example: With \$10 base and \$2 per Tai, winning with 13 Tai = (13 × \$2) + \$10 = \$36'**
+  /// **'Example: Base Tai 5 and winning total Tai 13 => total payment points = 5 + 13 = 18'**
   String get twScoringExample;
 
   /// No description provided for @twScoringDefault.
   ///
   /// In en, this message translates to:
-  /// **'Default if not agreed: \$10 base, \$10 per Tai'**
+  /// **'Default if not agreed: Base Tai = 5, Tai value fixed at 1 in TW calculation'**
   String get twScoringDefault;
 
   /// No description provided for @twConcealedKongRule.
@@ -3812,13 +3812,13 @@ abstract class L10n {
   /// No description provided for @twDescOldYoung.
   ///
   /// In en, this message translates to:
-  /// **'Having both 1-2-3 and 7-8-9 sequences of the same suit.'**
+  /// **'In one suit, must be either 1-2-3 + 7-8-9 or 1-1-1 + 9-9-9.'**
   String get twDescOldYoung;
 
   /// No description provided for @twExplOldYoung.
   ///
   /// In en, this message translates to:
-  /// **'Both ends of the same suit (1-2-3 and 7-8-9). 2 Tai.'**
+  /// **'Same-suit end combination (123+789 or 111+999). 3 Tai.'**
   String get twExplOldYoung;
 
   /// No description provided for @twExposedKong.
@@ -4724,7 +4724,7 @@ abstract class L10n {
   /// No description provided for @twStackRule2.
   ///
   /// In en, this message translates to:
-  /// **'Missing One Suit cannot be stacked with No Honors.'**
+  /// **'Missing One Suit cannot be stacked with Mixed One Suit or Pure One Suit.'**
   String get twStackRule2;
 
   /// No description provided for @twStackRule3.
@@ -4736,13 +4736,13 @@ abstract class L10n {
   /// No description provided for @twStackRule4.
   ///
   /// In en, this message translates to:
-  /// **'Two Flower Sets (Flower Win, 30) means hand tiles do not count.'**
+  /// **'Two Flower Sets (Flower Win, 30) overrides One Flower Set only; other hand patterns may still count.'**
   String get twStackRule4;
 
   /// No description provided for @twStackRule5.
   ///
   /// In en, this message translates to:
-  /// **'Pure One Suit (80) already overrides Mixed One Suit and No Honors.'**
+  /// **'Pure One Suit (80) overrides Mixed One Suit; No Honors may still be counted.'**
   String get twStackRule5;
 
   /// No description provided for @twStackRule6.

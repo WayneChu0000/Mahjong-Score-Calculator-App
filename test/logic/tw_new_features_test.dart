@@ -323,10 +323,10 @@ void main() {
   });
 
   // ═══════════════════════════════════════════════════════════════
-  // 4. 老少 — includes pong pairs (1×3 or 9×3)
+  // 4. 老少 — only 123+789 or 111+999 in same suit
   // ═══════════════════════════════════════════════════════════════
-  group('老少 (Old & Young) includes pong pairs', () {
-    test('pong of 1s + chow 7s8s9s → 老少', () {
+  group('老少 (Old & Young) strict combinations', () {
+    test('pong of 1s + chow 7s8s9s should NOT count', () {
       final hand = concealed([
         '1s', '1s', '1s', // pong of 1 (low)
         '7s', '8s', '9s', // chow 7-8-9 (high)
@@ -343,12 +343,12 @@ void main() {
       );
       expect(
         result.finalMatches.any((m) => m.id == 'oldYoung'),
-        true,
-        reason: 'Pong of 1s (low) + chow 789s (high) = 老少',
+        false,
+        reason: 'Mixed form 111 + 789 should not count as 老少',
       );
     });
 
-    test('chow 1s2s3s + pong of 9s → 老少', () {
+    test('chow 1s2s3s + pong of 9s should NOT count', () {
       final hand = concealed([
         '1s', '2s', '3s', // chow 1-2-3 (low)
         '9s', '9s', '9s', // pong of 9 (high)
@@ -365,8 +365,8 @@ void main() {
       );
       expect(
         result.finalMatches.any((m) => m.id == 'oldYoung'),
-        true,
-        reason: 'Chow 123s (low) + pong of 9s (high) = 老少',
+        false,
+        reason: 'Mixed form 123 + 999 should not count as 老少',
       );
     });
 
@@ -388,7 +388,7 @@ void main() {
       expect(
         result.finalMatches.any((m) => m.id == 'oldYoung'),
         true,
-        reason: 'Pong of 1s + pong of 9s = 老少',
+        reason: '111 + 999 in same suit should count as 老少',
       );
     });
 
@@ -410,7 +410,7 @@ void main() {
       expect(
         result.finalMatches.any((m) => m.id == 'oldYoung'),
         true,
-        reason: 'Classic chow 123s + chow 789s = 老少',
+        reason: '123 + 789 in same suit should count as 老少',
       );
     });
 
@@ -434,6 +434,48 @@ void main() {
         false,
         reason: 'Only low group without high → NOT 老少',
       );
+    });
+
+    test('concealed dragon should exclude 老少', () {
+      final hand = concealed([
+        '1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m',
+        '1p', '2p', '3p', '4p', '5p', '6p',
+        '7p',
+      ], '8p');
+
+      final result = TwPatternEvaluator.evaluate(
+        hand: hand,
+        isSelfDraw: false,
+        flowerCount: 0,
+      );
+
+      expect(result.finalMatches.any((m) => m.id == 'concealedDragon'), true);
+      expect(result.finalMatches.any((m) => m.id == 'oldYoung'), false,
+          reason: '暗龍應覆蓋老少');
+    });
+
+    test('exposed dragon should NOT exclude 老少', () {
+      final hand = withExposed(
+        [
+          const Meld(type: MeldType.chow, tiles: ['1m', '2m', '3m']),
+        ],
+        [
+          '4m', '5m', '6m', '7m', '8m', '9m',
+          '1p', '2p', '3p', '4p', '5p', '6p',
+          '7p',
+        ],
+        '7p',
+      );
+
+      final result = TwPatternEvaluator.evaluate(
+        hand: hand,
+        isSelfDraw: false,
+        flowerCount: 0,
+      );
+
+      expect(result.finalMatches.any((m) => m.id == 'exposedDragon'), true);
+      expect(result.finalMatches.any((m) => m.id == 'oldYoung'), true,
+          reason: '明龍不應覆蓋老少');
     });
   });
 
@@ -484,6 +526,49 @@ void main() {
           .length;
       expect(mixedCount, greaterThanOrEqualTo(1),
           reason: 'At least one mixed dragon should be detected');
+    });
+
+    test('pure concealed dragon can count more than once with replaceable 123 segment', () {
+      final hand = concealed([
+        '1s', '1s', '1s', '2s', '2s', '3s', '3s',
+        '4s', '5s', '6s', '7s', '8s', '9s',
+        '2m', '2m', '5p',
+      ], '5p');
+
+      final result = TwPatternEvaluator.evaluate(
+        hand: hand,
+        isSelfDraw: false,
+        flowerCount: 0,
+      );
+
+      final concealedDragonCount =
+          result.finalMatches.where((m) => m.id == 'concealedDragon').length;
+      expect(concealedDragonCount, equals(2),
+          reason: 'Two replaceable 123 sets should produce two concealed dragons');
+    });
+
+    test('pure exposed dragon can count more than once with replaceable exposed segment', () {
+      final hand = withExposed(
+        [
+          const Meld(type: MeldType.chow, tiles: ['1s', '2s', '3s']),
+          const Meld(type: MeldType.chow, tiles: ['1s', '2s', '3s']),
+          const Meld(type: MeldType.chow, tiles: ['4s', '5s', '6s']),
+          const Meld(type: MeldType.chow, tiles: ['7s', '8s', '9s']),
+        ],
+        ['1m', '2m', '3m', '5p'],
+        '5p',
+      );
+
+      final result = TwPatternEvaluator.evaluate(
+        hand: hand,
+        isSelfDraw: false,
+        flowerCount: 0,
+      );
+
+      final exposedDragonCount =
+          result.finalMatches.where((m) => m.id == 'exposedDragon').length;
+      expect(exposedDragonCount, equals(2),
+          reason: 'Two replaceable exposed 123 sets should produce two exposed dragons');
     });
   });
 

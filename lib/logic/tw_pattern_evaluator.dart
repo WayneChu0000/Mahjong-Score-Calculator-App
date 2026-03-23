@@ -663,7 +663,7 @@ class TwPatternEvaluator {
       matches.add(const TwPatternMatch(
         id: 'oldYoung',
         nameKey: 'twOldYoung',
-        tai: 2,
+        tai: 3,
       ));
     }
 
@@ -1107,57 +1107,54 @@ class TwPatternEvaluator {
   }
 
   static void _checkDragon(TwHand hand, List<TwPatternMatch> matches) {
-    // Build tile counts per suit per number for multi-dragon counting
-    final tileCounts = <String, Map<int, int>>{}; // suit → {num → count}
-    for (final suit in ['m', 'p', 's']) {
-      tileCounts[suit] = {};
-      for (int n = 1; n <= 9; n++) {
-        tileCounts[suit]![n] = hand.allTiles.where((t) => t == '$n$suit').length;
-      }
-    }
-
+    // Pure dragon multi-count:
+    // count combinations of (123) x (456) x (789) per suit.
+    // This allows repeated dragons when one segment can be replaced
+    // by another duplicate segment.
+    final allTiles = hand.allTiles;
     final concealedWithWin = [
       ...hand.concealedTiles,
       if (hand.winningTile != null) hand.winningTile!,
     ];
-    final concealedCounts = <String, Map<int, int>>{};
-    for (final suit in ['m', 'p', 's']) {
-      concealedCounts[suit] = {};
-      for (int n = 1; n <= 9; n++) {
-        concealedCounts[suit]![n] = concealedWithWin.where((t) => t == '$n$suit').length;
+
+    int segmentCount(List<String> tiles, String suit, List<int> nums) {
+      int minC = 99;
+      for (final n in nums) {
+        final c = tiles.where((t) => t == '$n$suit').length;
+        if (c < minC) minC = c;
       }
+      return minC;
     }
 
-    // Pure dragon: 1-9 of one suit. Count how many per suit.
     for (final suit in ['m', 'p', 's']) {
-      int pureDragonCount = 9; // limited by min count across 1-9
-      for (int n = 1; n <= 9; n++) {
-        final c = tileCounts[suit]![n] ?? 0;
-        if (c < pureDragonCount) pureDragonCount = c;
+      final all123 = segmentCount(allTiles, suit, [1, 2, 3]);
+      final all456 = segmentCount(allTiles, suit, [4, 5, 6]);
+      final all789 = segmentCount(allTiles, suit, [7, 8, 9]);
+
+      final concealed123 = segmentCount(concealedWithWin, suit, [1, 2, 3]);
+      final concealed456 = segmentCount(concealedWithWin, suit, [4, 5, 6]);
+      final concealed789 = segmentCount(concealedWithWin, suit, [7, 8, 9]);
+
+      final totalCombos = all123 * all456 * all789;
+      if (totalCombos <= 0) continue;
+
+      final concealedCombos = concealed123 * concealed456 * concealed789;
+      final exposedCombos = totalCombos - concealedCombos;
+
+      for (int i = 0; i < concealedCombos; i++) {
+        matches.add(const TwPatternMatch(
+          id: 'concealedDragon',
+          nameKey: 'twConcealedDragon',
+          tai: 20,
+        ));
       }
-      for (int i = 0; i < pureDragonCount; i++) {
-        // Check concealment for this instance
-        bool allConcealed = true;
-        for (int n = 1; n <= 9; n++) {
-          final cc = concealedCounts[suit]![n] ?? 0;
-          if (cc <= i) { // i-th instance needs i+1 concealed copies
-            allConcealed = false;
-            break;
-          }
-        }
-        if (allConcealed) {
-          matches.add(const TwPatternMatch(
-            id: 'concealedDragon',
-            nameKey: 'twConcealedDragon',
-            tai: 20,
-          ));
-        } else {
-          matches.add(const TwPatternMatch(
-            id: 'exposedDragon',
-            nameKey: 'twExposedDragon',
-            tai: 10,
-          ));
-        }
+
+      for (int i = 0; i < exposedCombos; i++) {
+        matches.add(const TwPatternMatch(
+          id: 'exposedDragon',
+          nameKey: 'twExposedDragon',
+          tai: 10,
+        ));
       }
     }
   }
@@ -1825,22 +1822,26 @@ class TwPatternEvaluator {
   }
 
   static int _countOldYoung(TwHand hand) {
-    // Old & Young: having a "low" group (chow 1-2-3 OR pong of 1)
-    // AND a "high" group (chow 7-8-9 OR pong of 9) of the same suit.
-    // Also fires for dragons (1-9 of a suit inherently has both).
+    // Old & Young: per suit, only these two forms are valid:
+    // 1) chow 1-2-3 + chow 7-8-9
+    // 2) pong 1 + pong 9
+    // Mixed form (pong 1 + chow 789) or (chow 123 + pong 9) is NOT valid.
     final allTiles = hand.allTiles;
     final allCounts = TileUtils.buildTileCounts(allTiles);
     int count = 0;
     for (final suit in ['m', 'p', 's']) {
-      final hasLow = (allTiles.contains('1$suit') &&
-              allTiles.contains('2$suit') &&
-              allTiles.contains('3$suit')) ||
-          (allCounts['1$suit'] ?? 0) >= 3;
-      final hasHigh = (allTiles.contains('7$suit') &&
-              allTiles.contains('8$suit') &&
-              allTiles.contains('9$suit')) ||
-          (allCounts['9$suit'] ?? 0) >= 3;
-      if (hasLow && hasHigh) count++;
+      final hasChow123 = allTiles.contains('1$suit') &&
+          allTiles.contains('2$suit') &&
+          allTiles.contains('3$suit');
+      final hasChow789 = allTiles.contains('7$suit') &&
+          allTiles.contains('8$suit') &&
+          allTiles.contains('9$suit');
+      final hasPong1 = (allCounts['1$suit'] ?? 0) >= 3;
+      final hasPong9 = (allCounts['9$suit'] ?? 0) >= 3;
+
+      if ((hasChow123 && hasChow789) || (hasPong1 && hasPong9)) {
+        count++;
+      }
     }
     return count;
   }
@@ -2002,6 +2003,8 @@ class TwPatternEvaluator {
         return allIds.contains('fiveIdenticalSeq');
 
       // 19–20. Dragon pattern exclusions
+      case 'oldYoung':
+        return allIds.contains('concealedDragon');
       case 'exposedDragon':
         return allIds.contains('concealedDragon');
       case 'exposedMixedDragon':

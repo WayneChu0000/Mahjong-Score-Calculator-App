@@ -341,8 +341,11 @@ void main() {
       ctrl.calculateScore();
 
       final base = ctrl.totalPoints;
-      // totalPoints = 0 + (1 + wrongFlower(1)) * 1 = 2 (no self-draw)
-      expect(base, equals(2));
+      // totalPoints includes dealer extra when dealer is the discarder:
+      // base = 0 + (1 + wrongFlower(1)) * 1 = 2
+      // dealer extra = 3
+      // displayed totalPoints = 5
+      expect(base, equals(5));
 
       final result = ctrl.buildSubmitResult()!;
       final scores = result['scores'] as Map<String, int>;

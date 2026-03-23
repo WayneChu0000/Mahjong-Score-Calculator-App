@@ -627,16 +627,15 @@ void main() {
       );
     });
 
-    test('old & young (老少) gives 2 tai', () {
-      // Has both 123 and 789 of the same suit
+    test('old & young (老少) gives 3 tai', () {
+      // Has both 123 and 789 of the same suit, without forming a concealed dragon.
       final hand = concealed(
         [
           '1m', '2m', '3m', '7m', '8m', '9m',
           '1p', '2p', '3p', '4p', '5p', '6p',
-          '7p', '8p', '9p',
-          '1s',
+          '2s', '3s', '4s', '7p',
         ],
-        '1s',
+        '7p',
       );
       final result = TwPatternEvaluator.evaluate(
         hand: hand,
@@ -646,7 +645,7 @@ void main() {
       );
       final oldYoung = result.finalMatches.where((m) => m.id == 'oldYoung');
       expect(oldYoung.isNotEmpty, true);
-      expect(oldYoung.first.tai, 2);
+      expect(oldYoung.first.tai, 3);
     });
 
     test('all revealed (全求人) gives 15 tai', () {

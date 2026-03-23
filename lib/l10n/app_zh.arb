@@ -551,7 +551,7 @@
   "twMode": "台式",
 
   "twScoringRulesTitle": "台灣麻將計分規則",
-  "twScoringRulesDesc": "台灣麻將使用『台』制計分。總金額 = 底 + (總台數 × 每台金額)。通常比例為底的五分一為每台金額 (如 $10底 $2一台)。",
+  "twScoringRulesDesc": "台灣麻將使用『台』制計分。本 App 的台式計算固定每台為 1 分，所以總支付分數 = 底台 + 總台數（如適用再加莊家額外台數）。",
   "twTaiHeader": "台數",
   "twScoreHeader": "金額",
 
@@ -587,13 +587,13 @@
   "twFlowerOrderDesc": "起手補花有嚴格順序。莊家補完叫「請」，下家才可補，依此類推。最後一家補完叫「請」後莊家才能打牌。",
 
   "twLaSettlementTitle": "「拉」結算規則",
-  "twLaSettlementDesc": "影響連續局數輸贏金額的累積結算方式。欠款於同一人連贏期間累積，轉手時才結算。",
+  "twLaSettlementDesc": "「拉」是連贏期間的累積結算機制。欠款以每局的台/番單位結果累積（不是用底加每台金額公式），轉手時才結算。",
   "twLaMultiplier": "加乘效果（×1.5）",
-  "twLaMultiplierDesc": "若同一人連續胡牌，之前輸錢的玩家欠款先乘以 1.5 倍，再加上新一局輸的錢。自摸：全部人乘大；出沖：只有出沖者乘大。",
+  "twLaMultiplierDesc": "若同一人連續胡牌，欠款先乘以 1.5 倍，再加上該局新的台/番單位輸分。自摸：全部欠款乘大；出沖：只有出沖者乘大。",
   "twLaReduction": "扣減補償（÷2）",
   "twLaReductionDesc": "結算時：若上家（贏家）出沖，或欠債者自摸，只有該玩家的欠款減半。其他欠債者照付全額。",
   "twLaStopRule": "逼停規則",
-  "twLaStopRuleDesc": "若同一人連續輸給同一贏家 3、6、9 或 12 次，可選擇強制結算（照付全額，無扣減機會）。",
+  "twLaStopRuleDesc": "若同一人連續輸給同一贏家達 3 的倍數（3、6、9、…），可選擇強制結算（照付全額，無扣減機會）。",
   "twLaStopRuleTitle": "逼停（強制結算）",
   "twLaStopRuleMessage": "{playerName} 已連續輸給 {streakWinnerName} {lossCount} 次。是否立即強制結算（無扣減機會）？",
   "@twLaStopRuleMessage": {
@@ -640,12 +640,12 @@
   "twDealerBonusExample3": "連五拉五：11 台",
   "twDealerBonusResponsibility": "若別家自摸或莊家出沖，莊家也必須支付連莊台數給胡家。",
 
-  "twNoStackRule": "注意：類似的番數不可重複計算。例如計了「缺一門」就不能再計「無字」。",
+  "twNoStackRule": "注意：部分台數不可重複計算。例如「缺一門」不可與「混一色」或「清一色」同時計。",
 
   "twScoringFormulaTitle": "計分公式",
-  "twScoringFormulaDesc": "總金額 = (總台數 × 每台金額) + 底",
-  "twScoringExample": "範例：$10底 $2一台，胡出 13 台 = (13 × $2) + $10 = $36",
-  "twScoringDefault": "若未聲明，通常默認為 $10底 $10一台",
+  "twScoringFormulaDesc": "總支付分數 = 底台 + 總台數（每台固定 1 分）",
+  "twScoringExample": "範例：底台 5、胡牌總台數 13，總支付分數 = 5 + 13 = 18",
+  "twScoringDefault": "若未聲明，底台默認為 5；台式計算每台固定為 1",
 
   "twConcealedKongRule": "暗槓",
   "twConcealedKongDesc": "手中持有4張相同牌可宣告暗槓。",
@@ -673,8 +673,8 @@
   "twDescTrueSingle": "單釣一張牌或胡中洞、邊張。",
   "twExplTrueSingle": "單釣、中洞或邊張胡牌。2 台。",
   "twOldYoung": "老少",
-  "twDescOldYoung": "同一門牌中同時擁有「一二三」與「七八九」的順子。",
-  "twExplOldYoung": "同花色的頭尾順子（123 和 789）。2 台。",
+  "twDescOldYoung": "同花色須為「123+789」或「111+999」其中一種組合。",
+  "twExplOldYoung": "同花色的頭尾組合（123+789 或 111+999）。3 台。",
   "twExposedKong": "明槓",
   "twDescExposedKong": "手中有三張相同，碰他家打出的第四張牌。",
   "twExplExposedKong": "用別家的牌完成四張一組的槓。1 台。",
@@ -826,10 +826,10 @@
   "twStackRulesTitle": "不可重複計算規則",
   "twStackRulesDesc": "部分台數不可同時計算。高等級牌型通常覆蓋低等級的相關牌型。",
   "twStackRule1": "五同順已包含三相逢、一般高、兩般高、三般高。",
-  "twStackRule2": "缺一門不可與無字重複計算。",
+  "twStackRule2": "缺一門不可與混一色或清一色重複計算。",
   "twStackRule3": "天聽 (50) 和地聽 (25) 已包含叮 (5) 的台數。",
-  "twStackRule4": "兩台花（花胡, 30）立刻食胡，不須計手上的牌。",
-  "twStackRule5": "清一色 (80) 已覆蓋混一色和無字。",
+  "twStackRule4": "兩台花（花胡, 30）只覆蓋一台花；其他手牌台數仍可計算。",
+  "twStackRule5": "清一色 (80) 覆蓋混一色；無字仍可另外計算。",
   "twStackRule6": "搶槓食胡不視為自摸，由被搶槓者出沖。",
   "twStackRule7": "雞胡 (10) 僅在莊前只有 1 台時才適用。",
 

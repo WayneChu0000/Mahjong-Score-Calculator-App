@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application_1/controllers/score_calculation_controller.dart';
 import 'package:flutter_application_1/models/player.dart';
 import 'package:flutter_application_1/models/game_mode.dart';
+import 'package:flutter_application_1/models/tw_hand.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 
 /// Helper: creates a standard 4-player HK controller with sane defaults.
@@ -658,6 +659,35 @@ void main() {
         ),
         isTrue,
       );
+    });
+
+    test('TW fake single wait shows localized name (not raw key)', () {
+      final c = _twController(minFan: 2, maxFan: 1, dealerIndex: 0);
+      c.setSelfDraw(false);
+      c.setDiscardPlayer('Bob');
+
+      c.setTwHand(
+        const TwHand(
+          exposedMelds: [
+            Meld(type: MeldType.chow, tiles: ['1m', '2m', '3m']),
+            Meld(type: MeldType.chow, tiles: ['4m', '5m', '6m']),
+            Meld(type: MeldType.chow, tiles: ['7m', '8m', '9m']),
+            Meld(type: MeldType.chow, tiles: ['2p', '3p', '4p']),
+          ],
+          concealedTiles: ['2s', '3s', '4s', '4s'],
+          winningTile: '4s',
+        ),
+      );
+
+      final hasLocalized = c.displayRules.any(
+        (r) => (r['name'] as String) == AppLocalizations.twFakeSingle,
+      );
+      final hasRawKey = c.displayRules.any(
+        (r) => (r['name'] as String) == 'twFakeSingle',
+      );
+
+      expect(hasLocalized, isTrue);
+      expect(hasRawKey, isFalse);
     });
   });
 

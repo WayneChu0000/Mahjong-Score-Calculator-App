@@ -1607,7 +1607,7 @@ class L10nZh extends L10n {
 
   @override
   String get twScoringRulesDesc =>
-      '台灣麻將使用『台』制計分。總金額 = 底 + (總台數 × 每台金額)。通常比例為底的五分一為每台金額 (如 \$10底 \$2一台)。';
+      '台灣麻將使用『台』制計分。本 App 的台式計算固定每台為 1 分，所以總支付分數 = 底台 + 總台數（如適用再加莊家額外台數）。';
 
   @override
   String get twTaiHeader => '台數';
@@ -1710,14 +1710,15 @@ class L10nZh extends L10n {
   String get twLaSettlementTitle => '「拉」結算規則';
 
   @override
-  String get twLaSettlementDesc => '影響連續局數輸贏金額的累積結算方式。欠款於同一人連贏期間累積，轉手時才結算。';
+  String get twLaSettlementDesc =>
+      '「拉」是連贏期間的累積結算機制。欠款以每局的台/番單位結果累積（不是用底加每台金額公式），轉手時才結算。';
 
   @override
   String get twLaMultiplier => '加乘效果（×1.5）';
 
   @override
   String get twLaMultiplierDesc =>
-      '若同一人連續胡牌，之前輸錢的玩家欠款先乘以 1.5 倍，再加上新一局輸的錢。自摸：全部人乘大；出沖：只有出沖者乘大。';
+      '若同一人連續胡牌，欠款先乘以 1.5 倍，再加上該局新的台/番單位輸分。自摸：全部欠款乘大；出沖：只有出沖者乘大。';
 
   @override
   String get twLaReduction => '扣減補償（÷2）';
@@ -1730,7 +1731,7 @@ class L10nZh extends L10n {
 
   @override
   String get twLaStopRuleDesc =>
-      '若同一人連續輸給同一贏家 3、6、9 或 12 次，可選擇強制結算（照付全額，無扣減機會）。';
+      '若同一人連續輸給同一贏家達 3 的倍數（3、6、9、…），可選擇強制結算（照付全額，無扣減機會）。';
 
   @override
   String get twLaStopRuleTitle => '逼停（強制結算）';
@@ -1824,20 +1825,19 @@ class L10nZh extends L10n {
   String get twDealerBonusResponsibility => '若別家自摸或莊家出沖，莊家也必須支付連莊台數給胡家。';
 
   @override
-  String get twNoStackRule => '注意：類似的番數不可重複計算。例如計了「缺一門」就不能再計「無字」。';
+  String get twNoStackRule => '注意：部分台數不可重複計算。例如「缺一門」不可與「混一色」或「清一色」同時計。';
 
   @override
   String get twScoringFormulaTitle => '計分公式';
 
   @override
-  String get twScoringFormulaDesc => '總金額 = (總台數 × 每台金額) + 底';
+  String get twScoringFormulaDesc => '總支付分數 = 底台 + 總台數（每台固定 1 分）';
 
   @override
-  String get twScoringExample =>
-      '範例：\$10底 \$2一台，胡出 13 台 = (13 × \$2) + \$10 = \$36';
+  String get twScoringExample => '範例：底台 5、胡牌總台數 13，總支付分數 = 5 + 13 = 18';
 
   @override
-  String get twScoringDefault => '若未聲明，通常默認為 \$10底 \$10一台';
+  String get twScoringDefault => '若未聲明，底台默認為 5；台式計算每台固定為 1';
 
   @override
   String get twConcealedKongRule => '暗槓';
@@ -1915,10 +1915,10 @@ class L10nZh extends L10n {
   String get twOldYoung => '老少';
 
   @override
-  String get twDescOldYoung => '同一門牌中同時擁有「一二三」與「七八九」的順子。';
+  String get twDescOldYoung => '同花色須為「123+789」或「111+999」其中一種組合。';
 
   @override
-  String get twExplOldYoung => '同花色的頭尾順子（123 和 789）。2 台。';
+  String get twExplOldYoung => '同花色的頭尾組合（123+789 或 111+999）。3 台。';
 
   @override
   String get twExposedKong => '明槓';
@@ -2371,16 +2371,16 @@ class L10nZh extends L10n {
   String get twStackRule1 => '五同順已包含三相逢、一般高、兩般高、三般高。';
 
   @override
-  String get twStackRule2 => '缺一門不可與無字重複計算。';
+  String get twStackRule2 => '缺一門不可與混一色或清一色重複計算。';
 
   @override
   String get twStackRule3 => '天聽 (50) 和地聽 (25) 已包含叮 (5) 的台數。';
 
   @override
-  String get twStackRule4 => '兩台花（花胡, 30）立刻食胡，不須計手上的牌。';
+  String get twStackRule4 => '兩台花（花胡, 30）只覆蓋一台花；其他手牌台數仍可計算。';
 
   @override
-  String get twStackRule5 => '清一色 (80) 已覆蓋混一色和無字。';
+  String get twStackRule5 => '清一色 (80) 覆蓋混一色；無字仍可另外計算。';
 
   @override
   String get twStackRule6 => '搶槓食胡不視為自摸，由被搶槓者出沖。';

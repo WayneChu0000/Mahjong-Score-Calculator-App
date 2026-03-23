@@ -545,6 +545,36 @@ class ScoreCalculationController extends ChangeNotifier {
     return discardIdx == dealerIndex;
   }
 
+  bool _isDiscarderDealer() {
+    if (discardPlayer == null || dealerIndex == null) return false;
+    final discardIdx = players.indexWhere((p) => p.name == discardPlayer);
+    return discardIdx == dealerIndex;
+  }
+
+  int _twTaiValue() {
+    // TW mode uses fixed 1-point-per-tai scoring in calculation flow.
+    return 1;
+  }
+
+  int _twDealerExtraPoints({required bool winnerIsDealer}) {
+    if (gameMode != GameMode.taiwan) return 0;
+    if (winnerIsDealer || _dealerBonusTai <= 0) return 0;
+    // In self-draw, only the dealer loser pays extra, so totalPoints remains
+    // the common per-loser base amount.
+    if (isSelfDraw) return 0;
+    if (!_isDiscarderDealer()) return 0;
+    return _dealerBonusTai * _twTaiValue();
+  }
+
+  int _twDealerExtraDisplayFan({required bool winnerIsDealer}) {
+    if (gameMode != GameMode.taiwan) return 0;
+    if (winnerIsDealer || _dealerBonusTai <= 0) return 0;
+    // Keep self-draw display informational only; per-player differences are
+    // handled during submit.
+    if (isSelfDraw) return 0;
+    return _isDiscarderDealer() ? _dealerBonusTai : 0;
+  }
+
   /// Convert a flower key like '1f' to a human-readable name.
   String _flowerKeyToName(String key) {
     const names = {
@@ -581,6 +611,7 @@ class ScoreCalculationController extends ChangeNotifier {
       'twNoHonorsNoFlowersPingHu': AppLocalizations.twNoHonorsNoFlowersPingHu,
       'twEyeOf258': AppLocalizations.twEyeOf258,
       'twDoublePong': AppLocalizations.twDoublePong,
+      'twFakeSingle': AppLocalizations.twFakeSingle,
       'twTrueSingle': AppLocalizations.twTrueSingle,
       'twDingBonus': AppLocalizations.twDingBonus,
       'twExposedKong': AppLocalizations.twExposedKong,
@@ -797,20 +828,23 @@ class ScoreCalculationController extends ChangeNotifier {
             'name': consecutiveDealerCount > 1
                 ? '${AppLocalizations.twConsecutiveDealer} (${AppLocalizations.consecutiveDealerCount(consecutiveDealerCount - 1)}) [${AppLocalizations.twDealerPaysExtra}]'
                 : '${AppLocalizations.twDealerBonusBase} [${AppLocalizations.twDealerPaysExtra}]',
-            'fan': dealerBonusTai,
+            'fan': _twDealerExtraDisplayFan(winnerIsDealer: winnerIsDealer),
           });
         }
       }
 
       effectiveFan = localEffectiveFan;
       int baseTai = minFan;
-      int taiValue = 1; // TW: 1 fan = 1 score
+      int taiValue = _twTaiValue();
       // Show base tai in the item list
       displayRules.add({
         'name': AppLocalizations.baseTai,
         'fan': baseTai,
       });
-      totalPoints = baseTai + (localEffectiveFan * taiValue);
+      totalPoints =
+          baseTai +
+          (localEffectiveFan * taiValue) +
+          _twDealerExtraPoints(winnerIsDealer: winnerIsDealer);
       return;
     }
 
@@ -991,7 +1025,7 @@ class ScoreCalculationController extends ChangeNotifier {
     // Calculate Score based on Mode
     if (gameMode == GameMode.taiwan) {
       int baseTai = minFan;
-      int taiValue = 1; // TW: 1 fan = 1 score
+      int taiValue = _twTaiValue();
 
       bool winnerIsDealer = false;
       if (dealerIndex != null && winningPlayer != null) {
@@ -1027,7 +1061,7 @@ class ScoreCalculationController extends ChangeNotifier {
             'name': consecutiveDealerCount > 1
                 ? '${AppLocalizations.twConsecutiveDealer} (${AppLocalizations.consecutiveDealerCount(consecutiveDealerCount - 1)}) [${AppLocalizations.twDealerPaysExtra}]'
                 : '${AppLocalizations.twDealerBonusBase} [${AppLocalizations.twDealerPaysExtra}]',
-            'fan': dealerBonusTai,
+            'fan': _twDealerExtraDisplayFan(winnerIsDealer: winnerIsDealer),
           });
         }
       }
@@ -1037,7 +1071,10 @@ class ScoreCalculationController extends ChangeNotifier {
         'name': AppLocalizations.baseTai,
         'fan': baseTai,
       });
-      totalPoints = baseTai + (localEffectiveFan * taiValue);
+      totalPoints =
+          baseTai +
+          (localEffectiveFan * taiValue) +
+          _twDealerExtraPoints(winnerIsDealer: winnerIsDealer);
     } else {
       _dealerBonusTai = 0; // HK mode: no dealer bonus
       int discardScore = _getScoreFromFan(localEffectiveFan);
@@ -1127,7 +1164,7 @@ class ScoreCalculationController extends ChangeNotifier {
           'name': consecutiveDealerCount > 1
               ? '${AppLocalizations.twConsecutiveDealer} (${AppLocalizations.consecutiveDealerCount(consecutiveDealerCount - 1)}) [${AppLocalizations.twDealerPaysExtra}]'
               : '${AppLocalizations.twDealerBonusBase} [${AppLocalizations.twDealerPaysExtra}]',
-          'fan': dealerBonusTai,
+          'fan': _twDealerExtraDisplayFan(winnerIsDealer: winnerIsDealer),
         });
       }
     }
@@ -1135,13 +1172,16 @@ class ScoreCalculationController extends ChangeNotifier {
     effectiveFan = localEffectiveFan;
 
     int baseTai = minFan;
-    int taiValue = 1; // TW: 1 fan = 1 score
+    int taiValue = _twTaiValue();
     // Show base tai in the item list
     displayRules.add({
       'name': AppLocalizations.baseTai,
       'fan': baseTai,
     });
-    totalPoints = baseTai + (localEffectiveFan * taiValue);
+    totalPoints =
+        baseTai +
+        (localEffectiveFan * taiValue) +
+        _twDealerExtraPoints(winnerIsDealer: winnerIsDealer);
   }
 
   int _getScoreFromFan(int fan) {
@@ -1215,7 +1255,7 @@ class ScoreCalculationController extends ChangeNotifier {
           if (isTw && !winnerIsDealer && _dealerBonusTai > 0) {
             int playerIdx = players.indexOf(player);
             if (playerIdx == dealerIndex) {
-              payment += _dealerBonusTai * maxFan;
+              payment += _dealerBonusTai * _twTaiValue();
             }
           }
           scoreChanges[getId(player.name)] = -payment;
@@ -1224,19 +1264,7 @@ class ScoreCalculationController extends ChangeNotifier {
       }
       scoreChanges[getId(winningPlayer!)] = winnerTotal;
     } else if (!isSelfDraw && winningPlayer != null && discardPlayer != null) {
-      bool isTw = gameMode == GameMode.taiwan;
-      int discardIdx = players.indexWhere((p) => p.name == discardPlayer);
-      bool discardIsDealer =
-          dealerIndex != null && discardIdx == dealerIndex;
-      int winnerIdx = players.indexWhere((p) => p.name == winningPlayer);
-      bool winnerIsDealer =
-          dealerIndex != null && winnerIdx == dealerIndex;
-
       int payment = totalPoints;
-      // TW: dealer pays extra 連莊 when dealing the winning tile to someone else
-      if (isTw && discardIsDealer && !winnerIsDealer && _dealerBonusTai > 0) {
-        payment += _dealerBonusTai * maxFan;
-      }
       scoreChanges[getId(discardPlayer!)] = -payment;
       scoreChanges[getId(winningPlayer!)] = payment;
     }

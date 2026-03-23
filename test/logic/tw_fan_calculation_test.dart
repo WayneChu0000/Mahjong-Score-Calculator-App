@@ -151,8 +151,8 @@ void main() {
       expect(_findRule('Eye of').fanValue, equals(1));
     });
 
-    test('Old & Young (老少) = 2 Tai', () {
-      expect(_findRule('Old').fanValue, equals(2));
+    test('Old & Young (老少) = 3 Tai', () {
+      expect(_findRule('Old').fanValue, equals(3));
     });
 
     test('Concealed Hand (門清) = 3 Tai', () {

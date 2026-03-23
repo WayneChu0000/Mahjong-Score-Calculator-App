@@ -1686,7 +1686,7 @@ class L10nEn extends L10n {
 
   @override
   String get twScoringRulesDesc =>
-      'Taiwan Mahjong uses a Tai (台) system. The total score = Base Tai + (Total Tai × Score per Tai). The ratio is usually 1 base : 1/5 per Tai (e.g., \$10 base, \$2 per Tai).';
+      'Taiwan Mahjong uses a Tai (台) system. In this app\'s TW calculator, each Tai is fixed at 1 point, so total payment points are Base Tai + Total Tai (plus dealer extra when applicable).';
 
   @override
   String get twTaiHeader => 'Tai Count';
@@ -1800,14 +1800,14 @@ class L10nEn extends L10n {
 
   @override
   String get twLaSettlementDesc =>
-      'A carry-over settlement system that multiplies debt across consecutive rounds. Debts accumulate during a winning streak and are settled when the streak ends.';
+      'A carry-over settlement system where debt is tracked from each round\'s Tai/Fan-unit result (not a base-money formula). Debt accumulates during a winning streak and is settled when the streak ends.';
 
   @override
   String get twLaMultiplier => 'Multiplier Effect (×1.5)';
 
   @override
   String get twLaMultiplierDesc =>
-      'If the same player wins consecutively, each loser\'s previous debt is multiplied by 1.5× before adding the new round\'s loss. Self-draw: all compound. Discard: only the discarder compounds.';
+      'If the same player wins consecutively, each debtor\'s previous debt is multiplied by 1.5× before adding the new round\'s Tai/Fan-unit loss. Self-draw: all debtors compound. Discard: only the discarder compounds.';
 
   @override
   String get twLaReduction => 'Debt Reduction (÷2)';
@@ -1821,7 +1821,7 @@ class L10nEn extends L10n {
 
   @override
   String get twLaStopRuleDesc =>
-      'If a player loses to the same streak winner 3, 6, 9, or 12 times, they can force an immediate settlement at full debt (no reduction opportunity).';
+      'If a player loses to the same streak winner at any multiple of 3 (3, 6, 9, ...), they can force an immediate full-debt settlement (no reduction opportunity).';
 
   @override
   String get twLaStopRuleTitle => 'Force Settlement (逼停)';
@@ -1919,22 +1919,22 @@ class L10nEn extends L10n {
 
   @override
   String get twNoStackRule =>
-      'Note: Similar Tai cannot be stacked. For example, if you count \'Missing One Suit\' you cannot also count \'No Honors\'.';
+      'Note: Some Tai are mutually exclusive. For example, \'Missing One Suit\' cannot be stacked with \'Mixed One Suit\' or \'Pure One Suit\'.';
 
   @override
   String get twScoringFormulaTitle => 'Scoring Formula';
 
   @override
   String get twScoringFormulaDesc =>
-      'Total Payment = (Total Tai × Score per Tai) + Base Amount';
+      'Total Payment Points = Base Tai + Total Tai (Tai value fixed at 1)';
 
   @override
   String get twScoringExample =>
-      'Example: With \$10 base and \$2 per Tai, winning with 13 Tai = (13 × \$2) + \$10 = \$36';
+      'Example: Base Tai 5 and winning total Tai 13 => total payment points = 5 + 13 = 18';
 
   @override
   String get twScoringDefault =>
-      'Default if not agreed: \$10 base, \$10 per Tai';
+      'Default if not agreed: Base Tai = 5, Tai value fixed at 1 in TW calculation';
 
   @override
   String get twConcealedKongRule => 'Concealed Kong';
@@ -2028,11 +2028,11 @@ class L10nEn extends L10n {
 
   @override
   String get twDescOldYoung =>
-      'Having both 1-2-3 and 7-8-9 sequences of the same suit.';
+      'In one suit, must be either 1-2-3 + 7-8-9 or 1-1-1 + 9-9-9.';
 
   @override
   String get twExplOldYoung =>
-      'Both ends of the same suit (1-2-3 and 7-8-9). 2 Tai.';
+      'Same-suit end combination (123+789 or 111+999). 3 Tai.';
 
   @override
   String get twExposedKong => 'Exposed Kong';
@@ -2574,7 +2574,7 @@ class L10nEn extends L10n {
 
   @override
   String get twStackRule2 =>
-      'Missing One Suit cannot be stacked with No Honors.';
+      'Missing One Suit cannot be stacked with Mixed One Suit or Pure One Suit.';
 
   @override
   String get twStackRule3 =>
@@ -2582,11 +2582,11 @@ class L10nEn extends L10n {
 
   @override
   String get twStackRule4 =>
-      'Two Flower Sets (Flower Win, 30) means hand tiles do not count.';
+      'Two Flower Sets (Flower Win, 30) overrides One Flower Set only; other hand patterns may still count.';
 
   @override
   String get twStackRule5 =>
-      'Pure One Suit (80) already overrides Mixed One Suit and No Honors.';
+      'Pure One Suit (80) overrides Mixed One Suit; No Honors may still be counted.';
 
   @override
   String get twStackRule6 =>

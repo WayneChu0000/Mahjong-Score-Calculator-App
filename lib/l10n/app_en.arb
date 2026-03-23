@@ -567,7 +567,7 @@
   "twMode": "TW",
 
   "twScoringRulesTitle": "Taiwan Mahjong Scoring Rules",
-  "twScoringRulesDesc": "Taiwan Mahjong uses a Tai (台) system. The total score = Base Tai + (Total Tai × Score per Tai). The ratio is usually 1 base : 1/5 per Tai (e.g., $10 base, $2 per Tai).",
+  "twScoringRulesDesc": "Taiwan Mahjong uses a Tai (台) system. In this app's TW calculator, each Tai is fixed at 1 point, so total payment points are Base Tai + Total Tai (plus dealer extra when applicable).",
   "twTaiHeader": "Tai Count",
   "twScoreHeader": "Score",
 
@@ -603,13 +603,13 @@
   "twFlowerOrderDesc": "Opening flower replacement follows strict order. The dealer replaces first and says 'please', then each player proceeds in turn. The dealer can only start playing after the last player finishes.",
 
   "twLaSettlementTitle": "'La' Settlement Rules (拉)",
-  "twLaSettlementDesc": "A carry-over settlement system that multiplies debt across consecutive rounds. Debts accumulate during a winning streak and are settled when the streak ends.",
+  "twLaSettlementDesc": "A carry-over settlement system where debt is tracked from each round's Tai/Fan-unit result (not a base-money formula). Debt accumulates during a winning streak and is settled when the streak ends.",
   "twLaMultiplier": "Multiplier Effect (×1.5)",
-  "twLaMultiplierDesc": "If the same player wins consecutively, each loser's previous debt is multiplied by 1.5× before adding the new round's loss. Self-draw: all compound. Discard: only the discarder compounds.",
+  "twLaMultiplierDesc": "If the same player wins consecutively, each debtor's previous debt is multiplied by 1.5× before adding the new round's Tai/Fan-unit loss. Self-draw: all debtors compound. Discard: only the discarder compounds.",
   "twLaReduction": "Debt Reduction (÷2)",
   "twLaReductionDesc": "When the streak ends: if the streak winner discards the winning tile, or if a debtor self-draws, ONLY that specific player's debt is halved. Other debtors pay full.",
   "twLaStopRule": "Stop Rule (逼停)",
-  "twLaStopRuleDesc": "If a player loses to the same streak winner 3, 6, 9, or 12 times, they can force an immediate settlement at full debt (no reduction opportunity).",
+  "twLaStopRuleDesc": "If a player loses to the same streak winner at any multiple of 3 (3, 6, 9, ...), they can force an immediate full-debt settlement (no reduction opportunity).",
   "twLaStopRuleTitle": "Force Settlement (逼停)",
   "twLaStopRuleMessage": "{playerName} has lost {lossCount} consecutive times to {streakWinnerName}. Force settle debt now (no reduction chance)?",
   "@twLaStopRuleMessage": {
@@ -656,12 +656,12 @@
   "twDealerBonusExample3": "Consecutive 5 (連五拉五): 11 Tai",
   "twDealerBonusResponsibility": "If another player self-draws or the dealer discards the winning tile, the dealer must pay the consecutive bonus Tai to the winner.",
 
-  "twNoStackRule": "Note: Similar Tai cannot be stacked. For example, if you count 'Missing One Suit' you cannot also count 'No Honors'.",
+  "twNoStackRule": "Note: Some Tai are mutually exclusive. For example, 'Missing One Suit' cannot be stacked with 'Mixed One Suit' or 'Pure One Suit'.",
 
   "twScoringFormulaTitle": "Scoring Formula",
-  "twScoringFormulaDesc": "Total Payment = (Total Tai × Score per Tai) + Base Amount",
-  "twScoringExample": "Example: With $10 base and $2 per Tai, winning with 13 Tai = (13 × $2) + $10 = $36",
-  "twScoringDefault": "Default if not agreed: $10 base, $10 per Tai",
+  "twScoringFormulaDesc": "Total Payment Points = Base Tai + Total Tai (Tai value fixed at 1)",
+  "twScoringExample": "Example: Base Tai 5 and winning total Tai 13 => total payment points = 5 + 13 = 18",
+  "twScoringDefault": "Default if not agreed: Base Tai = 5, Tai value fixed at 1 in TW calculation",
 
   "twConcealedKongRule": "Concealed Kong",
   "twConcealedKongDesc": "Declare a concealed Kong with 4 identical tiles in hand.",
@@ -689,8 +689,8 @@
   "twDescTrueSingle": "Single tile wait, middle wait, or edge wait.",
   "twExplTrueSingle": "Winning on a single tile, closed wait, or edge wait. 2 Tai.",
   "twOldYoung": "Old & Young",
-  "twDescOldYoung": "Having both 1-2-3 and 7-8-9 sequences of the same suit.",
-  "twExplOldYoung": "Both ends of the same suit (1-2-3 and 7-8-9). 2 Tai.",
+  "twDescOldYoung": "In one suit, must be either 1-2-3 + 7-8-9 or 1-1-1 + 9-9-9.",
+  "twExplOldYoung": "Same-suit end combination (123+789 or 111+999). 3 Tai.",
   "twExposedKong": "Exposed Kong",
   "twDescExposedKong": "Four identical tiles with one claimed from another player.",
   "twExplExposedKong": "Declare a kong using a tile discarded by another player. 1 Tai.",
@@ -842,10 +842,10 @@
   "twStackRulesTitle": "Stacking Rules",
   "twStackRulesDesc": "Some Tai combinations cannot be counted together. Higher-level patterns override lower ones.",
   "twStackRule1": "Five Identical Seq. already includes Three Mixed Seq., Two/Three/Four Identical Seq.",
-  "twStackRule2": "Missing One Suit cannot be stacked with No Honors.",
+  "twStackRule2": "Missing One Suit cannot be stacked with Mixed One Suit or Pure One Suit.",
   "twStackRule3": "Heavenly Ready (50) and Earthly Ready (25) already include Ding (5).",
-  "twStackRule4": "Two Flower Sets (Flower Win, 30) means hand tiles do not count.",
-  "twStackRule5": "Pure One Suit (80) already overrides Mixed One Suit and No Honors.",
+  "twStackRule4": "Two Flower Sets (Flower Win, 30) overrides One Flower Set only; other hand patterns may still count.",
+  "twStackRule5": "Pure One Suit (80) overrides Mixed One Suit; No Honors may still be counted.",
   "twStackRule6": "Robbing Kong is not counted as self-draw; the kong player pays.",
   "twStackRule7": "Chicken Hand (10) only applies when hand is worth exactly 1 Tai before dealer bonus.",
 

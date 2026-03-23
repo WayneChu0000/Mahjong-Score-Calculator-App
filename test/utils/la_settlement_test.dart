@@ -964,6 +964,34 @@ void main() {
       expect(r3.adjustedScoreChanges['P2'], -50);
       expect(r3.adjustedScoreChanges['P1'], 50);
     });
+
+    test('P1 wins P2 three times at 10 each follows 1.5x compounding chain', () {
+      // R1 debt: 10
+      la.apply(
+        rawScoreChanges: {'P1': 10, 'P2': -10},
+        winnerId: 'P1',
+        isSelfDraw: false,
+        discarderId: 'P2',
+      );
+
+      // R2 debt: 10*1.5 + 10 = 25
+      la.apply(
+        rawScoreChanges: {'P1': 10, 'P2': -10},
+        winnerId: 'P1',
+        isSelfDraw: false,
+        discarderId: 'P2',
+      );
+      expect(la.debts['P2'], 25);
+
+      // R3 debt: 25*1.5 + 10 = 47.5 -> round() = 48
+      la.apply(
+        rawScoreChanges: {'P1': 10, 'P2': -10},
+        winnerId: 'P1',
+        isSelfDraw: false,
+        discarderId: 'P2',
+      );
+      expect(la.debts['P2'], 48);
+    });
   });
 
   // ── Per-column independent tracking ──────────────────────────────

@@ -542,7 +542,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
 class DealerSelectionDialog extends StatefulWidget {
   final List<String> players;
   final Function(int, int, int, GameMode)
-  onDealerSelected; // (dealerIndex, minFan/baseTai, maxFan/taiValue, gameMode)
+  onDealerSelected; // (dealerIndex, minFan/baseTai, maxFan/fixedTaiUnit, gameMode)
   final int initialMinFan;
   final int initialMaxFan;
   final GameMode gameMode;
@@ -564,7 +564,7 @@ class DealerSelectionDialog extends StatefulWidget {
 class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
   int _selectedDealer = 0;
   late int _param1; // minFan or baseTai
-  late int _param2; // maxFan or taiValue
+  late int _param2; // maxFan or fixed TW tai unit (always 1)
   late GameMode _selectedGameMode;
 
   @override
@@ -581,8 +581,7 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
   void _applyModeDefaults() {
     if (_selectedGameMode == GameMode.taiwan) {
       if (_param1 < 10) _param1 = SettingsService.instance.twBaseTai;
-      if (_param2 > 100 || _param2 < 1)
-        _param2 = SettingsService.instance.twTaiValue;
+      _param2 = 1;
     } else {
       // Restore HK defaults if params look like TW values
       if (_param1 > 13) _param1 = SettingsService.instance.hkMinFan;
@@ -598,7 +597,7 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
       // Reset to sensible defaults for the new mode
       if (mode == GameMode.taiwan) {
         _param1 = SettingsService.instance.twBaseTai;
-        _param2 = SettingsService.instance.twTaiValue;
+        _param2 = 1;
       } else {
         _param1 = SettingsService.instance.hkMinFan;
         _param2 = SettingsService.instance.hkMaxFan;
@@ -719,60 +718,46 @@ class _DealerSelectionDialogState extends State<DealerSelectionDialog> {
               ],
             ),
 
-            // Param 2: Max Fan (HK) or Tai Value (TW)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  isTaiwan
-                      ? AppLocalizations.taiValue
-                      : AppLocalizations.maxFan,
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.remove_circle_outline),
-                      onPressed: () {
-                        setState(() {
-                          if (!isTaiwan) {
+            if (!isTaiwan)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(AppLocalizations.maxFan),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove_circle_outline),
+                        onPressed: () {
+                          setState(() {
                             if (_param2 == 999) {
                               _param2 = 13;
                             } else if (_param2 > _param1) {
                               _param2--;
                             }
-                          } else {
-                            if (_param2 > 1) _param2--;
-                          }
-                        });
-                      },
-                    ),
-                    Text(
-                      !isTaiwan && _param2 == 999
-                          ? AppLocalizations.noLimit
-                          : '$_param2',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.add_circle_outline),
-                      onPressed: () {
-                        setState(() {
-                          if (!isTaiwan) {
+                          });
+                        },
+                      ),
+                      Text(
+                        _param2 == 999 ? AppLocalizations.noLimit : '$_param2',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add_circle_outline),
+                        onPressed: () {
+                          setState(() {
                             if (_param2 < 100) {
                               _param2++;
                             } else {
                               _param2 = 999;
                             }
                             if (_param2 > 13) _param2 = 999;
-                          } else {
-                            _param2++;
-                          }
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
           ],
         ),
       ),

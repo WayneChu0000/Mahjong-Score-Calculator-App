@@ -248,7 +248,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
             ? SettingsService.instance.twBaseTai
             : _minFan,
         initialMaxFan: _selectedGameMode == GameMode.taiwan
-            ? SettingsService.instance.twTaiValue
+          ? 1
             : _maxFan,
         onDealerSelected: (dealerIndex, minFan, maxFan, gameMode) {
           Navigator.pop(context);
@@ -493,7 +493,7 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                               _selectedGameMode = value;
                               if (_selectedGameMode == GameMode.taiwan) {
                                 _minFan = 10;
-                                _maxFan = 5;
+                                _maxFan = 1;
                               } else {
                                 _minFan = 3;
                                 _maxFan = 13;
