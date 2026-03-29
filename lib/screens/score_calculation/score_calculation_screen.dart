@@ -49,6 +49,19 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
   final ImagePicker _picker = ImagePicker();
   bool _isPickingImage = false;
 
+  void _showHkBelowMinFanMessageIfNeeded() {
+    if (widget.gameMode == GameMode.hongKong &&
+        _ctrl.selectedTiles.isNotEmpty &&
+        _ctrl.effectiveFan < widget.minFan &&
+        mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.hkMinFanReselect(widget.minFan)),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -148,6 +161,7 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
       if (mounted) {
         _ctrl.setAnalyzing(false);
         _ctrl.setSelectedTiles(detectedTiles);
+        _showHkBelowMinFanMessageIfNeeded();
       }
     } catch (e) {
       if (mounted) {
@@ -190,11 +204,22 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
           _capturedImage = null;
         });
         _ctrl.setSelectedTiles(result);
+        _showHkBelowMinFanMessageIfNeeded();
       }
     }
   }
 
   void _submitScore() {
+    if (widget.gameMode == GameMode.hongKong &&
+        _ctrl.effectiveFan < widget.minFan) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.hkMinFanReselect(widget.minFan)),
+        ),
+      );
+      return;
+    }
+
     final result = _ctrl.buildSubmitResult();
     if (result == null) return;
 
@@ -253,6 +278,8 @@ class _ScoreCalculationScreenState extends State<ScoreCalculationScreen> {
             FanSetupCard(
               effectiveFan: _ctrl.effectiveFan,
               gameMode: widget.gameMode,
+              minFan: widget.minFan,
+              maxFan: widget.maxFan,
               selectedSpecialCondition: _ctrl.selectedSpecialCondition,
               activeSpecialConditions: _ctrl.activeSpecialConditions,
               onFanChanged: (v) => _ctrl.setFan(v),

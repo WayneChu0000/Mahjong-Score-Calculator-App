@@ -380,11 +380,6 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
     setState(() => _hasSavedGroup = true);
   }
 
-  Future<void> _saveAndExit() async {
-    await _savePlayerGroup();
-    if (mounted) Navigator.pop(context, true);
-  }
-
   Future<void> _deleteGroup() async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -768,14 +763,14 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: windColor.withValues(alpha: 0.15),
+                    color: windColor.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     windLabel,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: windColor,
                     ),
@@ -834,9 +829,12 @@ class _PlayerSetupScreenState extends State<PlayerSetupScreen> {
                             Text(
                               AppLocalizations.windSeat(windLabel),
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 10,
                                 color: AppColors.subtitleColor(isDark),
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
                             ),
                           ],
                         ),

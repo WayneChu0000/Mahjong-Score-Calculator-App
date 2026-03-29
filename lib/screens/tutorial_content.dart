@@ -27,7 +27,7 @@ class TutorialContent extends StatelessWidget {
       case 1:
         return _buildTileTypesPage();
       case 2:
-        return _buildBasicRulesPage();
+        return _buildBasicRulesPage(context, gameMode);
       case 3:
         return _buildScoringPage(context, gameMode);
       default:
@@ -222,14 +222,22 @@ class TutorialContent extends StatelessWidget {
     );
   }
 
-  Widget _buildBasicRulesPage() {
+  Widget _buildBasicRulesPage(BuildContext context, GameMode mode) {
+    return _buildSharedBasicRulesPage(mode);
+  }
+
+  Widget _buildSharedBasicRulesPage(GameMode mode) {
+    final isTw = mode == GameMode.taiwan;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppLocalizations.basicRulesTitle,
+            isTw
+                ? AppLocalizations.twRulesTitle
+                : AppLocalizations.basicRulesTitle,
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
@@ -239,9 +247,21 @@ class TutorialContent extends StatelessWidget {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text(AppLocalizations.gameObjectiveDesc1),
-          Text(AppLocalizations.gameObjectiveDesc2),
-          Text(AppLocalizations.gameObjectiveDesc3),
+          Text(
+            isTw
+                ? AppLocalizations.twGameObjectiveDesc1
+                : AppLocalizations.gameObjectiveDesc1,
+          ),
+          Text(
+            isTw
+                ? AppLocalizations.twGameObjectiveDesc2
+                : AppLocalizations.gameObjectiveDesc2,
+          ),
+          Text(
+            isTw
+                ? AppLocalizations.twGameObjectiveDesc3
+                : AppLocalizations.gameObjectiveDesc3,
+          ),
 
           const SizedBox(height: 16),
 
@@ -323,11 +343,11 @@ class TutorialContent extends StatelessWidget {
             AppLocalizations.dealingProcedureTitle,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          Text(AppLocalizations.dealStep1),
-          Text(AppLocalizations.dealStep2),
-          Text(AppLocalizations.dealStep3),
-          Text(AppLocalizations.dealStep4),
-          Text(AppLocalizations.dealStep5),
+          Text(isTw ? AppLocalizations.twDealStep1 : AppLocalizations.dealStep1),
+          Text(isTw ? AppLocalizations.twDealStep2 : AppLocalizations.dealStep2),
+          Text(isTw ? AppLocalizations.twDealStep3 : AppLocalizations.dealStep3),
+          Text(isTw ? AppLocalizations.twDealStep4 : AppLocalizations.dealStep4),
+          Text(isTw ? AppLocalizations.twDealStep5 : AppLocalizations.dealStep5),
 
           const SizedBox(height: 16),
 

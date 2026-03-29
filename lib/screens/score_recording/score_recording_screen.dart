@@ -61,6 +61,10 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
 
   int _dealerIndex = 0;
 
+  // Anchor dealer selected at game start (Player Setup).
+  // The prevalent wind advances after dealer rotation returns here.
+  int _firstDealerIndex = 0;
+
   int _prevalentWindIndex = 0;
 
   int _currentDealerGameCount = 1;
@@ -147,6 +151,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
     }
 
     // Initialize dealer and wind
+    _firstDealerIndex = widget.initialDealerIndex ?? 0;
     _dealerIndex = widget.initialDealerIndex ?? 0;
     _prevalentWindIndex = widget.initialPrevalentWindIndex ?? 0;
     _currentDealerGameCount = widget.initialDealerGameCount ?? 1;
@@ -224,8 +229,6 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
         return sa.compareTo(sb);
       });
     final firstPlaceName = sortedByScore.last.name;
-    final lastPlaceName = sortedByScore.first.name;
-
     final allNewlyUnlocked = <String, List<String>>{};
 
     for (final player in widget.players) {
@@ -764,7 +767,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
       setState(() {
         _dealerIndex = (_dealerIndex + 1) % 4;
         _currentDealerGameCount = 1;
-        if (_dealerIndex == 0) {
+        if (_dealerIndex == _firstDealerIndex) {
           _prevalentWindIndex = (_prevalentWindIndex + 1) % 4;
           _totalWindRounds++;
         }
@@ -862,6 +865,7 @@ class _ScoreRecordingScreenState extends State<ScoreRecordingScreen> {
                   if (value != null) {
                     setState(() {
                       _dealerIndex = value;
+                      _firstDealerIndex = value;
                     });
                     Navigator.pop(context);
                   }

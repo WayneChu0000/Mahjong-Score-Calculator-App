@@ -151,15 +151,6 @@ List<Rule> get hkRules => [
 
   // 4 Fan
   Rule(
-    name: AppLocalizations.ruleSevenPairs,
-    description: AppLocalizations.descSevenPairs,
-    fan: AppLocalizations.fan(4),
-    fanValue: 4,
-    explanation: AppLocalizations.explSevenPairs,
-    validator: HandPatterns.isSevenPairs,
-    exampleTiles: [],
-  ),
-  Rule(
     name: AppLocalizations.ruleMixedTerminals,
     description: AppLocalizations.descMixedTerminals,
     fan: AppLocalizations.fan(4),

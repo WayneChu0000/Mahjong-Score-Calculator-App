@@ -373,8 +373,6 @@ class TwPatternEvaluator {
 
     // ─── 7. Suit patterns ────────────────────────────────────────
 
-    final suits = _getSuits(allTiles);
-
     // 五門齊 – Five Gates (5 Tai): m + p + s + winds + dragons
     if (_hasFiveGates(allTiles)) {
       matches.add(const TwPatternMatch(
@@ -1245,17 +1243,6 @@ class TwPatternEvaluator {
         tai: 5,
       ));
     }
-  }
-
-  static List<List<int>> _permutations3() {
-    return [
-      [0, 1, 2], [0, 2, 1], [1, 0, 2],
-      [1, 2, 0], [2, 0, 1], [2, 1, 0],
-    ];
-  }
-
-  static Set<String> _getSuits(List<String> tiles) {
-    return tiles.map((t) => t.substring(1)).toSet();
   }
 
   static bool _hasFiveGates(List<String> tiles) {

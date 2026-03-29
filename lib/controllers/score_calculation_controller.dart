@@ -96,6 +96,12 @@ class ScoreCalculationController extends ChangeNotifier {
     for (var player in players) {
       playerScores[player.name] = 0;
     }
+
+    if (gameMode == GameMode.hongKong) {
+      fanCount = minFan;
+      effectiveFan = minFan;
+    }
+
     winningPlayer = players.isNotEmpty ? players[0].name : 'Player 1';
 
     if (roundWindIndex != null) {
@@ -252,9 +258,15 @@ class ScoreCalculationController extends ChangeNotifier {
 
   void setFan(int? newValue) {
     if (newValue == null) return;
-    int diff = newValue - effectiveFan;
-    fanCount = fanCount + diff;
-    if (fanCount < 0) fanCount = 0;
+    if (gameMode == GameMode.hongKong) {
+      final int hkUpperBound = maxFan == 999
+          ? (minFan > 13 ? minFan : 13)
+          : maxFan;
+      fanCount = newValue.clamp(minFan, hkUpperBound);
+    } else {
+      fanCount = newValue;
+      if (fanCount < 0) fanCount = 0;
+    }
     calculateScore();
     notifyListeners();
   }
@@ -692,8 +704,27 @@ class ScoreCalculationController extends ChangeNotifier {
           'fan': fanCount,
         },
       ];
-      // In manual mode the entered number IS the per-person score
-      totalPoints = fanCount;
+
+      // TW manual mode keeps a direct tai-per-person entry behavior.
+      if (gameMode == GameMode.taiwan) {
+        totalPoints = fanCount;
+        return;
+      }
+
+      // HK manual mode must follow the same fan -> points table and
+      // self-draw/discard payout behavior as tile-based calculation.
+      int localEffectiveFan = fanCount;
+      if (maxFan != 999 && localEffectiveFan > maxFan) {
+        localEffectiveFan = maxFan;
+      }
+      effectiveFan = localEffectiveFan;
+
+      final int discardScore = _getScoreFromFan(localEffectiveFan);
+      if (isSelfDraw) {
+        totalPoints = localEffectiveFan < 1 ? 1 : (discardScore ~/ 2);
+      } else {
+        totalPoints = discardScore;
+      }
       return;
     }
 

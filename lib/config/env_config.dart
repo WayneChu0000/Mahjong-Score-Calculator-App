@@ -41,4 +41,22 @@ class EnvConfig {
     if (compileTime.isNotEmpty) return compileTime;
     return dotenv.env['VISION_MODEL_URL'] ?? '';
   }
+
+  static double get visionConf {
+    const compileTime = String.fromEnvironment('VISION_CONF');
+    if (compileTime.isNotEmpty) return double.tryParse(compileTime) ?? 0.25;
+    return double.tryParse(dotenv.env['VISION_CONF'] ?? '') ?? 0.25;
+  }
+
+  static double get visionIou {
+    const compileTime = String.fromEnvironment('VISION_IOU');
+    if (compileTime.isNotEmpty) return double.tryParse(compileTime) ?? 0.7;
+    return double.tryParse(dotenv.env['VISION_IOU'] ?? '') ?? 0.7;
+  }
+
+  static int get visionImgsz {
+    const compileTime = String.fromEnvironment('VISION_IMGSZ');
+    if (compileTime.isNotEmpty) return int.tryParse(compileTime) ?? 640;
+    return int.tryParse(dotenv.env['VISION_IMGSZ'] ?? '') ?? 640;
+  }
 }

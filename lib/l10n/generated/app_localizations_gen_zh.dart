@@ -1112,6 +1112,15 @@ class L10nZh extends L10n {
   String get exampleExplanation => '範例說明:';
 
   @override
+  String get exampleTagConcealed => '暗';
+
+  @override
+  String get exampleTagExposed => '明';
+
+  @override
+  String get exampleTagEyes => '眼';
+
+  @override
   String playerCount(int count) {
     return '$count 名玩家';
   }
@@ -1261,6 +1270,30 @@ class L10nZh extends L10n {
 
   @override
   String get dealStep5 => '5. 補花。';
+
+  @override
+  String get twGameObjectiveDesc1 => '台式麻將胡牌目標：';
+
+  @override
+  String get twGameObjectiveDesc2 => '• 5 組（順子/刻子/槓子）+ 1 對眼';
+
+  @override
+  String get twGameObjectiveDesc3 => '• 16 張手牌 + 1 張胡牌（共 17 張）';
+
+  @override
+  String get twDealStep1 => '1. 每位玩家輪流抓 4 張牌（2 墩）。';
+
+  @override
+  String get twDealStep2 => '2. 重複直到每位玩家有 16 張牌。';
+
+  @override
+  String get twDealStep3 => '3. 莊家起手為 17 張（包含首巡摸牌）。';
+
+  @override
+  String get twDealStep4 => '4. 若有花牌，立即從牌尾補花。';
+
+  @override
+  String get twDealStep5 => '5. 由莊家先打出第一張牌開始行牌。';
 
   @override
   String get gameplayProcessTitle => '4. 行牌流程';
@@ -1552,6 +1585,24 @@ class L10nZh extends L10n {
   String get passwordLengthError => '密碼至少需要 6 個字元';
 
   @override
+  String get setPassword => '設定密碼';
+
+  @override
+  String get newPasswordLabel => '新密碼';
+
+  @override
+  String get confirmPasswordLabel => '確認密碼';
+
+  @override
+  String get confirmPasswordRequired => '請確認密碼';
+
+  @override
+  String get passwordMismatchError => '兩次輸入的密碼不一致';
+
+  @override
+  String get passwordUpdatedSuccess => '密碼更新成功';
+
+  @override
   String get genericError => '發生未知錯誤';
 
   @override
@@ -1607,7 +1658,7 @@ class L10nZh extends L10n {
 
   @override
   String get twScoringRulesDesc =>
-      '台灣麻將使用『台』制計分。本 App 的台式計算固定每台為 1 分，所以總支付分數 = 底台 + 總台數（如適用再加莊家額外台數）。';
+      '台灣麻將使用『台』制計分。本應用程式的台式計算固定每台為 1 分，所以總支付分數 = 底台 + 總台數（如適用再加莊家額外台數）。';
 
   @override
   String get twTaiHeader => '台數';
@@ -2770,10 +2821,10 @@ class L10nZh extends L10n {
   String get tipDayContent9 => '十三么需要每種幺九牌和字牌各一張加一張重複——是滿貫牌型！';
 
   @override
-  String get tipDayTitle10 => '拉（La）規則';
+  String get tipDayTitle10 => '拉規則';
 
   @override
-  String get tipDayContent10 => '台式麻將中，拉規則會將前一局的欠款乘以 1.5 倍，當同一玩家連續胡牠時生效。';
+  String get tipDayContent10 => '台式麻將中，拉規則會將前一局的欠款乘以 1.5 倍，當同一玩家連續胡牌時生效。';
 
   @override
   String get customFanValues => '自訂番數/台數';
@@ -2850,7 +2901,12 @@ class L10nZh extends L10n {
   String get hkMaxFan => '最高番數';
 
   @override
-  String get twBaseTaiSetting => '底 (底)';
+  String hkMinFanReselect(int minFan) {
+    return '胡牌番數低於最低番數（$minFan番），請重新選擇胡牌。';
+  }
+
+  @override
+  String get twBaseTaiSetting => '底台';
 
   @override
   String get twTaiValueSetting => '每台價值 (每台)';

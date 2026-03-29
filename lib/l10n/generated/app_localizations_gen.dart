@@ -2263,6 +2263,24 @@ abstract class L10n {
   /// **'Example Explanation:'**
   String get exampleExplanation;
 
+  /// No description provided for @exampleTagConcealed.
+  ///
+  /// In en, this message translates to:
+  /// **'Concealed'**
+  String get exampleTagConcealed;
+
+  /// No description provided for @exampleTagExposed.
+  ///
+  /// In en, this message translates to:
+  /// **'Exposed'**
+  String get exampleTagExposed;
+
+  /// No description provided for @exampleTagEyes.
+  ///
+  /// In en, this message translates to:
+  /// **'Eyes'**
+  String get exampleTagEyes;
+
   /// No description provided for @playerCount.
   ///
   /// In en, this message translates to:
@@ -2556,6 +2574,54 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'5. Replace Flower tiles from the back of the wall.'**
   String get dealStep5;
+
+  /// No description provided for @twGameObjectiveDesc1.
+  ///
+  /// In en, this message translates to:
+  /// **'Taiwan Mahjong winning objective:'**
+  String get twGameObjectiveDesc1;
+
+  /// No description provided for @twGameObjectiveDesc2.
+  ///
+  /// In en, this message translates to:
+  /// **'• 5 sets (chow/pong/kong) + 1 pair (eyes)'**
+  String get twGameObjectiveDesc2;
+
+  /// No description provided for @twGameObjectiveDesc3.
+  ///
+  /// In en, this message translates to:
+  /// **'• 16 concealed tiles + 1 winning tile (17 tiles total)'**
+  String get twGameObjectiveDesc3;
+
+  /// No description provided for @twDealStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Each player takes 4 tiles (2 stacks) in order.'**
+  String get twDealStep1;
+
+  /// No description provided for @twDealStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Repeat until each player has 16 tiles.'**
+  String get twDealStep2;
+
+  /// No description provided for @twDealStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'3. Dealer starts with 17 tiles (first-turn draw included).'**
+  String get twDealStep3;
+
+  /// No description provided for @twDealStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'4. Replace Flower tiles from the back of the wall immediately.'**
+  String get twDealStep4;
+
+  /// No description provided for @twDealStep5.
+  ///
+  /// In en, this message translates to:
+  /// **'5. Dealer discards first to start the round.'**
+  String get twDealStep5;
 
   /// No description provided for @gameplayProcessTitle.
   ///
@@ -3127,6 +3193,42 @@ abstract class L10n {
   /// **'Password must be at least 6 characters'**
   String get passwordLengthError;
 
+  /// No description provided for @setPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Password'**
+  String get setPassword;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPasswordLabel;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @confirmPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm your password'**
+  String get confirmPasswordRequired;
+
+  /// No description provided for @passwordMismatchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordMismatchError;
+
+  /// No description provided for @passwordUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated successfully'**
+  String get passwordUpdatedSuccess;
+
   /// No description provided for @genericError.
   ///
   /// In en, this message translates to:
@@ -3226,7 +3328,7 @@ abstract class L10n {
   /// No description provided for @twScoringRulesDesc.
   ///
   /// In en, this message translates to:
-  /// **'Taiwan Mahjong uses a Tai (台) system. In this app\'s TW calculator, each Tai is fixed at 1 point, so total payment points are Base Tai + Total Tai (plus dealer extra when applicable).'**
+  /// **'Taiwan Mahjong uses a Tai system. In this app\'s TW calculator, each Tai is fixed at 1 point, so total payment points are Base Tai plus Total Tai, with dealer bonus when applicable.'**
   String get twScoringRulesDesc;
 
   /// No description provided for @twTaiHeader.
@@ -3256,7 +3358,7 @@ abstract class L10n {
   /// No description provided for @twChaseRule.
   ///
   /// In en, this message translates to:
-  /// **'Chase (追)'**
+  /// **'Chase'**
   String get twChaseRule;
 
   /// No description provided for @twChaseDesc.
@@ -3268,7 +3370,7 @@ abstract class L10n {
   /// No description provided for @twConcealedKongPay.
   ///
   /// In en, this message translates to:
-  /// **'Concealed Kong (暗槓) Payment'**
+  /// **'Concealed Kong Payment'**
   String get twConcealedKongPay;
 
   /// No description provided for @twConcealedKongPayDesc.
@@ -3286,13 +3388,13 @@ abstract class L10n {
   /// No description provided for @twFlowerSetPayDesc.
   ///
   /// In en, this message translates to:
-  /// **'One complete flower set (一台草): each opponent pays half a base. One complete flower group (一台花): each opponent pays one base. Note: claiming flowers forfeits grass bonus.'**
+  /// **'One complete season set: each opponent pays half a base. One complete flower set: each opponent pays one base. Note: claiming flowers forfeits the season-set bonus.'**
   String get twFlowerSetPayDesc;
 
   /// No description provided for @twFlowerSeasonSetPay.
   ///
   /// In en, this message translates to:
-  /// **'Season Set (一台草)'**
+  /// **'Season Set Payment'**
   String get twFlowerSeasonSetPay;
 
   /// No description provided for @twFlowerSeasonSetPayDesc.
@@ -3304,7 +3406,7 @@ abstract class L10n {
   /// No description provided for @twFlowerGroupPay.
   ///
   /// In en, this message translates to:
-  /// **'Flower Group (一台花)'**
+  /// **'Flower Group Payment'**
   String get twFlowerGroupPay;
 
   /// No description provided for @twFlowerGroupPayDesc.
@@ -3322,19 +3424,19 @@ abstract class L10n {
   /// No description provided for @twFalseWinPay.
   ///
   /// In en, this message translates to:
-  /// **'False Win (詐胡)'**
+  /// **'False Win Penalty'**
   String get twFalseWinPay;
 
   /// No description provided for @twFalseWinPayDesc.
   ///
   /// In en, this message translates to:
-  /// **'A false win declaration usually costs \$100 per player. If the dealer makes a false win, they must continue as dealer (連莊).'**
+  /// **'A false win declaration usually costs \$100 per player. If the dealer makes a false win, they must continue as dealer.'**
   String get twFalseWinPayDesc;
 
   /// No description provided for @twCalledPongPenalty.
   ///
   /// In en, this message translates to:
-  /// **'Called Pong Penalty (叫碰不碰)'**
+  /// **'Called Pong Penalty'**
   String get twCalledPongPenalty;
 
   /// No description provided for @twCalledPongPenaltyDesc.
@@ -3370,7 +3472,7 @@ abstract class L10n {
   /// No description provided for @twMissedWinRule.
   ///
   /// In en, this message translates to:
-  /// **'Missed Win (過水) Restriction'**
+  /// **'Missed Win Restriction'**
   String get twMissedWinRule;
 
   /// No description provided for @twMissedWinDesc.
@@ -3418,7 +3520,7 @@ abstract class L10n {
   /// No description provided for @twLaSettlementTitle.
   ///
   /// In en, this message translates to:
-  /// **'\'La\' Settlement Rules (拉)'**
+  /// **'La Settlement Rules'**
   String get twLaSettlementTitle;
 
   /// No description provided for @twLaSettlementDesc.
@@ -3454,7 +3556,7 @@ abstract class L10n {
   /// No description provided for @twLaStopRule.
   ///
   /// In en, this message translates to:
-  /// **'Stop Rule (逼停)'**
+  /// **'Forced Stop Rule'**
   String get twLaStopRule;
 
   /// No description provided for @twLaStopRuleDesc.
@@ -3466,7 +3568,7 @@ abstract class L10n {
   /// No description provided for @twLaStopRuleTitle.
   ///
   /// In en, this message translates to:
-  /// **'Force Settlement (逼停)'**
+  /// **'Force Settlement'**
   String get twLaStopRuleTitle;
 
   /// No description provided for @twLaStopRuleMessage.
@@ -3494,7 +3596,7 @@ abstract class L10n {
   /// No description provided for @twLaApplied.
   ///
   /// In en, this message translates to:
-  /// **'La Carry-over (拉)'**
+  /// **'La Carry-over'**
   String get twLaApplied;
 
   /// No description provided for @twLaMultiplierApplied.
@@ -3518,7 +3620,7 @@ abstract class L10n {
   /// No description provided for @twLaDebtTracker.
   ///
   /// In en, this message translates to:
-  /// **'La Debt Tracker (拉)'**
+  /// **'La Debt Tracker'**
   String get twLaDebtTracker;
 
   /// No description provided for @twLaStreakWinner.
@@ -3584,7 +3686,7 @@ abstract class L10n {
   /// No description provided for @twDealerBonusDesc.
   ///
   /// In en, this message translates to:
-  /// **'The dealer (莊家) gets extra Tai based on consecutive wins.'**
+  /// **'The dealer gets extra Tai based on consecutive wins.'**
   String get twDealerBonusDesc;
 
   /// No description provided for @twDealerBonusBase.
@@ -3608,19 +3710,19 @@ abstract class L10n {
   /// No description provided for @twDealerBonusExample1.
   ///
   /// In en, this message translates to:
-  /// **'Consecutive 1 (連一拉一): 3 Tai'**
+  /// **'Consecutive 1: 3 Tai'**
   String get twDealerBonusExample1;
 
   /// No description provided for @twDealerBonusExample2.
   ///
   /// In en, this message translates to:
-  /// **'Consecutive 2 (連二拉二): 5 Tai'**
+  /// **'Consecutive 2: 5 Tai'**
   String get twDealerBonusExample2;
 
   /// No description provided for @twDealerBonusExample3.
   ///
   /// In en, this message translates to:
-  /// **'Consecutive 5 (連五拉五): 11 Tai'**
+  /// **'Consecutive 5: 11 Tai'**
   String get twDealerBonusExample3;
 
   /// No description provided for @twDealerBonusResponsibility.
@@ -4688,7 +4790,7 @@ abstract class L10n {
   /// No description provided for @twMiguiTw.
   ///
   /// In en, this message translates to:
-  /// **'Eight Pairs (嚦咕嚦咕)'**
+  /// **'Eight Pairs'**
   String get twMiguiTw;
 
   /// No description provided for @twDescMiguiTw.
@@ -5024,7 +5126,7 @@ abstract class L10n {
   /// No description provided for @achvHkFullFlushDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win with Full Flush (清一色)'**
+  /// **'Win with Full Flush'**
   String get achvHkFullFlushDesc;
 
   /// No description provided for @achvHkAllPongs5Title.
@@ -5048,7 +5150,7 @@ abstract class L10n {
   /// No description provided for @achvHkBigThreeDragonsDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win with Big Three Dragons (大三元)'**
+  /// **'Win with Big Three Dragons'**
   String get achvHkBigThreeDragonsDesc;
 
   /// No description provided for @achvHkBigFourWindsTitle.
@@ -5060,7 +5162,7 @@ abstract class L10n {
   /// No description provided for @achvHkBigFourWindsDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win with Big Four Winds (大四喜)'**
+  /// **'Win with Big Four Winds'**
   String get achvHkBigFourWindsDesc;
 
   /// No description provided for @achvHkThirteenOrphansTitle.
@@ -5072,7 +5174,7 @@ abstract class L10n {
   /// No description provided for @achvHkThirteenOrphansDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win with Thirteen Orphans (十三么)'**
+  /// **'Win with Thirteen Orphans'**
   String get achvHkThirteenOrphansDesc;
 
   /// No description provided for @achvHkNineGatesTitle.
@@ -5084,7 +5186,7 @@ abstract class L10n {
   /// No description provided for @achvHkNineGatesDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win with Nine Gates (九子連環)'**
+  /// **'Win with Nine Gates'**
   String get achvHkNineGatesDesc;
 
   /// No description provided for @achvHkConcealedHand10Title.
@@ -5108,7 +5210,7 @@ abstract class L10n {
   /// No description provided for @achvHkLastTileWinDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win by drawing the last tile (海底撈月)'**
+  /// **'Win by drawing the last tile'**
   String get achvHkLastTileWinDesc;
 
   /// No description provided for @achvHkRobbingKongTitle.
@@ -5120,7 +5222,7 @@ abstract class L10n {
   /// No description provided for @achvHkRobbingKongDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win by robbing a Kong (搶槓)'**
+  /// **'Win by robbing a Kong'**
   String get achvHkRobbingKongDesc;
 
   /// No description provided for @achvHkMaxFanTitle.
@@ -5228,7 +5330,7 @@ abstract class L10n {
   /// No description provided for @achvTwKongWinDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win on Kong replacement (槓上食胡)'**
+  /// **'Win on Kong replacement'**
   String get achvTwKongWinDesc;
 
   /// No description provided for @achvTwFlowerWinTitle.
@@ -5240,7 +5342,7 @@ abstract class L10n {
   /// No description provided for @achvTwFlowerWinDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win by Flower Win / Two Flower Sets (花胡)'**
+  /// **'Win by Flower Win or Two Flower Sets'**
   String get achvTwFlowerWinDesc;
 
   /// No description provided for @achvTwSevenRobOneTitle.
@@ -5252,7 +5354,7 @@ abstract class L10n {
   /// No description provided for @achvTwSevenRobOneDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win by Seven Rob One (七搶一)'**
+  /// **'Win by Seven Rob One'**
   String get achvTwSevenRobOneDesc;
 
   /// No description provided for @achvTwHeavenlyListenTitle.
@@ -5264,7 +5366,7 @@ abstract class L10n {
   /// No description provided for @achvTwHeavenlyListenDesc.
   ///
   /// In en, this message translates to:
-  /// **'Achieve Heavenly Ready (天聽)'**
+  /// **'Achieve Heavenly Ready'**
   String get achvTwHeavenlyListenDesc;
 
   /// No description provided for @achvTwChickenHand10Title.
@@ -5288,7 +5390,7 @@ abstract class L10n {
   /// No description provided for @achvTwLikulikuDesc.
   ///
   /// In en, this message translates to:
-  /// **'Win with Eight Pairs (嚦咕嚦咕)'**
+  /// **'Win with Eight Pairs'**
   String get achvTwLikulikuDesc;
 
   /// No description provided for @achvMsWins100Title.
@@ -5408,7 +5510,7 @@ abstract class L10n {
   /// No description provided for @tipDayContent1.
   ///
   /// In en, this message translates to:
-  /// **'In HK mahjong, a \'Chicken Hand\' (雞糊) means winning with 0 fan — often not allowed under minimum-fan rules.'**
+  /// **'In HK mahjong, a Chicken Hand means winning with 0 fan, which is often not allowed under minimum-fan rules.'**
   String get tipDayContent1;
 
   /// No description provided for @tipDayTitle2.
@@ -5432,7 +5534,7 @@ abstract class L10n {
   /// No description provided for @tipDayContent3.
   ///
   /// In en, this message translates to:
-  /// **'A hand made entirely of Pong/Kong sets (no Chow) is called All Pongs (對對糊) — worth 3 fan in HK rules.'**
+  /// **'A hand made entirely of Pong and Kong sets with no Chow is called All Pongs, worth 3 fan in HK rules.'**
   String get tipDayContent3;
 
   /// No description provided for @tipDayTitle4.
@@ -5444,7 +5546,7 @@ abstract class L10n {
   /// No description provided for @tipDayContent4.
   ///
   /// In en, this message translates to:
-  /// **'Winning without any open melds is a Concealed Hand (門前清). It\'s worth 1 fan in HK and higher in TW rules.'**
+  /// **'Winning without any open melds is a Concealed Hand. It is worth 1 fan in HK and higher in TW rules.'**
   String get tipDayContent4;
 
   /// No description provided for @tipDayTitle5.
@@ -5456,7 +5558,7 @@ abstract class L10n {
   /// No description provided for @tipDayContent5.
   ///
   /// In en, this message translates to:
-  /// **'The dealer (莊家) receives and pays double in many rule sets. Winning as dealer lets you keep the deal!'**
+  /// **'The dealer receives and pays double in many rule sets. Winning as dealer lets you keep the deal.'**
   String get tipDayContent5;
 
   /// No description provided for @tipDayTitle6.
@@ -5468,7 +5570,7 @@ abstract class L10n {
   /// No description provided for @tipDayContent6.
   ///
   /// In en, this message translates to:
-  /// **'Half Flush (混一色) uses one suit plus honor tiles. It\'s one of the most common high-scoring hands at 3 fan.'**
+  /// **'Half Flush uses one suit plus honor tiles. It is one of the most common high-scoring hands at 3 fan.'**
   String get tipDayContent6;
 
   /// No description provided for @tipDayTitle7.
@@ -5480,7 +5582,7 @@ abstract class L10n {
   /// No description provided for @tipDayContent7.
   ///
   /// In en, this message translates to:
-  /// **'Full Flush (清一色) uses only one suit with no honors — worth 7 fan in HK rules. Hard to conceal!'**
+  /// **'Full Flush uses only one suit with no honors and is worth 7 fan in HK rules. It is hard to conceal.'**
   String get tipDayContent7;
 
   /// No description provided for @tipDayTitle8.
@@ -5492,7 +5594,7 @@ abstract class L10n {
   /// No description provided for @tipDayContent8.
   ///
   /// In en, this message translates to:
-  /// **'Winning by self-draw (自摸) adds extra fan in most rule sets and means all other players pay you.'**
+  /// **'Winning by self-draw adds extra fan in most rule sets and means all other players pay you.'**
   String get tipDayContent8;
 
   /// No description provided for @tipDayTitle9.
@@ -5504,13 +5606,13 @@ abstract class L10n {
   /// No description provided for @tipDayContent9.
   ///
   /// In en, this message translates to:
-  /// **'Thirteen Orphans (十三么) requires one of each terminal and honor tile plus one duplicate — a limit hand!'**
+  /// **'Thirteen Orphans requires one of each terminal and honor tile plus one duplicate, which is a limit hand.'**
   String get tipDayContent9;
 
   /// No description provided for @tipDayTitle10.
   ///
   /// In en, this message translates to:
-  /// **'La (拉) Rule'**
+  /// **'La Rule'**
   String get tipDayTitle10;
 
   /// No description provided for @tipDayContent10.
@@ -5663,16 +5765,22 @@ abstract class L10n {
   /// **'Maximum Fan'**
   String get hkMaxFan;
 
+  /// Shown when trying to submit an HK hand with fan count below configured minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Winning hand is below the minimum fan ({minFan}). Please reselect.'**
+  String hkMinFanReselect(int minFan);
+
   /// No description provided for @twBaseTaiSetting.
   ///
   /// In en, this message translates to:
-  /// **'Base (底)'**
+  /// **'Base Tai'**
   String get twBaseTaiSetting;
 
   /// No description provided for @twTaiValueSetting.
   ///
   /// In en, this message translates to:
-  /// **'Value per Tai (每台)'**
+  /// **'Value per Tai'**
   String get twTaiValueSetting;
 
   /// No description provided for @addRule.

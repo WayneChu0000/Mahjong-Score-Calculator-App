@@ -76,12 +76,9 @@ class HandValidator {
         }
       }
 
-      // Seven Pairs (HK) / Eight Pairs (TW)
+      // Eight Pairs (TW)
       if (gameMode == GameMode.taiwan && HandPatterns.isEightPairs(tiles)) {
         return {'valid': true, 'message': AppLocalizations.ruleMigui};
-      } else if (gameMode == GameMode.hongKong &&
-          HandPatterns.isSevenPairs(tiles)) {
-        return {'valid': true, 'message': AppLocalizations.ruleSevenPairs};
       }
     }
 

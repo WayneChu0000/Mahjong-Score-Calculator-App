@@ -5,7 +5,6 @@ import '../services/settings_service.dart';
 import '../services/auth_service.dart';
 import 'auth_wrapper.dart';
 import '../localization/app_localizations.dart';
-import '../routes/app_routes.dart';
 import '../models/tw_rules.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -223,27 +222,8 @@ class SettingsScreen extends StatelessWidget {
             title: AppLocalizations.twPayments,
             subtitle: settings.twPayments.isEmpty
                 ? AppLocalizations.noPayments
-                : '${settings.twPayments.length} items',
+                : '${AppLocalizations.customized} (${settings.twPayments.length})',
             onTap: () => _showTwPaymentsSheet(context),
-          ),
-
-          const SizedBox(height: 24),
-
-          // ── Advanced Settings ──────────────────────────────
-          _buildSectionHeader(
-            AppLocalizations.advancedSettings,
-            Icons.tune,
-            isDark,
-          ),
-          const SizedBox(height: 8),
-
-          // Custom Fan/Tai Values
-          _buildSettingCard(
-            icon: Icons.edit_note,
-            title: AppLocalizations.customFanValues,
-            subtitle: _customFanSubtitle(settings),
-            onTap: () =>
-                Navigator.pushNamed(context, AppRoutes.customFanEditor),
           ),
 
           const SizedBox(height: 24),
@@ -266,24 +246,6 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _customFanSubtitle(SettingsService settings) {
-    final hkCount =
-        settings.customHkFan.length +
-        settings.customHkRules.length +
-        settings.deletedHkRules.length;
-    final twCount =
-        settings.customTwTai.length +
-        settings.customTwRules.length +
-        settings.deletedTwRules.length;
-    if (hkCount == 0 && twCount == 0) {
-      return AppLocalizations.customFanValuesDesc;
-    }
-    final parts = <String>[];
-    if (hkCount > 0) parts.add('HK: $hkCount');
-    if (twCount > 0) parts.add('TW: $twCount');
-    return '${AppLocalizations.customized} (${parts.join(', ')})';
   }
 
   Widget _buildSectionHeader(String title, IconData icon, bool isDark) {

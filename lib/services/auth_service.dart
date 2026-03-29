@@ -39,6 +39,18 @@ class AuthService {
     }
   }
 
+  // Update password for current user
+  Future<void> updatePassword(String newPassword) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw FirebaseAuthException(
+        code: 'no-current-user',
+        message: 'No authenticated user found.',
+      );
+    }
+    await user.updatePassword(newPassword);
+  }
+
   // Sign out
   Future<void> signOut() async {
     await _auth.signOut();

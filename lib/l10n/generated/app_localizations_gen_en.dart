@@ -1154,6 +1154,15 @@ class L10nEn extends L10n {
   String get exampleExplanation => 'Example Explanation:';
 
   @override
+  String get exampleTagConcealed => 'Concealed';
+
+  @override
+  String get exampleTagExposed => 'Exposed';
+
+  @override
+  String get exampleTagEyes => 'Eyes';
+
+  @override
   String playerCount(int count) {
     return '$count players';
   }
@@ -1319,6 +1328,34 @@ class L10nEn extends L10n {
 
   @override
   String get dealStep5 => '5. Replace Flower tiles from the back of the wall.';
+
+  @override
+  String get twGameObjectiveDesc1 => 'Taiwan Mahjong winning objective:';
+
+  @override
+  String get twGameObjectiveDesc2 =>
+      '• 5 sets (chow/pong/kong) + 1 pair (eyes)';
+
+  @override
+  String get twGameObjectiveDesc3 =>
+      '• 16 concealed tiles + 1 winning tile (17 tiles total)';
+
+  @override
+  String get twDealStep1 => '1. Each player takes 4 tiles (2 stacks) in order.';
+
+  @override
+  String get twDealStep2 => '2. Repeat until each player has 16 tiles.';
+
+  @override
+  String get twDealStep3 =>
+      '3. Dealer starts with 17 tiles (first-turn draw included).';
+
+  @override
+  String get twDealStep4 =>
+      '4. Replace Flower tiles from the back of the wall immediately.';
+
+  @override
+  String get twDealStep5 => '5. Dealer discards first to start the round.';
 
   @override
   String get gameplayProcessTitle => '4. Gameplay Process';
@@ -1631,6 +1668,24 @@ class L10nEn extends L10n {
   String get passwordLengthError => 'Password must be at least 6 characters';
 
   @override
+  String get setPassword => 'Set Password';
+
+  @override
+  String get newPasswordLabel => 'New Password';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm Password';
+
+  @override
+  String get confirmPasswordRequired => 'Please confirm your password';
+
+  @override
+  String get passwordMismatchError => 'Passwords do not match';
+
+  @override
+  String get passwordUpdatedSuccess => 'Password updated successfully';
+
+  @override
   String get genericError => 'An unexpected error occurred';
 
   @override
@@ -1686,7 +1741,7 @@ class L10nEn extends L10n {
 
   @override
   String get twScoringRulesDesc =>
-      'Taiwan Mahjong uses a Tai (台) system. In this app\'s TW calculator, each Tai is fixed at 1 point, so total payment points are Base Tai + Total Tai (plus dealer extra when applicable).';
+      'Taiwan Mahjong uses a Tai system. In this app\'s TW calculator, each Tai is fixed at 1 point, so total payment points are Base Tai plus Total Tai, with dealer bonus when applicable.';
 
   @override
   String get twTaiHeader => 'Tai Count';
@@ -1702,14 +1757,14 @@ class L10nEn extends L10n {
       'Some events require immediate payment during gameplay, not just at settlement.';
 
   @override
-  String get twChaseRule => 'Chase (追)';
+  String get twChaseRule => 'Chase';
 
   @override
   String get twChaseDesc =>
       'When four players consecutively discard the same tile, the first player must pay each of the other three players one base amount.';
 
   @override
-  String get twConcealedKongPay => 'Concealed Kong (暗槓) Payment';
+  String get twConcealedKongPay => 'Concealed Kong Payment';
 
   @override
   String get twConcealedKongPayDesc =>
@@ -1720,17 +1775,17 @@ class L10nEn extends L10n {
 
   @override
   String get twFlowerSetPayDesc =>
-      'One complete flower set (一台草): each opponent pays half a base. One complete flower group (一台花): each opponent pays one base. Note: claiming flowers forfeits grass bonus.';
+      'One complete season set: each opponent pays half a base. One complete flower set: each opponent pays one base. Note: claiming flowers forfeits the season-set bonus.';
 
   @override
-  String get twFlowerSeasonSetPay => 'Season Set (一台草)';
+  String get twFlowerSeasonSetPay => 'Season Set Payment';
 
   @override
   String get twFlowerSeasonSetPayDesc =>
       'Collecting all 4 season tiles (Spring/Summer/Autumn/Winter). Each opponent pays the specified amount.';
 
   @override
-  String get twFlowerGroupPay => 'Flower Group (一台花)';
+  String get twFlowerGroupPay => 'Flower Group Payment';
 
   @override
   String get twFlowerGroupPayDesc =>
@@ -1740,14 +1795,14 @@ class L10nEn extends L10n {
   String get builtInPayment => 'Built-in';
 
   @override
-  String get twFalseWinPay => 'False Win (詐胡)';
+  String get twFalseWinPay => 'False Win Penalty';
 
   @override
   String get twFalseWinPayDesc =>
-      'A false win declaration usually costs \$100 per player. If the dealer makes a false win, they must continue as dealer (連莊).';
+      'A false win declaration usually costs \$100 per player. If the dealer makes a false win, they must continue as dealer.';
 
   @override
-  String get twCalledPongPenalty => 'Called Pong Penalty (叫碰不碰)';
+  String get twCalledPongPenalty => 'Called Pong Penalty';
 
   @override
   String get twCalledPongPenaltyDesc =>
@@ -1768,7 +1823,7 @@ class L10nEn extends L10n {
       'The winning tile must be placed separately, not mixed into your hand. Failure to do so invalidates the win.';
 
   @override
-  String get twMissedWinRule => 'Missed Win (過水) Restriction';
+  String get twMissedWinRule => 'Missed Win Restriction';
 
   @override
   String get twMissedWinDesc =>
@@ -1796,7 +1851,7 @@ class L10nEn extends L10n {
       'Opening flower replacement follows strict order. The dealer replaces first and says \'please\', then each player proceeds in turn. The dealer can only start playing after the last player finishes.';
 
   @override
-  String get twLaSettlementTitle => '\'La\' Settlement Rules (拉)';
+  String get twLaSettlementTitle => 'La Settlement Rules';
 
   @override
   String get twLaSettlementDesc =>
@@ -1817,14 +1872,14 @@ class L10nEn extends L10n {
       'When the streak ends: if the streak winner discards the winning tile, or if a debtor self-draws, ONLY that specific player\'s debt is halved. Other debtors pay full.';
 
   @override
-  String get twLaStopRule => 'Stop Rule (逼停)';
+  String get twLaStopRule => 'Forced Stop Rule';
 
   @override
   String get twLaStopRuleDesc =>
       'If a player loses to the same streak winner at any multiple of 3 (3, 6, 9, ...), they can force an immediate full-debt settlement (no reduction opportunity).';
 
   @override
-  String get twLaStopRuleTitle => 'Force Settlement (逼停)';
+  String get twLaStopRuleTitle => 'Force Settlement';
 
   @override
   String twLaStopRuleMessage(
@@ -1842,7 +1897,7 @@ class L10nEn extends L10n {
   String get twLaStopRuleSettle => 'Force Settle';
 
   @override
-  String get twLaApplied => 'La Carry-over (拉)';
+  String get twLaApplied => 'La Carry-over';
 
   @override
   String get twLaMultiplierApplied => 'La ×1.5 carry-over';
@@ -1854,7 +1909,7 @@ class L10nEn extends L10n {
   String get twLaCarryDebt => 'Carry-over debt from previous round';
 
   @override
-  String get twLaDebtTracker => 'La Debt Tracker (拉)';
+  String get twLaDebtTracker => 'La Debt Tracker';
 
   @override
   String get twLaStreakWinner => 'Streak Winner';
@@ -1892,7 +1947,7 @@ class L10nEn extends L10n {
 
   @override
   String get twDealerBonusDesc =>
-      'The dealer (莊家) gets extra Tai based on consecutive wins.';
+      'The dealer gets extra Tai based on consecutive wins.';
 
   @override
   String get twDealerBonusBase => 'Being Dealer: +1 Tai';
@@ -1905,13 +1960,13 @@ class L10nEn extends L10n {
       'Consecutive Dealer Formula: (Consecutive Count × 2) + 1';
 
   @override
-  String get twDealerBonusExample1 => 'Consecutive 1 (連一拉一): 3 Tai';
+  String get twDealerBonusExample1 => 'Consecutive 1: 3 Tai';
 
   @override
-  String get twDealerBonusExample2 => 'Consecutive 2 (連二拉二): 5 Tai';
+  String get twDealerBonusExample2 => 'Consecutive 2: 5 Tai';
 
   @override
-  String get twDealerBonusExample3 => 'Consecutive 5 (連五拉五): 11 Tai';
+  String get twDealerBonusExample3 => 'Consecutive 5: 11 Tai';
 
   @override
   String get twDealerBonusResponsibility =>
@@ -2552,7 +2607,7 @@ class L10nEn extends L10n {
       'Non-dealer declares Tenpai on first turn. Includes 5 Tai for Ding. 25 Tai.';
 
   @override
-  String get twMiguiTw => 'Eight Pairs (嚦咕嚦咕)';
+  String get twMiguiTw => 'Eight Pairs';
 
   @override
   String get twDescMiguiTw => 'Eight pairs in hand (no triplets allowed).';
@@ -2737,7 +2792,7 @@ class L10nEn extends L10n {
   String get achvHkFullFlushTitle => 'Full Flush Master';
 
   @override
-  String get achvHkFullFlushDesc => 'Win with Full Flush (清一色)';
+  String get achvHkFullFlushDesc => 'Win with Full Flush';
 
   @override
   String get achvHkAllPongs5Title => 'Pong Enthusiast';
@@ -2749,25 +2804,25 @@ class L10nEn extends L10n {
   String get achvHkBigThreeDragonsTitle => 'Big Three Dragons';
 
   @override
-  String get achvHkBigThreeDragonsDesc => 'Win with Big Three Dragons (大三元)';
+  String get achvHkBigThreeDragonsDesc => 'Win with Big Three Dragons';
 
   @override
   String get achvHkBigFourWindsTitle => 'Big Four Winds';
 
   @override
-  String get achvHkBigFourWindsDesc => 'Win with Big Four Winds (大四喜)';
+  String get achvHkBigFourWindsDesc => 'Win with Big Four Winds';
 
   @override
   String get achvHkThirteenOrphansTitle => 'Thirteen Orphans';
 
   @override
-  String get achvHkThirteenOrphansDesc => 'Win with Thirteen Orphans (十三么)';
+  String get achvHkThirteenOrphansDesc => 'Win with Thirteen Orphans';
 
   @override
   String get achvHkNineGatesTitle => 'Nine Gates';
 
   @override
-  String get achvHkNineGatesDesc => 'Win with Nine Gates (九子連環)';
+  String get achvHkNineGatesDesc => 'Win with Nine Gates';
 
   @override
   String get achvHkConcealedHand10Title => 'Concealed Master';
@@ -2779,13 +2834,13 @@ class L10nEn extends L10n {
   String get achvHkLastTileWinTitle => 'Under the Sea';
 
   @override
-  String get achvHkLastTileWinDesc => 'Win by drawing the last tile (海底撈月)';
+  String get achvHkLastTileWinDesc => 'Win by drawing the last tile';
 
   @override
   String get achvHkRobbingKongTitle => 'Robbing Kong';
 
   @override
-  String get achvHkRobbingKongDesc => 'Win by robbing a Kong (搶槓)';
+  String get achvHkRobbingKongDesc => 'Win by robbing a Kong';
 
   @override
   String get achvHkMaxFanTitle => 'Maximum Fan';
@@ -2839,25 +2894,25 @@ class L10nEn extends L10n {
   String get achvTwKongWinTitle => 'Kong Win';
 
   @override
-  String get achvTwKongWinDesc => 'Win on Kong replacement (槓上食胡)';
+  String get achvTwKongWinDesc => 'Win on Kong replacement';
 
   @override
   String get achvTwFlowerWinTitle => 'Flower Win';
 
   @override
-  String get achvTwFlowerWinDesc => 'Win by Flower Win / Two Flower Sets (花胡)';
+  String get achvTwFlowerWinDesc => 'Win by Flower Win or Two Flower Sets';
 
   @override
   String get achvTwSevenRobOneTitle => 'Seven Rob One';
 
   @override
-  String get achvTwSevenRobOneDesc => 'Win by Seven Rob One (七搶一)';
+  String get achvTwSevenRobOneDesc => 'Win by Seven Rob One';
 
   @override
   String get achvTwHeavenlyListenTitle => 'Heavenly Listen';
 
   @override
-  String get achvTwHeavenlyListenDesc => 'Achieve Heavenly Ready (天聽)';
+  String get achvTwHeavenlyListenDesc => 'Achieve Heavenly Ready';
 
   @override
   String get achvTwChickenHand10Title => 'Chicken King';
@@ -2869,7 +2924,7 @@ class L10nEn extends L10n {
   String get achvTwLikulikuTitle => 'Likuliku';
 
   @override
-  String get achvTwLikulikuDesc => 'Win with Eight Pairs (嚦咕嚦咕)';
+  String get achvTwLikulikuDesc => 'Win with Eight Pairs';
 
   @override
   String get achvMsWins100Title => '100 Wins';
@@ -2930,7 +2985,7 @@ class L10nEn extends L10n {
 
   @override
   String get tipDayContent1 =>
-      'In HK mahjong, a \'Chicken Hand\' (雞糊) means winning with 0 fan — often not allowed under minimum-fan rules.';
+      'In HK mahjong, a Chicken Hand means winning with 0 fan, which is often not allowed under minimum-fan rules.';
 
   @override
   String get tipDayTitle2 => 'Flowers & Seasons';
@@ -2944,52 +2999,52 @@ class L10nEn extends L10n {
 
   @override
   String get tipDayContent3 =>
-      'A hand made entirely of Pong/Kong sets (no Chow) is called All Pongs (對對糊) — worth 3 fan in HK rules.';
+      'A hand made entirely of Pong and Kong sets with no Chow is called All Pongs, worth 3 fan in HK rules.';
 
   @override
   String get tipDayTitle4 => 'Concealed Hand';
 
   @override
   String get tipDayContent4 =>
-      'Winning without any open melds is a Concealed Hand (門前清). It\'s worth 1 fan in HK and higher in TW rules.';
+      'Winning without any open melds is a Concealed Hand. It is worth 1 fan in HK and higher in TW rules.';
 
   @override
   String get tipDayTitle5 => 'Dealer Advantage';
 
   @override
   String get tipDayContent5 =>
-      'The dealer (莊家) receives and pays double in many rule sets. Winning as dealer lets you keep the deal!';
+      'The dealer receives and pays double in many rule sets. Winning as dealer lets you keep the deal.';
 
   @override
   String get tipDayTitle6 => 'Half Flush';
 
   @override
   String get tipDayContent6 =>
-      'Half Flush (混一色) uses one suit plus honor tiles. It\'s one of the most common high-scoring hands at 3 fan.';
+      'Half Flush uses one suit plus honor tiles. It is one of the most common high-scoring hands at 3 fan.';
 
   @override
   String get tipDayTitle7 => 'Full Flush';
 
   @override
   String get tipDayContent7 =>
-      'Full Flush (清一色) uses only one suit with no honors — worth 7 fan in HK rules. Hard to conceal!';
+      'Full Flush uses only one suit with no honors and is worth 7 fan in HK rules. It is hard to conceal.';
 
   @override
   String get tipDayTitle8 => 'Self-Draw Bonus';
 
   @override
   String get tipDayContent8 =>
-      'Winning by self-draw (自摸) adds extra fan in most rule sets and means all other players pay you.';
+      'Winning by self-draw adds extra fan in most rule sets and means all other players pay you.';
 
   @override
   String get tipDayTitle9 => 'Thirteen Orphans';
 
   @override
   String get tipDayContent9 =>
-      'Thirteen Orphans (十三么) requires one of each terminal and honor tile plus one duplicate — a limit hand!';
+      'Thirteen Orphans requires one of each terminal and honor tile plus one duplicate, which is a limit hand.';
 
   @override
-  String get tipDayTitle10 => 'La (拉) Rule';
+  String get tipDayTitle10 => 'La Rule';
 
   @override
   String get tipDayContent10 =>
@@ -3072,10 +3127,15 @@ class L10nEn extends L10n {
   String get hkMaxFan => 'Maximum Fan';
 
   @override
-  String get twBaseTaiSetting => 'Base (底)';
+  String hkMinFanReselect(int minFan) {
+    return 'Winning hand is below the minimum fan ($minFan). Please reselect.';
+  }
 
   @override
-  String get twTaiValueSetting => 'Value per Tai (每台)';
+  String get twBaseTaiSetting => 'Base Tai';
+
+  @override
+  String get twTaiValueSetting => 'Value per Tai';
 
   @override
   String get addRule => 'Add Rule';

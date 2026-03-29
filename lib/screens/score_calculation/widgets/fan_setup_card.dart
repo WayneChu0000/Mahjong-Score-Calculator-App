@@ -7,6 +7,8 @@ import '../../../models/game_mode.dart';
 class FanSetupCard extends StatefulWidget {
   final int effectiveFan;
   final GameMode gameMode;
+  final int minFan;
+  final int maxFan;
   final String selectedSpecialCondition;
   final List<String> activeSpecialConditions;
   final ValueChanged<int?> onFanChanged;
@@ -17,6 +19,8 @@ class FanSetupCard extends StatefulWidget {
     super.key,
     required this.effectiveFan,
     required this.gameMode,
+    required this.minFan,
+    required this.maxFan,
     required this.selectedSpecialCondition,
     required this.activeSpecialConditions,
     required this.onFanChanged,
@@ -66,6 +70,20 @@ class _FanSetupCardState extends State<FanSetupCard> {
   @override
   Widget build(BuildContext context) {
     final isTW = widget.gameMode == GameMode.taiwan;
+    final hkUpperBoundRaw = widget.maxFan == 999
+        ? (widget.minFan > 13 ? widget.minFan : 13)
+        : widget.maxFan;
+    final hkLowerBoundRaw = widget.minFan;
+    // Guard against invalid bound order from settings/state sync.
+    final hkLowerBound = hkLowerBoundRaw <= hkUpperBoundRaw
+      ? hkLowerBoundRaw
+      : hkUpperBoundRaw;
+    final hkUpperBound = hkLowerBoundRaw <= hkUpperBoundRaw
+      ? hkUpperBoundRaw
+      : hkLowerBoundRaw;
+    final int hkCurrentValue = widget.effectiveFan
+      .clamp(hkLowerBound, hkUpperBound)
+      .toInt();
 
     return Card(
       child: Padding(
@@ -126,8 +144,11 @@ class _FanSetupCardState extends State<FanSetupCard> {
                   border: const OutlineInputBorder(),
                 ),
                 // ignore: deprecated_member_use
-                initialValue: widget.effectiveFan,
-                items: List.generate(14, (index) => index).map((count) {
+                initialValue: hkCurrentValue,
+                items: List.generate(
+                  hkUpperBound - hkLowerBound + 1,
+                  (index) => hkLowerBound + index,
+                ).map((count) {
                   return DropdownMenuItem<int>(
                     value: count,
                     child: Text(AppLocalizations.fan(count)),

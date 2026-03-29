@@ -377,6 +377,9 @@ class AppLocalizations {
   static String get viewExample => _l10n.viewExample;
   static String get hideExample => _l10n.hideExample;
   static String get exampleExplanation => _l10n.exampleExplanation;
+    static String get exampleTagConcealed => _l10n.exampleTagConcealed;
+    static String get exampleTagExposed => _l10n.exampleTagExposed;
+    static String get exampleTagEyes => _l10n.exampleTagEyes;
   static String get welcomeTitle => _l10n.welcomeTitle;
   static String get appDescription => _l10n.appDescription;
   static String get keyFeatures => _l10n.keyFeatures;
@@ -405,6 +408,9 @@ class AppLocalizations {
   static String get gameObjectiveDesc1 => _l10n.gameObjectiveDesc1;
   static String get gameObjectiveDesc2 => _l10n.gameObjectiveDesc2;
   static String get gameObjectiveDesc3 => _l10n.gameObjectiveDesc3;
+    static String get twGameObjectiveDesc1 => _l10n.twGameObjectiveDesc1;
+    static String get twGameObjectiveDesc2 => _l10n.twGameObjectiveDesc2;
+    static String get twGameObjectiveDesc3 => _l10n.twGameObjectiveDesc3;
   static String get basicTermsTitle => _l10n.basicTermsTitle;
   static String get basicTermsChow => _l10n.basicTermsChow;
   static String get basicTermsPong => _l10n.basicTermsPong;
@@ -424,6 +430,11 @@ class AppLocalizations {
   static String get dealStep3 => _l10n.dealStep3;
   static String get dealStep4 => _l10n.dealStep4;
   static String get dealStep5 => _l10n.dealStep5;
+    static String get twDealStep1 => _l10n.twDealStep1;
+    static String get twDealStep2 => _l10n.twDealStep2;
+    static String get twDealStep3 => _l10n.twDealStep3;
+    static String get twDealStep4 => _l10n.twDealStep4;
+    static String get twDealStep5 => _l10n.twDealStep5;
   static String get gameplayProcessTitle => _l10n.gameplayProcessTitle;
   static String get gameplayProcessDesc => _l10n.gameplayProcessDesc;
   static String get standardTurnTitle => _l10n.standardTurnTitle;
@@ -519,6 +530,12 @@ class AppLocalizations {
   static String get emailInvalid => _l10n.emailInvalid;
   static String get passwordRequired => _l10n.passwordRequired;
   static String get passwordLengthError => _l10n.passwordLengthError;
+    static String get setPassword => _l10n.setPassword;
+    static String get newPasswordLabel => _l10n.newPasswordLabel;
+    static String get confirmPasswordLabel => _l10n.confirmPasswordLabel;
+    static String get confirmPasswordRequired => _l10n.confirmPasswordRequired;
+    static String get passwordMismatchError => _l10n.passwordMismatchError;
+    static String get passwordUpdatedSuccess => _l10n.passwordUpdatedSuccess;
   static String get genericError => _l10n.genericError;
   static String get confirmDeleteTitle => _l10n.confirmDeleteTitle;
   static String get savedGroupsTitle => _l10n.savedGroupsTitle;
@@ -1124,6 +1141,8 @@ class AppLocalizations {
   static String get twGameSettings => _l10n.twGameSettings;
   static String get hkMinFanSetting => _l10n.hkMinFan;
   static String get hkMaxFanSetting => _l10n.hkMaxFan;
+    static String hkMinFanReselect(int minFan) =>
+            _l10n.hkMinFanReselect(minFan);
   static String get twBaseTaiSetting => _l10n.twBaseTaiSetting;
   static String get twTaiValueSetting => _l10n.twTaiValueSetting;
   static String get addRule => _l10n.addRule;

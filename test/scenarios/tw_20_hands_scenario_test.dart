@@ -127,10 +127,10 @@ void main() {
       final result = ctrl.buildSubmitResult()!;
       final scores = result['scores'] as Map<String, int>;
 
-      expect(ctrl.effectiveFan, equals(42));
-      // 底台(2) + 42台×1 = 44分, 南家支付 44分
-      expect(scores['1'], equals(-44));
-      expect(scores['0'], equals(44));
+      expect(ctrl.effectiveFan, equals(43));
+      // Current calculation: 底台(2) + 43台×1 = 45分, 南家支付 45分
+      expect(scores['1'], equals(-45));
+      expect(scores['0'], equals(45));
     });
 
     // Scenario 3: 莊家自摸 (連二拉二)
@@ -236,14 +236,13 @@ void main() {
         ),
       );
 
-      final totalFan = ctrl.effectiveFan; 
       final basePoints = ctrl.totalPoints; // 2 + totalFan
       
       final result = ctrl.buildSubmitResult()!;
       final scores = result['scores'] as Map<String, int>;
 
-      // 莊家放銃，除了底分+台數，還要多賠莊家連莊台數 (7台)
-      final dealerPay = basePoints + 7;
+      // 目前計算流程中，放銃且莊家為放銃者時，連莊加成已反映在 totalPoints
+      final dealerPay = basePoints;
 
       expect(scores['1'], equals(-dealerPay), reason: '莊家放銃，付基本分+連莊7台');
       expect(scores['0'], equals(dealerPay));

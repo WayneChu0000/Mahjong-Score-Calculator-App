@@ -378,6 +378,9 @@
   "viewExample": "查看範例",
   "hideExample": "隱藏範例",
   "exampleExplanation": "範例說明:",
+  "exampleTagConcealed": "暗",
+  "exampleTagExposed": "明",
+  "exampleTagEyes": "眼",
 
   "playerCount": "{count} 名玩家",
   "roundOf": "第 {current} / {total} 局",
@@ -432,6 +435,14 @@
   "dealStep3": "3. 莊家跳牌抓第 1 和第 3 張 (共 14 張)。",
   "dealStep4": "4. 閒家各抓 1 張 (共 13 張)。",
   "dealStep5": "5. 補花。",
+  "twGameObjectiveDesc1": "台式麻將胡牌目標：",
+  "twGameObjectiveDesc2": "• 5 組（順子/刻子/槓子）+ 1 對眼",
+  "twGameObjectiveDesc3": "• 16 張手牌 + 1 張胡牌（共 17 張）",
+  "twDealStep1": "1. 每位玩家輪流抓 4 張牌（2 墩）。",
+  "twDealStep2": "2. 重複直到每位玩家有 16 張牌。",
+  "twDealStep3": "3. 莊家起手為 17 張（包含首巡摸牌）。",
+  "twDealStep4": "4. 若有花牌，立即從牌尾補花。",
+  "twDealStep5": "5. 由莊家先打出第一張牌開始行牌。",
   "gameplayProcessTitle": "4. 行牌流程",
   "gameplayProcessDesc": "配牌補花後，從莊家開始逆時針進行。",
   "standardTurnTitle": "標準回合：",
@@ -532,6 +543,12 @@
   "emailInvalid": "請輸入有效的電子郵件",
   "passwordRequired": "請輸入密碼",
   "passwordLengthError": "密碼至少需要 6 個字元",
+  "setPassword": "設定密碼",
+  "newPasswordLabel": "新密碼",
+  "confirmPasswordLabel": "確認密碼",
+  "confirmPasswordRequired": "請確認密碼",
+  "passwordMismatchError": "兩次輸入的密碼不一致",
+  "passwordUpdatedSuccess": "密碼更新成功",
   "genericError": "發生未知錯誤",
 
   "confirmDeleteTitle": "確認刪除",
@@ -551,7 +568,7 @@
   "twMode": "台式",
 
   "twScoringRulesTitle": "台灣麻將計分規則",
-  "twScoringRulesDesc": "台灣麻將使用『台』制計分。本 App 的台式計算固定每台為 1 分，所以總支付分數 = 底台 + 總台數（如適用再加莊家額外台數）。",
+  "twScoringRulesDesc": "台灣麻將使用『台』制計分。本應用程式的台式計算固定每台為 1 分，所以總支付分數 = 底台 + 總台數（如適用再加莊家額外台數）。",
   "twTaiHeader": "台數",
   "twScoreHeader": "金額",
 
@@ -980,8 +997,8 @@
   "tipDayContent8": "自摸胡牠在大多數規則中可額外加番，且其他三家都要付款。",
   "tipDayTitle9": "十三么",
   "tipDayContent9": "十三么需要每種幺九牌和字牌各一張加一張重複——是滿貫牌型！",
-  "tipDayTitle10": "拉（La）規則",
-  "tipDayContent10": "台式麻將中，拉規則會將前一局的欠款乘以 1.5 倍，當同一玩家連續胡牠時生效。",
+  "tipDayTitle10": "拉規則",
+  "tipDayContent10": "台式麻將中，拉規則會將前一局的欠款乘以 1.5 倍，當同一玩家連續胡牌時生效。",
 
   "customFanValues": "自訂番數/台數",
   "customFanValuesDesc": "自訂個別牌型的計分數值",
@@ -1012,7 +1029,16 @@
   "twGameSettings": "台式麻將設定",
   "hkMinFan": "最低番數",
   "hkMaxFan": "最高番數",
-  "twBaseTaiSetting": "底 (底)",
+  "hkMinFanReselect": "胡牌番數低於最低番數（{minFan}番），請重新選擇胡牌。",
+  "@hkMinFanReselect": {
+    "description": "港式麻將提交分數時，若番數低於設定最低番數顯示的提示。",
+    "placeholders": {
+      "minFan": {
+        "type": "int"
+      }
+    }
+  },
+  "twBaseTaiSetting": "底台",
   "twTaiValueSetting": "每台價值 (每台)",
   "addRule": "新增規則",
   "deleteRule": "刪除規則",
