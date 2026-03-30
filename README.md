@@ -1,91 +1,109 @@
 # Mahjong Score Calculator App
 
-## Overview
-This is a Flutter-based mobile application designed to assist Mahjong players in calculating scores, managing player groups, and recording game history. It features automated hand scoring using computer vision (OCR) to recognize Mahjong tiles and supports customizable rules and scoring tables.
+Flutter mobile app for Mahjong score calculation, round tracking, and player/group record management.
 
-## Features
+## What This App Includes
 
-### 🀄 Game Score Calculation
-- **Hand Recognition**: Capture an image of your Mahjong hand to automatically detect tiles and calculate potential Fan (points).
-- **Manual Entry**: Manually select tiles and special conditions (e.g., Self-Draw, Winning on Kong).
-- **Fan Calculation**: Auto-calculates Fan based on selected tiles, conditions, and active rules (e.g., Mixed Suits, All Pongs).
-- **Score Table**: Lookup precise scores based on the Fan count (supports limits like 13 Fan).
+- Score calculation workflow for Mahjong rounds.
+- Optional image-based tile recognition via a configurable Vision API.
+- Player group and game history persistence with Firebase.
+- Localization support (English and Traditional Chinese).
+- App theme preference support (light, dark, follow system).
 
-### 👥 Group & Player Management
-- **Player Groups**: Create and manage different groups of players.
-- **Persistent Stats**: Tracks scores, win/loss records, and history for each player in a group via **Firebase**.
-- **Dealer Rotation**: Automatically handles wind rotation (East/South/West/North) and Dealer placement after each round.
+## Tech Stack
 
-### 📊 History & Records
-- **Game History**: detailed logs of past games, including who won, who discarded, and the final scores.
-- **Statistics**: View individual player performance within a group.
+- Flutter (SDK constraint in this repo: Dart ^3.8.1)
+- Provider for state management
+- Firebase Core + Cloud Firestore + Firebase Auth
+- HTTP + image_picker for Vision API flow
+- flutter_dotenv for environment configuration
 
-### 🌍 Localization & Customization
-- **Multi-language Support**: Fully localized for English and Traditional Chinese.
-- **Dark/Light Mode**: Adapts to system theme preferences.
+## Prerequisites
 
-## Getting Started
+- Flutter SDK installed and available in PATH
+- A Firebase project (for Firestore/Auth features)
+- A Vision API endpoint/key if you want image-based detection
 
-### Prerequisites
-- **Flutter SDK**: Version 3.8.1 or later.
-- **Dart SDK**: Compatible with Flutter version.
-- **Firebase Account**: Required for backend services (Firestore, Auth).
+## Setup
 
-### Installation
+1. Install packages:
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/mahjong-score-calculator.git
-   cd Mahjong-Score-Calculator-App
-   ```
+```bash
+flutter pub get
+```
 
-2. **Install Dependencies:**
-   ```bash
-   flutter pub get
-   ```
+2. Configure environment variables:
 
-### Configuration (Crucial Step)
+```bash
+copy .env.example .env
+```
 
-This project relies on **Firebase** for data persistence. You must provide your own Firebase configuration files for the app to run successfully.
+Update .env values as needed:
 
-1. **Create a Firebase Project:**
-   - Go to the [Firebase Console](https://console.firebase.google.com/).
-   - Create a new project.
-   - Enable **Cloud Firestore** and **Authentication** (if used).
+```env
+VISION_API_URL=https://predict.ultralytics.com
+VISION_API_KEY=YOUR_API_KEY_HERE
+VISION_MODEL_URL=https://hub.ultralytics.com/models/YOUR_MODEL_ID_HERE
+VISION_CONF=0.25
+VISION_IOU=0.7
+VISION_IMGSZ=640
+```
 
-2. **Android Setup:**
-   - Register an Android app in your Firebase project (package name usually found in `android/app/build.gradle` - confirm it matches `com.example.flutter_application_1` or your custom ID).
-   - Download `google-services.json`.
-   - Place it in: `android/app/google-services.json`.
+Notes:
 
-3. **iOS Setup (If applicable):**
-   - Register an iOS app in Firebase.
-   - Download `GoogleService-Info.plist`.
-   - Place it in: `ios/Runner/GoogleService-Info.plist`.
+- .env is loaded at app startup in main.
+- You can override values with --dart-define at build/run time.
 
-### Running the App
+3. Configure Firebase:
 
-Connect a physical device or start an emulator, then run:
+- Android: add google-services.json to android/app/google-services.json.
+- iOS: add GoogleService-Info.plist to ios/Runner/GoogleService-Info.plist.
+- Ensure Cloud Firestore and Authentication are enabled in your Firebase project.
+
+This app currently initializes Firebase with Firebase.initializeApp() and expects platform Firebase config files to be present.
+
+## Run
 
 ```bash
 flutter run
 ```
 
-## Project Structure
+## Test
 
-- **`lib/main.dart`**: Entry point of the application; initializes Firebase and providers.
-- **`lib/screens/`**: UI screens (Score Calculation, Home, Group Details, etc.).
-- **`lib/services/`**: logic for backend interactions.
-  - `score_service.dart`: Logic for calculating scores.
-  - `vision_service.dart`: Handles image processing for tile recognition.
-  - `player_group_service.dart`: Manages Firestore data for groups.
-- **`lib/models/`**: Data models (Player, Rule, GameRecord).
-- **`lib/localization/`**: Localization files for internationalization.
+```bash
+flutter test
+```
+
+## Useful Commands
+
+```bash
+flutter analyze
+flutter pub get
+flutter test
+```
+
+## Project Layout
+
+- lib/main.dart: App entry point, environment loading, Firebase initialization, providers.
+- lib/config/: Runtime and environment configuration.
+- lib/controllers/: Controller logic for app features.
+- lib/logic/: Core Mahjong and rule evaluation logic.
+- lib/models/: Data models.
+- lib/screens/: UI screens.
+- lib/services/: Data and integration services (score, settings, auth, player groups, vision).
+- lib/localization/ and lib/l10n/: Localization resources and generated language support.
+- test/: Unit and scenario tests.
 
 ## Troubleshooting
 
-- **"No Firebase App '[DEFAULT]' has been created"**: Ensure you have added the `google-services.json` file and that `Firebase.initializeApp()` is called in `main.dart` (this is already handled in the codebase).
-- **Camera/Image Picker Issues**: Ensure you have added the necessary permissions to `AndroidManifest.xml` and `Info.plist` for camera access.
+- No Firebase App '[DEFAULT]' has been created:
+  - Verify Firebase config files are placed in platform folders.
+  - Rebuild the app after adding config files.
 
-## License
-[MIT License](LICENSE)
+- Vision API requests fail:
+  - Check VISION_API_URL and VISION_API_KEY in .env.
+  - Confirm your endpoint accepts multipart file uploads.
+
+- Localization not updating as expected:
+  - Verify selected language in app settings.
+  - Restart app after changing localization-related configuration.
