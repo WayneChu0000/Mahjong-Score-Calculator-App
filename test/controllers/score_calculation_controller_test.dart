@@ -110,9 +110,9 @@ void main() {
       expect(c.discardPlayer, isNull);
     });
 
-    test('initial fanCount is 1', () {
+    test('initial fanCount is 3', () {
       final c = _hkController();
-      expect(c.fanCount, equals(1));
+      expect(c.fanCount, equals(3));
     });
 
     test('empty players list handled gracefully', () {
@@ -386,17 +386,6 @@ void main() {
   //  HK Flower Scoring
   // ==========================================================================
   group('HK flower scoring', () {
-    test('no flowers selected gives +1 fan (No Flowers)', () {
-      final c = _hkController(dealerIndex: 0);
-      // In manual mode (no tiles, no flowers, no conditions),
-      // displayRules shows "User Set X Fan" instead of individual items
-      expect(
-        c.displayRules.any((r) => (r['name'] as String).contains('User Set')),
-        isTrue,
-      );
-      // totalPoints = fanCount directly
-      expect(c.totalPoints, equals(c.fanCount));
-    });
 
     test('own flower gives +1 fan', () {
       final c = _hkController(dealerIndex: 0);

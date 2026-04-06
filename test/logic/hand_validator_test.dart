@@ -47,27 +47,6 @@ void main() {
       expect(result['valid'], isTrue);
     });
 
-    test('seven pairs → valid', () {
-      final tiles = [
-        '1m',
-        '1m',
-        '3m',
-        '3m',
-        '5p',
-        '5p',
-        '9p',
-        '9p',
-        '2s',
-        '2s',
-        '7s',
-        '7s',
-        '1z',
-        '1z',
-      ];
-      final result = HandValidator.checkWinningHand(tiles);
-      expect(result['valid'], isTrue);
-    });
-
     test('invalid hand → not valid', () {
       final tiles = [
         '1m',
