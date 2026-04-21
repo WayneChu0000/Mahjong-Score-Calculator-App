@@ -34,7 +34,21 @@ flutter pub get
 
 2. Configure environment variables:
 
+PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+macOS/Linux:
+
 ```bash
+cp .env.example .env
+```
+
+Windows CMD:
+
+```cmd
 copy .env.example .env
 ```
 
@@ -61,6 +75,103 @@ Notes:
 - Ensure Cloud Firestore and Authentication are enabled in your Firebase project.
 
 This app currently initializes Firebase with Firebase.initializeApp() and expects platform Firebase config files to be present.
+
+## Database Guide
+
+This project uses Firebase Authentication + Cloud Firestore.
+
+### What to provide (for assignment/report handover)
+
+1. Database platform: Firebase Cloud Firestore.
+2. Enabled services: Authentication (Email/Password) and Cloud Firestore.
+3. Firebase app config placement:
+   - Android: `android/app/google-services.json`
+   - iOS: `ios/Runner/GoogleService-Info.plist`
+4. Firestore data model summary (collections, document IDs, and key fields).
+5. Security rules and test account strategy.
+
+### Firestore structure used by the app
+
+```text
+users/{uid}
+  language: string
+  theme: string
+  lastUpdated: timestamp
+
+users/{uid}/player_groups/{groupName}
+  name: string
+  players: string[]
+  createdAt: ISO datetime string
+  lastPlayedAt: ISO datetime string?
+  currentScores: map<string, int>?
+  currentRound: int?
+  dealerIndex: int?
+  prevalentWindIndex: int?
+  currentDealerGameCount: int?
+  totalWindRounds: int?
+  totalGamesPlayedInGroup: int
+  playerStats: map<string, object>?
+  roundHistory: object[]?
+  minFan: int
+  maxFan: int
+  gameMode: string
+  laState: map<string, dynamic>?
+
+users/{uid}/player_groups/{groupName}/achievements/{playerId}
+  counters: map<string, dynamic>
+  progress: map<string, object>
+```
+
+### Security rule baseline (example)
+
+```text
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}
+```
+
+### Sensitive data guidance
+
+- Do not publish real API keys, production Firebase credentials, or user data in README.
+- Keep `.env` local and committed secrets out of version control.
+- Share only sample values in docs (`.env.example`).
+
+## Installation Guide (Submission Ready)
+
+1. Install Flutter SDK and verify with `flutter doctor`.
+2. Get project dependencies:
+
+```bash
+flutter pub get
+```
+
+3. Create environment file from sample (`.env.example` -> `.env`) and fill values.
+4. Add Firebase platform files:
+   - `android/app/google-services.json`
+   - `ios/Runner/GoogleService-Info.plist`
+5. In Firebase Console, ensure Authentication and Cloud Firestore are enabled.
+6. Start the app:
+
+```bash
+flutter run
+```
+
+7. Run tests:
+
+```bash
+flutter test
+```
+
+8. Optional quality checks:
+
+```bash
+flutter analyze
+```
 
 ## Run
 
